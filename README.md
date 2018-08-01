@@ -1,4 +1,4 @@
-##Agent-based Modeling of Electricity Systems (AMES) V5.0
+## Agent-based Modeling of Electricity Systems (AMES) V5.0
 
 AMES V5.0 is based on both AMES V3.0 and AMES V4.0, and is currently under development.
 
