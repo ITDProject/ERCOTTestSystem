@@ -1,0 +1,13 @@
+name: loadforecast
+time_delta: 1s
+broker: tcp://localhost:5570
+values:
+    distribution_energy:
+        topic: gridlabdSimulator1/distribution_energy
+        default: 0.0
+    # distribution_load:
+        # topic: gridlabdSimulator1/distribution_load
+        # default: 0.0
+    # AvgsumRealPower:
+        # topic: auction_Market_1/AvgsumRealPower
+        # default: 1
