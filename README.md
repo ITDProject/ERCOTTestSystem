@@ -1,6 +1,6 @@
 ## README
 
-This repository contains all the relevant codes, data files, scripts, and documentation for the ERCOT Project tasks carried out under ISU's "ERCOT Contract" with the Pacific Northwest National Laboratory (PNNL)
+This repository contains all the relevant codes, data files, scripts, and documentation for the ERCOT Project tasks carried out under Iowa State University's "ERCOT Contract" with the Pacific Northwest National Laboratory (PNNL).
 
 This repository is organized in the following way:
 
