@@ -4,8 +4,7 @@
 	"coordinates":  Indicates geographical location of a bus by providing latitude and longitude information in degrees. The latitude is preceded by a minus sign ( – ) if it is south of the equator (a positive number implies north), and the longitude is preceded by a minus sign if it is west of the prime meridian (a positive number implies east) 
 	"weightdict":  Indicates generation capacity (MW) by fuel types for a Gen bus, load (MW) for a Load bus, or both attributes for a Hybrid bus.
 
-Example of a Bus:  
-{  "bus":  0,
+	Example of a Bus:  {  "bus":  0,
 "busType": "Hybrid",
 "coordinates": [33.02, -96.85],
 "weightdict": {"Load": 5267.95, "Natural Gas Internal Combustion Engine": 3.5, "Solar Photovoltaic": 2.0, "Natural Gas Steam Turbine": 126.5 }
