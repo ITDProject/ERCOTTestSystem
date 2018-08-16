@@ -1,0 +1,669 @@
+			'0_None': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 19825.78954,
+				type: 'None',
+				county: 'None'
+			},
+
+			'0_Natural Gas Internal Combustion Engine': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 40.900000000000006,
+				type: 'Natural Gas Internal Combustion Engine',
+				county: 'None'
+			},
+
+			'0_Solar Photovoltaic': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 7.0,
+				type: 'Solar Photovoltaic',
+				county: 'None'
+			},
+
+			'0_Petroleum Liquids': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 30.5,
+				type: 'Petroleum Liquids',
+				county: 'None'
+			},
+
+			'0_Conventional Hydroelectric': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 147.5,
+				type: 'Conventional Hydroelectric',
+				county: 'None'
+			},
+
+			'0_Landfill Gas': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 32.599999999999994,
+				type: 'Landfill Gas',
+				county: 'None'
+			},
+
+			'0_Natural Gas Steam Turbine': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 5594.1,
+				type: 'Natural Gas Steam Turbine',
+				county: 'None'
+			},
+
+			'0_Natural Gas Fired Combustion Turbine': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 677.9000000000001,
+				type: 'Natural Gas Fired Combustion Turbine',
+				county: 'None'
+			},
+
+			'0_Natural Gas Fired Combined Cycle': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 13665.9,
+				type: 'Natural Gas Fired Combined Cycle',
+				county: 'None'
+			},
+
+			'0_Other Waste Biomass': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 10.6,
+				type: 'Other Waste Biomass',
+				county: 'None'
+			},
+
+			'0_Onshore Wind Turbine': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 1674.7999999999997,
+				type: 'Onshore Wind Turbine',
+				county: 'None'
+			},
+
+			'0_Nuclear': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 2430.0,
+				type: 'Nuclear',
+				county: 'None'
+			},
+
+			'0_Conventional Steam Coal': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 11664.8,
+				type: 'Conventional Steam Coal',
+				county: 'None'
+			},
+
+			'0_Wood/Wood Waste Biomass': {
+				location: {
+					lat: 32.48587588861346,
+					lng: -96.70618673338794
+				},
+				capacity: 114.0,
+				type: 'Wood/Wood Waste Biomass',
+				county: 'None'
+			},
+
+			'276_None': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 14270.053190000002,
+				type: 'None',
+				county: 'None'
+			},
+
+			'276_Natural Gas Fired Combustion Turbine': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 3469.7999999999997,
+				type: 'Natural Gas Fired Combustion Turbine',
+				county: 'None'
+			},
+
+			'276_Natural Gas Fired Combined Cycle': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 12551.2,
+				type: 'Natural Gas Fired Combined Cycle',
+				county: 'None'
+			},
+
+			'276_Natural Gas Steam Turbine': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 4740.7,
+				type: 'Natural Gas Steam Turbine',
+				county: 'None'
+			},
+
+			'276_Conventional Steam Coal': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 3190.3,
+				type: 'Conventional Steam Coal',
+				county: 'None'
+			},
+
+			'276_Landfill Gas': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 20.4,
+				type: 'Landfill Gas',
+				county: 'None'
+			},
+
+			'276_All Other': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 200.1,
+				type: 'All Other',
+				county: 'None'
+			},
+
+			'276_Petroleum Coke': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 4.7,
+				type: 'Petroleum Coke',
+				county: 'None'
+			},
+
+			'276_Other Gases': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 202.1,
+				type: 'Other Gases',
+				county: 'None'
+			},
+
+			'276_Nuclear': {
+				location: {
+					lat: 29.659139250897276,
+					lng: -95.42422229810764
+				},
+				capacity: 2708.6,
+				type: 'Nuclear',
+				county: 'None'
+			},
+
+			'447_None': {
+				location: {
+					lat: 33.95420783921915,
+					lng: -99.98747434266421
+				},
+				capacity: 387.7724579999999,
+				type: 'None',
+				county: 'None'
+			},
+
+			'447_Natural Gas Fired Combined Cycle': {
+				location: {
+					lat: 33.95420783921915,
+					lng: -99.98747434266421
+				},
+				capacity: 80.0,
+				type: 'Natural Gas Fired Combined Cycle',
+				county: 'None'
+			},
+
+			'447_Petroleum Liquids': {
+				location: {
+					lat: 33.95420783921915,
+					lng: -99.98747434266421
+				},
+				capacity: 6.0,
+				type: 'Petroleum Liquids',
+				county: 'None'
+			},
+
+			'447_Onshore Wind Turbine': {
+				location: {
+					lat: 33.95420783921915,
+					lng: -99.98747434266421
+				},
+				capacity: 2242.2,
+				type: 'Onshore Wind Turbine',
+				county: 'None'
+			},
+
+			'447_Conventional Steam Coal': {
+				location: {
+					lat: 33.95420783921915,
+					lng: -99.98747434266421
+				},
+				capacity: 720.0,
+				type: 'Conventional Steam Coal',
+				county: 'None'
+			},
+
+			'447_Solar Photovoltaic': {
+				location: {
+					lat: 33.95420783921915,
+					lng: -99.98747434266421
+				},
+				capacity: 100.0,
+				type: 'Solar Photovoltaic',
+				county: 'None'
+			},
+
+			'481_Onshore Wind Turbine': {
+				location: {
+					lat: 32.07712219219925,
+					lng: -101.27531730548921
+				},
+				capacity: 8730.3,
+				type: 'Onshore Wind Turbine',
+				county: 'None'
+			},
+
+			'481_None': {
+				location: {
+					lat: 32.07712219219925,
+					lng: -101.27531730548921
+				},
+				capacity: 1681.5560540000001,
+				type: 'None',
+				county: 'None'
+			},
+
+			'481_Natural Gas Internal Combustion Engine': {
+				location: {
+					lat: 32.07712219219925,
+					lng: -101.27531730548921
+				},
+				capacity: 3.3,
+				type: 'Natural Gas Internal Combustion Engine',
+				county: 'None'
+			},
+
+			'481_Natural Gas Fired Combined Cycle': {
+				location: {
+					lat: 32.07712219219925,
+					lng: -101.27531730548921
+				},
+				capacity: 2087.1,
+				type: 'Natural Gas Fired Combined Cycle',
+				county: 'None'
+			},
+
+			'481_Natural Gas Fired Combustion Turbine': {
+				location: {
+					lat: 32.07712219219925,
+					lng: -101.27531730548921
+				},
+				capacity: 1347.8,
+				type: 'Natural Gas Fired Combustion Turbine',
+				county: 'None'
+			},
+
+			'481_Batteries': {
+				location: {
+					lat: 32.07712219219925,
+					lng: -101.27531730548921
+				},
+				capacity: 36.0,
+				type: 'Batteries',
+				county: 'None'
+			},
+
+			'481_Solar Photovoltaic': {
+				location: {
+					lat: 32.07712219219925,
+					lng: -101.27531730548921
+				},
+				capacity: 190.2,
+				type: 'Solar Photovoltaic',
+				county: 'None'
+			},
+
+			'525_None': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 8751.107714,
+				type: 'None',
+				county: 'None'
+			},
+
+			'525_Conventional Steam Coal': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 5728.1,
+				type: 'Conventional Steam Coal',
+				county: 'None'
+			},
+
+			'525_Natural Gas Fired Combined Cycle': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 5901.5,
+				type: 'Natural Gas Fired Combined Cycle',
+				county: 'None'
+			},
+
+			'525_Natural Gas Steam Turbine': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 3201.0,
+				type: 'Natural Gas Steam Turbine',
+				county: 'None'
+			},
+
+			'525_Natural Gas Fired Combustion Turbine': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 1234.6,
+				type: 'Natural Gas Fired Combustion Turbine',
+				county: 'None'
+			},
+
+			'525_Solar Photovoltaic': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 127.5,
+				type: 'Solar Photovoltaic',
+				county: 'None'
+			},
+
+			'525_Landfill Gas': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 37.4,
+				type: 'Landfill Gas',
+				county: 'None'
+			},
+
+			'525_Conventional Hydroelectric': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 313.0,
+				type: 'Conventional Hydroelectric',
+				county: 'None'
+			},
+
+			'525_Petroleum Liquids': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 1.5,
+				type: 'Petroleum Liquids',
+				county: 'None'
+			},
+
+			'525_Natural Gas Internal Combustion Engine': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 252.60000000000008,
+				type: 'Natural Gas Internal Combustion Engine',
+				county: 'None'
+			},
+
+			'525_Batteries': {
+				location: {
+					lat: 29.808189754509538,
+					lng: -97.92942026868671
+				},
+				capacity: 1.0,
+				type: 'Batteries',
+				county: 'None'
+			},
+
+			'697_None': {
+				location: {
+					lat: 29.26791333458549,
+					lng: -100.31893599096719
+				},
+				capacity: 343.81728699999996,
+				type: 'None',
+				county: 'None'
+			},
+
+			'697_Conventional Hydroelectric': {
+				location: {
+					lat: 29.26791333458549,
+					lng: -100.31893599096719
+				},
+				capacity: 75.6,
+				type: 'Conventional Hydroelectric',
+				county: 'None'
+			},
+
+			'697_Solar Photovoltaic': {
+				location: {
+					lat: 29.26791333458549,
+					lng: -100.31893599096719
+				},
+				capacity: 139.6,
+				type: 'Solar Photovoltaic',
+				county: 'None'
+			},
+
+			'697_Onshore Wind Turbine': {
+				location: {
+					lat: 29.26791333458549,
+					lng: -100.31893599096719
+				},
+				capacity: 99.8,
+				type: 'Onshore Wind Turbine',
+				county: 'None'
+			},
+
+			'933_Natural Gas Fired Combined Cycle': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 5853.900000000001,
+				type: 'Natural Gas Fired Combined Cycle',
+				county: 'None'
+			},
+
+			'933_None': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 4209.7054419999995,
+				type: 'None',
+				county: 'None'
+			},
+
+			'933_Natural Gas Fired Combustion Turbine': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 581.6,
+				type: 'Natural Gas Fired Combustion Turbine',
+				county: 'None'
+			},
+
+			'933_Petroleum Liquids': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 15.0,
+				type: 'Petroleum Liquids',
+				county: 'None'
+			},
+
+			'933_Conventional Steam Coal': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 622.4,
+				type: 'Conventional Steam Coal',
+				county: 'None'
+			},
+
+			'933_Natural Gas Steam Turbine': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 725.1,
+				type: 'Natural Gas Steam Turbine',
+				county: 'None'
+			},
+
+			'933_Petroleum Coke': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 64.8,
+				type: 'Petroleum Coke',
+				county: 'None'
+			},
+
+			'933_All Other': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 50.8,
+				type: 'All Other',
+				county: 'None'
+			},
+
+			'933_Onshore Wind Turbine': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 3562.2000000000003,
+				type: 'Onshore Wind Turbine',
+				county: 'None'
+			},
+
+			'933_Natural Gas Internal Combustion Engine': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 224.39999999999995,
+				type: 'Natural Gas Internal Combustion Engine',
+				county: 'None'
+			},
+
+			'933_Conventional Hydroelectric': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 31.5,
+				type: 'Conventional Hydroelectric',
+				county: 'None'
+			},
+
+			'933_Other Waste Biomass': {
+				location: {
+					lat: 27.363141030636623,
+					lng: -97.72418856007015
+				},
+				capacity: 23.5,
+				type: 'Other Waste Biomass',
+				county: 'None'
+			},
+
+			'1480_None': {
+				location: {
+					lat: 29.939342726250015,
+					lng: -104.02912849128077
+				},
+				capacity: 32.829978,
+				type: 'None',
+				county: 'None'
+			},
+
+			'1480_Solar Photovoltaic': {
+				location: {
+					lat: 29.939342726250015,
+					lng: -104.02912849128077
+				},
+				capacity: 10.0,
+				type: 'Solar Photovoltaic',
+				county: 'None'
+			},
+
+			'1480_Batteries': {
+				location: {
+					lat: 29.939342726250015,
+					lng: -104.02912849128077
+				},
+				capacity: 4.0,
+				type: 'Batteries',
+				county: 'None'
+			}

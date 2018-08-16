@@ -1,0 +1,24 @@
+# PCTeX Project File, Version 1.1
+	name: DynTestAMES.JSLT.071007
+	texformat: LATEX
+DynTestAMES.JSLT.071007.tex
+RTORegionsMar2007.eps
+AMES.TransGrid.eps
+AMES.core.eps
+AMES.ISOEvent.eps
+AMES.architecture.eps
+AMES.SimpleView.eps
+AMES.MainComponents.eps
+AMES.Gen.eps
+5Node.eps
+AMES.24HourLoad00-23.eps
+MISOLMP.MichiganCongestion.eps
+AMES.Results.Prods.eps
+AMES.Results.CompareMinTVC.eps
+AMES.Results.LMPs.eps
+AMES.Results.MCs.eps
+AMES.SupplyOffer.eps
+AMES.DynamicFlow.eps
+DynTestAMES.JSLT.071007.aux
+DynTestAMES.JSLT.071007.log
+DynTestAMES.JSLT.071007.DVI

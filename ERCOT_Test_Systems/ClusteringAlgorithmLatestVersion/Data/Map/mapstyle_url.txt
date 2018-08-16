@@ -1,0 +1,4 @@
+https://maps.googleapis.com/maps/api/staticmap?key=AIzaSyB610aVb6R_ck6S5RFQsG63b8P2tcxm-CA&center=31.434580339332282,-97.28727111816409&zoom=6&format=png&maptype=roadmap&style=element:labels%7Cvisibility:off&style=feature:administrative.neighborhood%7Cvisibility:off&style=feature:landscape%7Cvisibility:off&style=feature:poi.business%7Cvisibility:off&style=feature:road%7Cvisibility:off&style=feature:road%7Celement:labels.icon%7Cvisibility:off&style=feature:transit%7Cvisibility:off&style=feature:water%7Cvisibility:simplified&size=480x360
+
+
+old url: https://maps.googleapis.com/maps/api/js?key=AIzaSyB610aVb6R_ck6S5RFQsG63b8P2tcxm-CA&callback=initMap
