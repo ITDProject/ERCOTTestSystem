@@ -1,5 +1,5 @@
-##
-	Each of the 200 nodes (“buses”) in '200NodesData.json' provides the following information: 
+
+Each of the 200 nodes (“buses”) in '200NodesData.json' provides the following information: 
 "bus":  Indicates bus ID or number
 "busType":  Indicates bus type.  A bus can be one of three types:  Gen (only generation), Load (only load), or Hybrid (both generation and load)
 "coordinates":  Indicates geographical location of a bus by providing latitude and longitude information in degrees. The latitude is preceded by a minus sign ( – ) if it is south of the equator (a positive number implies north), and the longitude is preceded by a minus sign if it is west of the prime meridian (a positive number implies east) 
