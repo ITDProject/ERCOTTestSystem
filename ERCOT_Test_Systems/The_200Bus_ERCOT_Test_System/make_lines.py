@@ -26,13 +26,13 @@ max138 = 100.0
 # 	a difference between bus load and bus generation of at least 'thresh' MW
 thresh = 500.0
 
-def printcsv (n1, n2, xy, npar, kv, parmrow, fp):
+def printcsv (ln, n1, n2, xy, npar, kv, parmrow, fp):
 	x1 = xy[n1][0]
 	y1 = xy[n1][1]
 	x2 = xy[n2][0]
 	y2 = xy[n2][1]
 	row = lineparameters[parmrow]
-	print (n1, n2, kv, '{:.2f}'.format(distance(y1, x1, y2, x2)), npar,
+	print (ln, n1, n2, kv, '{:.2f}'.format(distance(y1, x1, y2, x2)), npar,
 				 row['r1'], row['x1'], row['b1'], row['amps'], row['mw'], sep=',', file=fp)
 
 # latitude is y, longitude is x
@@ -178,12 +178,16 @@ if __name__ == '__main__':
 	fp.close ()
 
 	fp = open ('Lines.csv', 'w')
-	print('bus1', 'bus2', 'kV', 'length[miles]', '#parallel', 'r1[Ohms/mile]', 
+	print('name', 'bus1', 'bus2', 'kV', 'length[miles]', '#parallel', 'r1[Ohms/mile]', 
 				'x1[Ohms/mile]', 'b1[MVAR/mile]', 'ampacity', 'capacity[MW]', sep=',', file=fp)
+	i = 1
 	for e in e345:
-		printcsv (e[0], e[1], xy, 1, 345.0, 0, fp)
+		printcsv ('ehv' + str(i), e[0], e[1], xy, 1, 345.0, 0, fp)
+		i = i + 1
+	i = 1
 	for e in e138:
-		printcsv (e[0], e[1], xy, 1, 138.0, 1, fp)
+		printcsv ('hv' + str(i), e[0], e[1], xy, 1, 138.0, 1, fp)
+		i = i + 1
 	fp.close ()
 
 
