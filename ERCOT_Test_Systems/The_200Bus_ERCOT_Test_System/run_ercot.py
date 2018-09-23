@@ -9,7 +9,8 @@ def rescale_case(ppc, scale):
     ppc['bus'][:,5] *= (scale * scale)  # Qs
     ppc['gen'][:,1] *= scale  # Pg
 
-ppc = tesp.load_json_case ('ercot_200.json')
+#ppc = tesp.load_json_case ('ercot_200.json')
+ppc = tesp.load_json_case ('ercot_8.json')
 #rescale_case (ppc, 0.4)
 ppopt_regular = pp.ppoption(VERBOSE=1, 
                             OUT_SYS_SUM=1, 

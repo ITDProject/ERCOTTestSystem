@@ -40,10 +40,12 @@ if __name__ == '__main__':
 	lbl138 = {}
 	e345 = set()
 	e138 = set()
-	p345 = set()
-	p138 = set()
 	n345 = set()
 	n138 = set()
+	lst345 = []
+	lst138 = []
+	w345 = []
+	w138 = []
 	graph = nx.Graph()
 	for e in dlines:
 		if '//' not in e[0]:
@@ -58,13 +60,15 @@ if __name__ == '__main__':
 				n345.add (n2)
 				lbl345[(n1, n2)] = e[0]
 				e345.add ((n1, n2))
-				p345.add (npar)
+				lst345.append ((n1, n2))
+				w345.append (2.0 * npar)
 			else:
 				lbl138[(n1, n2)] = e[0]
 				n138.add (n1)
 				n138.add (n2)
 				e138.add ((n1, n2))
-				p138.add (npar)
+				lst138.append ((n1, n2))
+				w138.append (1.0 * npar)
 
 	print('There are', len(n138), 'HV buses and', len(e138), 'HV lines retained; ratio=', len(e138) / len(n138))
 	print('There are', len(n345), 'EHV buses and', len(e345), 'EHV lines retained; ratio=', len(e345) / len(n345))
@@ -194,11 +198,6 @@ if __name__ == '__main__':
 			lblbus345[b[0]] = str(b[0]) + ':' + str(int(b[5]))
 		else:
 			lblbus138[b[0]] = str(b[0]) + ':' + str(int(b[5]))
-
-	lst345 = list(e345)
-	lst138 = list(e138)
-	w345 = list(p345)
-	w138 = list(p138)
 
 	nx.draw_networkx_nodes (graph, xy, nodelist=list(n345), node_color='k', node_size=80, alpha=0.3)
 	nx.draw_networkx_nodes (graph, xy, nodelist=list(n138), node_color='b', node_size=20, alpha=0.3)
