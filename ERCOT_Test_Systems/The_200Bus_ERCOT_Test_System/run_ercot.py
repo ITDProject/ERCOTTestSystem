@@ -10,7 +10,7 @@ def rescale_case(ppc, scale):
     ppc['gen'][:,1] *= scale  # Pg
 
 ppc = tesp.load_json_case ('ercot_200.json')
-rescale_case (ppc, 0.4)
+#rescale_case (ppc, 0.4)
 ppopt_regular = pp.ppoption(VERBOSE=1, 
                             OUT_SYS_SUM=1, 
                             OUT_BUS=1, 
@@ -36,13 +36,13 @@ ppopt_market = pp.ppoption(VERBOSE=1,
                             OUT_LINE_LIM=1, 
                             PF_DC=1, 
                             PF_ALG=1)
-#ropf = pp.runopf (ppc, ppopt_market)
-#pp.printpf (100.0,
-#            bus=ropf['bus'],
-#            gen=ropf['gen'],
-#            branch=ropf['branch'],
-#            ppopt=ppopt_market,
-#            fd=sys.stdout,
-#            et=ropf['et'],
-#            success=ropf['success'])
-#
+ropf = pp.runopf (ppc, ppopt_market)
+pp.printpf (100.0,
+            bus=ropf['bus'],
+            gen=ropf['gen'],
+            branch=ropf['branch'],
+            ppopt=ppopt_market,
+            fd=sys.stdout,
+            et=ropf['et'],
+            success=ropf['success'])
+
