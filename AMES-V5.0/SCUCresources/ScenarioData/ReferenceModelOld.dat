@@ -1,0 +1,514 @@
+# Written by AMES per unit 09/17/2018 19:04:22
+
+set StageSet := FirstStage SecondStage ;
+
+set CommitmentTimeInStage[FirstStage] := 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ;
+set CommitmentTimeInStage[SecondStage] := ;
+
+set GenerationTimeInStage[FirstStage] := ;
+set GenerationTimeInStage[SecondStage] := 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 ;
+
+set Buses := Bus1 Bus2 Bus3 Bus4 Bus5 Bus6 Bus7 Bus8 ;
+
+set TransmissionLines :=
+Bus1 Bus2
+Bus2 Bus3
+Bus2 Bus4
+Bus2 Bus5
+Bus4 Bus5
+Bus5 Bus6
+Bus5 Bus7
+Bus4 Bus6
+Bus6 Bus8
+Bus6 Bus7
+Bus4 Bus8
+Bus3 Bus4
+;
+
+param NumTransmissionLines := 12 ;
+
+param: BusFrom BusTo ThermalLimit Reactance :=
+1 Bus1 Bus2 100.0 1.0
+2 Bus2 Bus3 100.0 1.0
+3 Bus2 Bus4 100.0 1.0
+4 Bus2 Bus5 100.0 1.0
+5 Bus4 Bus5 100.0 1.0
+6 Bus5 Bus6 100.0 1.0
+7 Bus5 Bus7 100.0 1.0
+8 Bus4 Bus6 100.0 1.0
+9 Bus6 Bus8 100.0 1.0
+10 Bus6 Bus7 100.0 1.0
+11 Bus4 Bus8 100.0 1.0
+12 Bus3 Bus4 100.0 1.0
+;
+
+set ThermalGenerators := GenCo1 GenCo2 GenCo3 GenCo4 GenCo5 GenCo6 GenCo7 GenCo8 ;
+
+set ThermalGeneratorsAtBus[Bus1] := GenCo1  ;
+set ThermalGeneratorsAtBus[Bus2] := GenCo2  ;
+set ThermalGeneratorsAtBus[Bus3] := GenCo3  ;
+set ThermalGeneratorsAtBus[Bus4] := GenCo4  ;
+set ThermalGeneratorsAtBus[Bus5] := GenCo5  ;
+set ThermalGeneratorsAtBus[Bus6] := GenCo6  ;
+set ThermalGeneratorsAtBus[Bus7] := GenCo7  ;
+set ThermalGeneratorsAtBus[Bus8] := GenCo8  ;
+
+param NumTimePeriods := 24 ;
+
+param: PowerGeneratedT0 UnitOnT0State MinimumPowerOutput MaximumPowerOutput MinimumUpTime MinimumDownTime NominalRampUpLimit NominalRampDownLimit StartupRampLimit ShutdownRampLimit ColdStartCost HotStartCost ShutdownCostCoefficient :=
+GenCo1 0.000000 1441 0.000000 32.824000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+GenCo2 0.000000 1 0.000000 41.169000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+GenCo3 0.000000 1 0.000000 9.834000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+GenCo4 0.000000 1 0.000000 55.380000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+GenCo5 0.000000 1 0.000000 32.152000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+GenCo6 0.000000 1 0.000000 52.571000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+GenCo7 0.000000 1 0.000000 33.535000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+GenCo8 0.000000 1 0.000000 83.993000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
+ ;
+param: ID atBus EndPointSoc MaximumEnergy NominalRampDownInput NominalRampUpInput NominalRampDownOutput NominalRampUpOutput MaximumPowerInput MinimumPowerInput MaximumPowerOutput MinimumPowerOutput MinimumSoc EfficiencyEnergy :=
+1.0 1.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 
+ ;
+param StorageFlag := 0.0 ;
+
+param NDGFlag := 0.0 ;
+
+param: NetDemand :=
+Bus1 1 4.3
+Bus1 2 4.19
+Bus1 3 4.12
+Bus1 4 4.06
+Bus1 5 4.08
+Bus1 6 4.13
+Bus1 7 4.26
+Bus1 8 4.47
+Bus1 9 4.75
+Bus1 10 5.0
+Bus1 11 5.13
+Bus1 12 5.19
+Bus1 13 5.26
+Bus1 14 5.16
+Bus1 15 5.11
+Bus1 16 5.18
+Bus1 17 5.57
+Bus1 18 5.79
+Bus1 19 5.7
+Bus1 20 5.56
+Bus1 21 5.41
+Bus1 22 5.11
+Bus1 23 4.75
+Bus1 24 4.41
+
+Bus2 1 12.04
+Bus2 2 11.44
+Bus2 3 11.1
+Bus2 4 10.87
+Bus2 5 10.84
+Bus2 6 10.99
+Bus2 7 11.33
+Bus2 8 11.82
+Bus2 9 12.6
+Bus2 10 13.34
+Bus2 11 13.83
+Bus2 12 14.15
+Bus2 13 14.23
+Bus2 14 14.09
+Bus2 15 13.91
+Bus2 16 13.97
+Bus2 17 14.95
+Bus2 18 15.84
+Bus2 19 15.68
+Bus2 20 15.24
+Bus2 21 14.69
+Bus2 22 13.83
+Bus2 23 12.85
+Bus2 24 11.88
+
+Bus3 1 0.0
+Bus3 2 0.0
+Bus3 3 0.0
+Bus3 4 0.0
+Bus3 5 0.0
+Bus3 6 0.0
+Bus3 7 0.0
+Bus3 8 0.0
+Bus3 9 0.0
+Bus3 10 0.0
+Bus3 11 0.0
+Bus3 12 0.0
+Bus3 13 0.0
+Bus3 14 0.0
+Bus3 15 0.0
+Bus3 16 0.0
+Bus3 17 0.0
+Bus3 18 0.0
+Bus3 19 0.0
+Bus3 20 0.0
+Bus3 21 0.0
+Bus3 22 0.0
+Bus3 23 0.0
+Bus3 24 0.0
+
+Bus4 1 12.12
+Bus4 2 11.48
+Bus4 3 11.1
+Bus4 4 10.83
+Bus4 5 10.75
+Bus4 6 10.87
+Bus4 7 11.22
+Bus4 8 11.52
+Bus4 9 12.17
+Bus4 10 12.82
+Bus4 11 13.37
+Bus4 12 13.72
+Bus4 13 13.92
+Bus4 14 13.84
+Bus4 15 13.68
+Bus4 16 13.75
+Bus4 17 14.73
+Bus4 18 15.73
+Bus4 19 15.55
+Bus4 20 15.14
+Bus4 21 14.7
+Bus4 22 13.97
+Bus4 23 13.03
+Bus4 24 12.04
+
+Bus5 1 31.82
+Bus5 2 30.41
+Bus5 3 29.47
+Bus5 4 28.92
+Bus5 5 28.84
+Bus5 6 29.18
+Bus5 7 29.99
+Bus5 8 30.71
+Bus5 9 31.84
+Bus5 10 33.43
+Bus5 11 34.72
+Bus5 12 35.51
+Bus5 13 35.89
+Bus5 14 35.81
+Bus5 15 35.59
+Bus5 16 35.92
+Bus5 17 38.19
+Bus5 18 40.25
+Bus5 19 40.13
+Bus5 20 39.35
+Bus5 21 38.38
+Bus5 22 36.84
+Bus5 23 34.85
+Bus5 24 32.34
+
+Bus6 1 13.33
+Bus6 2 12.63
+Bus6 3 12.21
+Bus6 4 11.93
+Bus6 5 11.86
+Bus6 6 12.01
+Bus6 7 12.41
+Bus6 8 12.72
+Bus6 9 13.25
+Bus6 10 13.92
+Bus6 11 14.47
+Bus6 12 14.76
+Bus6 13 15.04
+Bus6 14 14.97
+Bus6 15 14.83
+Bus6 16 14.96
+Bus6 17 16.07
+Bus6 18 17.12
+Bus6 19 17.03
+Bus6 20 16.67
+Bus6 21 16.21
+Bus6 22 15.38
+Bus6 23 14.43
+Bus6 24 13.35
+
+Bus7 1 16.39
+Bus7 2 15.56
+Bus7 3 15.06
+Bus7 4 14.78
+Bus7 5 14.7
+Bus7 6 14.85
+Bus7 7 15.27
+Bus7 8 15.69
+Bus7 9 16.53
+Bus7 10 17.39
+Bus7 11 18.18
+Bus7 12 18.59
+Bus7 13 18.85
+Bus7 14 18.77
+Bus7 15 18.61
+Bus7 16 18.72
+Bus7 17 20.08
+Bus7 18 21.18
+Bus7 19 21.04
+Bus7 20 20.53
+Bus7 21 19.98
+Bus7 22 18.99
+Bus7 23 17.83
+Bus7 24 16.51
+
+Bus8 1 13.01
+Bus8 2 12.26
+Bus8 3 11.72
+Bus8 4 11.4
+Bus8 5 11.28
+Bus8 6 11.39
+Bus8 7 11.57
+Bus8 8 11.74
+Bus8 9 12.24
+Bus8 10 12.86
+Bus8 11 13.49
+Bus8 12 13.76
+Bus8 13 14.0
+Bus8 14 13.94
+Bus8 15 13.82
+Bus8 16 13.88
+Bus8 17 14.87
+Bus8 18 16.03
+Bus8 19 15.94
+Bus8 20 15.61
+Bus8 21 15.2
+Bus8 22 14.57
+Bus8 23 13.67
+Bus8 24 12.82
+
+; 
+param: NDG :=
+Bus1 1 0.0
+Bus1 2 0.0
+Bus1 3 0.0
+Bus1 4 0.0
+Bus1 5 0.0
+Bus1 6 0.0
+Bus1 7 0.0
+Bus1 8 0.0
+Bus1 9 0.0
+Bus1 10 0.0
+Bus1 11 0.0
+Bus1 12 0.0
+Bus1 13 0.0
+Bus1 14 0.0
+Bus1 15 0.0
+Bus1 16 0.0
+Bus1 17 0.0
+Bus1 18 0.0
+Bus1 19 0.0
+Bus1 20 0.0
+Bus1 21 0.0
+Bus1 22 0.0
+Bus1 23 0.0
+Bus1 24 0.0
+
+Bus2 1 0.0
+Bus2 2 0.0
+Bus2 3 0.0
+Bus2 4 0.0
+Bus2 5 0.0
+Bus2 6 0.0
+Bus2 7 0.0
+Bus2 8 0.0
+Bus2 9 0.0
+Bus2 10 0.0
+Bus2 11 0.0
+Bus2 12 0.0
+Bus2 13 0.0
+Bus2 14 0.0
+Bus2 15 0.0
+Bus2 16 0.0
+Bus2 17 0.0
+Bus2 18 0.0
+Bus2 19 0.0
+Bus2 20 0.0
+Bus2 21 0.0
+Bus2 22 0.0
+Bus2 23 0.0
+Bus2 24 0.0
+
+Bus3 1 0.0
+Bus3 2 0.0
+Bus3 3 0.0
+Bus3 4 0.0
+Bus3 5 0.0
+Bus3 6 0.0
+Bus3 7 0.0
+Bus3 8 0.0
+Bus3 9 0.0
+Bus3 10 0.0
+Bus3 11 0.0
+Bus3 12 0.0
+Bus3 13 0.0
+Bus3 14 0.0
+Bus3 15 0.0
+Bus3 16 0.0
+Bus3 17 0.0
+Bus3 18 0.0
+Bus3 19 0.0
+Bus3 20 0.0
+Bus3 21 0.0
+Bus3 22 0.0
+Bus3 23 0.0
+Bus3 24 0.0
+
+Bus4 1 0.0
+Bus4 2 0.0
+Bus4 3 0.0
+Bus4 4 0.0
+Bus4 5 0.0
+Bus4 6 0.0
+Bus4 7 0.0
+Bus4 8 0.0
+Bus4 9 0.0
+Bus4 10 0.0
+Bus4 11 0.0
+Bus4 12 0.0
+Bus4 13 0.0
+Bus4 14 0.0
+Bus4 15 0.0
+Bus4 16 0.0
+Bus4 17 0.0
+Bus4 18 0.0
+Bus4 19 0.0
+Bus4 20 0.0
+Bus4 21 0.0
+Bus4 22 0.0
+Bus4 23 0.0
+Bus4 24 0.0
+
+Bus5 1 0.0
+Bus5 2 0.0
+Bus5 3 0.0
+Bus5 4 0.0
+Bus5 5 0.0
+Bus5 6 0.0
+Bus5 7 0.0
+Bus5 8 0.0
+Bus5 9 0.0
+Bus5 10 0.0
+Bus5 11 0.0
+Bus5 12 0.0
+Bus5 13 0.0
+Bus5 14 0.0
+Bus5 15 0.0
+Bus5 16 0.0
+Bus5 17 0.0
+Bus5 18 0.0
+Bus5 19 0.0
+Bus5 20 0.0
+Bus5 21 0.0
+Bus5 22 0.0
+Bus5 23 0.0
+Bus5 24 0.0
+
+Bus6 1 0.0
+Bus6 2 0.0
+Bus6 3 0.0
+Bus6 4 0.0
+Bus6 5 0.0
+Bus6 6 0.0
+Bus6 7 0.0
+Bus6 8 0.0
+Bus6 9 0.0
+Bus6 10 0.0
+Bus6 11 0.0
+Bus6 12 0.0
+Bus6 13 0.0
+Bus6 14 0.0
+Bus6 15 0.0
+Bus6 16 0.0
+Bus6 17 0.0
+Bus6 18 0.0
+Bus6 19 0.0
+Bus6 20 0.0
+Bus6 21 0.0
+Bus6 22 0.0
+Bus6 23 0.0
+Bus6 24 0.0
+
+Bus7 1 0.0
+Bus7 2 0.0
+Bus7 3 0.0
+Bus7 4 0.0
+Bus7 5 0.0
+Bus7 6 0.0
+Bus7 7 0.0
+Bus7 8 0.0
+Bus7 9 0.0
+Bus7 10 0.0
+Bus7 11 0.0
+Bus7 12 0.0
+Bus7 13 0.0
+Bus7 14 0.0
+Bus7 15 0.0
+Bus7 16 0.0
+Bus7 17 0.0
+Bus7 18 0.0
+Bus7 19 0.0
+Bus7 20 0.0
+Bus7 21 0.0
+Bus7 22 0.0
+Bus7 23 0.0
+Bus7 24 0.0
+
+Bus8 1 0.0
+Bus8 2 0.0
+Bus8 3 0.0
+Bus8 4 0.0
+Bus8 5 0.0
+Bus8 6 0.0
+Bus8 7 0.0
+Bus8 8 0.0
+Bus8 9 0.0
+Bus8 10 0.0
+Bus8 11 0.0
+Bus8 12 0.0
+Bus8 13 0.0
+Bus8 14 0.0
+Bus8 15 0.0
+Bus8 16 0.0
+Bus8 17 0.0
+Bus8 18 0.0
+Bus8 19 0.0
+Bus8 20 0.0
+Bus8 21 0.0
+Bus8 22 0.0
+Bus8 23 0.0
+Bus8 24 0.0
+
+; 
+param: ReserveRequirement := 
+1 10.0
+2 10.0
+3 10.0
+4 10.0
+5 10.0
+6 10.0
+7 10.0
+8 10.0
+9 10.0
+10 10.0
+11 10.0
+12 10.0
+13 10.0
+14 10.0
+15 10.0
+16 10.0
+17 10.0
+18 10.0
+19 10.0
+20 10.0
+21 10.0
+22 10.0
+23 10.0
+24 10.0
+; 
+param: ProductionCostA0 ProductionCostA1 ProductionCostA2 :=
+GenCo1 0.0 1500.0 50.0 
+GenCo2 0.0 1500.0 50.0 
+GenCo3 0.0 1500.0 50.0 
+GenCo4 0.0 1500.0 50.0 
+GenCo5 0.0 1500.0 50.0 
+GenCo6 0.0 1500.0 50.0 
+GenCo7 0.0 1500.0 50.0 
+GenCo8 0.0 1500.0 50.0 
+; 

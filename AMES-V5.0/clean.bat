@@ -1,0 +1,2 @@
+del *.log
+ant clean
