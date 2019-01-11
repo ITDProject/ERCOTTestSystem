@@ -160,9 +160,21 @@ public class ISO {
             System.out.println("iso.RTMOperation is called at h:" + h + " interval: " + interval + " m: " + m);
             // evaluateRealTimeBidsOffers(h, d); // fncs.get_events() is called to receive RTM forecast (ISO does it in BUC)
             double[][] realtimeload = this.getRealTimeLoad(h, d);
-
+            System.out.println("realtime load: ");
             // Added additionally
             //this.rtm.realTimeOperation(h, d);
+//            for (int count = 0; count < this.genScheduleRT.size(); count++) {
+//                CommitmentDecision cd = this.genScheduleRT.get(count);
+//                System.out.println("Gen name: " + cd.generatorName);
+//                for (int a = 0; a < cd.commitmentDecisions.length; a++) {
+//                        for (int b = 0; b < (this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M); b++) {
+//                            System.out.print(" : " + (cd.commitmentDecisions[a][b]));
+//                        }
+//                System.out.println("");
+//                }
+//                System.out.println("");
+//            }
+//            System.out.println("");
             this.rtm.evaluateRealTimeBidsOffers(this.genScheduleRT,
                     realtimeload, m, interval, h, d); // fncs.get_events() is called to receive RTM forecast - inside getRealTimeLoad
             //Temp Fix it - Swathi
@@ -220,20 +232,43 @@ public class ISO {
             int[] tempVector = new int[this.ames.NUM_HOURS_PER_DAY];
             for (int j = 0; j < this.ames.getNumGenAgents(); j++) {
                 GenAgent gc = genAgentList.get(j);
+                //System.out.println("Gen: " +gc.getID());
                 for (int hour = 0; hour < this.ames.NUM_HOURS_PER_DAY; hour++) {
                     tempVector[hour] = this.scuc.getGenDAMCommitmentStatusNextDay()[hour][j];
+                    //System.out.print(" : " + tempVector[hour]);
                 }
-                gc.setCommitmentStatus(tempVector);
+                //System.out.println("");
+                gc.setCommitmentStatus(tempVector); // Gen status is needed for RTM 
             }
+//            for (int j = 0; j < this.ames.getNumGenAgents(); j++) {
+//                GenAgent gc = genAgentList.get(j);
+//                System.out.println("Gen: " +gc.getID());
+//                for (int hour = 0; hour < this.ames.NUM_HOURS_PER_DAY; hour++) {
+//                    System.out.print(" : " + gc.getCommitmentStatus(hour));
+//                }
+//                System.out.println("");   
+//            }
 
             this.endOfDayCleanup();
+//            for (int count = 0; count < this.genScheduleRT.size(); count++) {
+//                CommitmentDecision cd = this.genScheduleRT.get(count);
+//                System.out.println("Gen name: " + cd.generatorName);
+//                for (int a = 0; a < cd.commitmentDecisions.length; a++) {
+//                        for (int b = 0; b < (this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M); b++) {
+//                            System.out.print(" : " + (cd.commitmentDecisions[a][b]));
+//                        }
+//                System.out.println("");
+//                }
+//                System.out.println("");
+//            }
+//            System.out.println("");
             this.postScheduleToGenCos(tomorrow, this.genScheduleRT);
         }
     }
 
     private double[][] getRealTimeLoad(int h, int d) {
 
-        int ColSize = this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR; // previous usage was this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR
+        int ColSize = this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR; // previous usage was this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR //TODO:Swathi - check
 
         System.out.println("printing size of RTL array: " + ColSize);
         double[][] hourlyLoadProfileByLSE = new double[J][ColSize];
@@ -287,9 +322,9 @@ public class ISO {
         // temp fix
         for (int j = 0; j < J; j++) {
             //System.out.println("Temp RealTime Load: ");
-            //Hourly forecast is temperorily set uniformly into per minute forecast
+            //Hourly forecast is temparorily set uniformly into per minute forecast
             for (int k = 0; k < (ColSize); k++) {
-                hourlyLoadProfileByLSE[j][k] = 126;
+                hourlyLoadProfileByLSE[j][k] = 200;
                 //System.out.println("i:"+i);
             }
         }

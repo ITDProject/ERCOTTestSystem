@@ -53,9 +53,10 @@ public class AMESMarket extends SimModelImpl {
     public static final int GRID_X_SIZE = 40;
     public static final int GRID_Y_SIZE = 40;
     public static final int NUM_HOURS_PER_DAY = 24;
-    public static final int NUM_HOURS_PER_DAY_UC = 30; // Number of hours for the rolling horizon. 
+    public static final int NUM_HOURS_PER_DAY_UC = 24; // Number of hours for UC
 
     public static final int M = 5; // Interval length => should divide 60
+    public static final int INTERVAL_SIZE = 1; // In minutes - M/INTERVAL_SIZE gives number of time slots in every interval
     public static final int NUM_INTERVALS_PER_HOUR = 60/M; // Interval length
     public static final int NUM_INTERVALS_PER_DAY = NUM_HOURS_PER_DAY * NUM_INTERVALS_PER_HOUR;
     

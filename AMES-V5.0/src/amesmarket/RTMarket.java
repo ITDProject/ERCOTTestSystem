@@ -16,11 +16,10 @@
  * released as free open-source software in turn. The GNU GPL can be viewed in
  * its entirety as in the following site: http://www.gnu.org/licenses/gpl.html
  */
-
 // RTMarket.java
 // Real-time market
-
 package amesmarket;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +65,7 @@ public class RTMarket {
     private int numLSEAgents;
     private int numSupplyOfferParams;
     private int numHoursPerDay;
+    private int numIntervalsInSim;
 
     BUC buc;
     private final PSSTSCED sced;
@@ -73,20 +73,20 @@ public class RTMarket {
     //TODO-X : Parameterize file paths. Probably should be accessible
     //from the AMESMarket instance.
     private final File scedOutFile = new File("RTSCED.dat");
-    private final File rtRefModelFile = new File("SCUCresources/ScenarioData/RTRefernceModel.dat");
+    private final File rtRefModelFile = new File("SCUCresources/ScenarioData/RTRefernceModel.dat");// new File("SCUCresources/ScenarioData/RTRefernceModel.dat");
     private final File unitCommitmentFile = new File("rt-unitcommitments.dat");
-
 
     // constructor
     public RTMarket(ISO iso, AMESMarket model) {
 
         //System.out.println("Created a RTMarket objecct");
         ames = model;
-        this.iso=iso;
+        this.iso = iso;
         numGenAgents = ames.getNumGenAgents();
         numLSEAgents = ames.getNumLSEAgents();
         numHoursPerDay = ames.getNumHoursPerDay();
         numSupplyOfferParams = 4;
+        numIntervalsInSim = ames.M / ames.INTERVAL_SIZE;
 
         supplyOfferByGen = new double[numGenAgents][numSupplyOfferParams];
 
@@ -99,9 +99,9 @@ public class RTMarket {
     }
 
     public void realTimeOperation(int h, int d) {
-        System.out.println("Hour " + h + " Day " + d +": Real Time Market operation.");
-        supplyOfferByGen=iso.getSupplyOfferByGenRT();
-        priceSensitiveDispatch=iso.getPriceSensitiveDispatchRT();
+        System.out.println("Hour " + h + " Day " + d + ": Real Time Market operation.");
+        supplyOfferByGen = iso.getSupplyOfferByGenRT();
+        priceSensitiveDispatch = iso.getPriceSensitiveDispatchRT();
     }
 
     /**
@@ -118,9 +118,9 @@ public class RTMarket {
             double[][] rtDemand, int m, int interval,
             int h, int d) {
 
-
         DataFileWriter dfw = new DataFileWriter();
 
+        File unitCommitmentFileMod = new File(unitCommitmentFile + "_hour" + h);
         try {
             //write the correct data files.
             dfw.writeGenCommitments(ames.M, m, h, genCoCommitments, unitCommitmentFile);
@@ -128,16 +128,15 @@ public class RTMarket {
         } catch (AMESMarketException ex) {
             Logger.getLogger(RTMarket.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String str = rtRefModelFile + "_" + interval;
-        File NewFile = new File(str);
+        String str = rtRefModelFile + "_hour" + h;
+        File rtRefModelFileMod = new File(rtRefModelFile + "_hour" + h);
         try {
             // dfw.writeScenDatFile(rtRefModelFile, ames, d, rtDemand, ames.NUM_HOURS_PER_DAY);     // Initial usage
             //dfw.writeScedScenDatFile(rtRefModelFile, ames, m, h, d, rtDemand, ames.M);   //Rohit's modification
-            dfw.writeScedScenDatFile(rtRefModelFile, ames, m, interval, h, d, rtDemand, ames.M, 5);  // earlier - 5 : now chaged to 10; new modification ames.NUM_INTERVALS_PER_HOUR
+            dfw.writeScedScenDatFile(rtRefModelFile, ames, m, interval, h, d, rtDemand, ames.M, numIntervalsInSim);  // latest modification 
         } catch (AMESMarketException ex) {
             Logger.getLogger(RTMarket.class.getName()).log(Level.SEVERE, null, ex);
         }
-
 
         try {
             //
@@ -147,7 +146,7 @@ public class RTMarket {
         }
 
         //pull the data back out
-        hasSolution  = sced.getHasSolution();
+        hasSolution = sced.getHasSolution();
         //power
         rtDispatches = sced.getDailyCommitment();
         rtBranchFlow = sced.getDailyBranchFlow();
@@ -166,7 +165,6 @@ public class RTMarket {
 //    public double[][] getPriceSensitiveDispatch() {
 //        return priceSensitiveDispatch;
 //    }
-
     public void setBUC(BUC buc) {
         this.buc = buc;
     }

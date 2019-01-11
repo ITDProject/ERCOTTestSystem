@@ -193,7 +193,7 @@ public class GenAgent implements Drawable, JReLMAgent {
     private double defaultT0pwer = 1000;
     private double T0NextDayPower = 1000;
     private double PrevIntervalPower = 1000;
-    
+
     private int HourUnitON = 0;
     private int T0NextDayUnitOnState = 0;
 
@@ -269,6 +269,8 @@ public class GenAgent implements Drawable, JReLMAgent {
         dayAheadLMP = new double[HOURS_PER_DAY];
         realTimeLMP = new double[HOURS_PER_DAY];
         totalVariableCost = new double[HOURS_PER_DAY];
+
+        commitmentStatus = new int[HOURS_PER_DAY];
 
         hourlyTotalCost = new double[HOURS_PER_DAY];
         hourlyProfit = new double[HOURS_PER_DAY];
@@ -898,14 +900,17 @@ public class GenAgent implements Drawable, JReLMAgent {
         commitment = comm;
     }
 
-    public void setCommitmentStatus(int[] status){
-        commitmentStatus = status;
+    public void setCommitmentStatus(int[] status) {
+        System.arraycopy(status, 0, commitmentStatus, 0, HOURS_PER_DAY);
     }
 
+//    public void setCommitmentStatus(int hour, int status){
+//        commitmentStatus[hour] = status;
+//    }
     public int getCommitmentStatus(int h) {
         return commitmentStatus[h];
     }
-    
+
     public double[] getDayAheadLMP() {
         return dayAheadLMP;
     }
@@ -1089,15 +1094,15 @@ public class GenAgent implements Drawable, JReLMAgent {
             return -numMinSame;
         }
     }
-    
+
     public int getUnitOnHour() {
         return HourUnitON; //
     }
-    
+
     public void setUnitOnHour(int i) {
         HourUnitON = i;
     }
-    
+
     public double getPowerT0(int day) {
         double[] powerGen = dispatchByDay.get(day);
         if (powerGen != null) {
@@ -1115,28 +1120,26 @@ public class GenAgent implements Drawable, JReLMAgent {
         return T0NextDayPower; //25th hour of the day.
     }
 
-
     public void setPowerT0NextDay(double p) {
         T0NextDayPower = p;
     }
-  
-    public int getUnitOnStateT0NextDay() {
-        return T0NextDayUnitOnState; //25th hour of the day.
-    }
 
+    public int getUnitOnStateT0NextDay() {
+        return T0NextDayUnitOnState; //24th hour of the day.
+    }
 
     public void setUnitOnStateT0NextDay(int i) {
         T0NextDayUnitOnState = i;
     }
-      
+
     public double getPowerPrevInterval() {
         return PrevIntervalPower; //
     }
-    
+
     public void setPowerPrevInterval(double p) {
         PrevIntervalPower = p;
     }
-    
+
     public int getMinUpTime() {
         return minUpTime;
     }
