@@ -1,4 +1,4 @@
-# Written by AMES per unit 01/03/2019 22:15:26
+# Written by AMES per unit 01/15/2019 11:40:13
 
 set StageSet := FirstStage SecondStage ;
 
@@ -56,11 +56,11 @@ set ThermalGeneratorsAtBus[Bus8] := GenCo8  ;
 param NumTimePeriods := 5 ;
 
 
-param Interval := 4 ;
+param Interval := 276 ;
 
 param: PowerGeneratedT0 UnitOnT0State MinimumPowerOutput MaximumPowerOutput MinimumUpTime MinimumDownTime NominalRampUpLimit NominalRampDownLimit StartupRampLimit ShutdownRampLimit ColdStartCost HotStartCost ShutdownCostCoefficient :=
-GenCo1 9.180000 0 1.000000 10.000000 0 0 0.000000 0.000000 0.000000 0.000000 110.000000 11.000000 1.000000
-GenCo2 0.900000 0 0.900000 10.000000 0 0 0.000000 0.000000 0.000000 0.000000 220.000000 22.000000 2.000000
+GenCo1 10.000000 1 1.000000 10.000000 0 0 0.000000 0.000000 0.000000 0.000000 110.000000 11.000000 1.000000
+GenCo2 6.000000 1 0.900000 10.000000 0 0 0.000000 0.000000 0.000000 0.000000 220.000000 22.000000 2.000000
 GenCo3 0.000000 0 0.800000 10.000000 0 0 0.000000 0.000000 0.000000 0.000000 330.000000 33.000000 3.000000
 GenCo4 0.000000 0 1.000000 10.000000 0 0 0.000000 0.000000 0.000000 0.000000 440.000000 44.000000 4.000000
 GenCo5 0.000000 0 1.000000 10.000000 0 0 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000 0.000000
@@ -76,53 +76,53 @@ param StorageFlag := 0.0 ;
 param NDGFlag := 0.0 ;
 
 param: NetDemand :=
-Bus1 21 1.26
-Bus1 22 1.26
-Bus1 23 1.26
-Bus1 24 1.26
-Bus1 25 1.26
+Bus1 1 2.0
+Bus1 2 2.0
+Bus1 3 2.0
+Bus1 4 2.0
+Bus1 5 2.0
 
-Bus2 21 1.26
-Bus2 22 1.26
-Bus2 23 1.26
-Bus2 24 1.26
-Bus2 25 1.26
+Bus2 1 2.0
+Bus2 2 2.0
+Bus2 3 2.0
+Bus2 4 2.0
+Bus2 5 2.0
 
-Bus3 21 1.26
-Bus3 22 1.26
-Bus3 23 1.26
-Bus3 24 1.26
-Bus3 25 1.26
+Bus3 1 2.0
+Bus3 2 2.0
+Bus3 3 2.0
+Bus3 4 2.0
+Bus3 5 2.0
 
-Bus4 21 1.26
-Bus4 22 1.26
-Bus4 23 1.26
-Bus4 24 1.26
-Bus4 25 1.26
+Bus4 1 2.0
+Bus4 2 2.0
+Bus4 3 2.0
+Bus4 4 2.0
+Bus4 5 2.0
 
-Bus5 21 1.26
-Bus5 22 1.26
-Bus5 23 1.26
-Bus5 24 1.26
-Bus5 25 1.26
+Bus5 1 2.0
+Bus5 2 2.0
+Bus5 3 2.0
+Bus5 4 2.0
+Bus5 5 2.0
 
-Bus6 21 1.26
-Bus6 22 1.26
-Bus6 23 1.26
-Bus6 24 1.26
-Bus6 25 1.26
+Bus6 1 2.0
+Bus6 2 2.0
+Bus6 3 2.0
+Bus6 4 2.0
+Bus6 5 2.0
 
-Bus7 21 1.26
-Bus7 22 1.26
-Bus7 23 1.26
-Bus7 24 1.26
-Bus7 25 1.26
+Bus7 1 2.0
+Bus7 2 2.0
+Bus7 3 2.0
+Bus7 4 2.0
+Bus7 5 2.0
 
-Bus8 21 1.26
-Bus8 22 1.26
-Bus8 23 1.26
-Bus8 24 1.26
-Bus8 25 1.26
+Bus8 1 2.0
+Bus8 2 2.0
+Bus8 3 2.0
+Bus8 4 2.0
+Bus8 5 2.0
 
 ; 
 param: NDG :=
