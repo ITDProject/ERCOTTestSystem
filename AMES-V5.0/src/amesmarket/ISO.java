@@ -182,7 +182,7 @@ public class ISO {
             this.dailyrealtimelmp = this.rtm.getRtLMPs(); // check and validate
         }
 
-        if (h == 12 && m == 0) {
+        if (h == 2 && m == 0) { // change it to h == 12 
             System.out.println("iso.dayAheadOperation is called at h:" + h);
             //evaluateBidsOffers(h, d); //uncommented to add scuc formulation
             System.out.println("SCUC for DAY " + tomorrow + " executing");
@@ -324,7 +324,7 @@ public class ISO {
             //System.out.println("Temp RealTime Load: ");
             //Hourly forecast is temparorily set uniformly into per minute forecast
             for (int k = 0; k < (ColSize); k++) {
-                hourlyLoadProfileByLSE[j][k] = 200;
+                hourlyLoadProfileByLSE[j][k] = 400;
                 //System.out.println("i:"+i);
             }
         }
@@ -353,9 +353,9 @@ public class ISO {
                 if (ga.isCanary()) {
                     for (int h = 0; h < rtcd.commitmentDecisions.length; h++) {
                         // Assigning ones throughout the hour interval
-                        for (int m = 0; m < (this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M); m++) {
-                            rtcd.commitmentDecisions[h][m] = 1;
-                        }
+                        //for (int m = 0; m < (this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M); m++) {
+                            rtcd.commitmentDecisions[h] = 1;
+                        //}
                     }
                 }
 
@@ -392,13 +392,16 @@ public class ISO {
             //int[][] commCopy = Arrays.copyOf(cd.commitmentDecisions, cd.commitmentDecisions.length);
             //}
 
-            int[][] result = new int[this.ames.NUM_HOURS_PER_DAY][this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR];
-            for (int i = 0; i < cd.commitmentDecisions.length; i++) {
-                result[i] = Arrays.copyOf(cd.commitmentDecisions[i], cd.commitmentDecisions[i].length);
+            int[] result = new int[this.ames.NUM_HOURS_PER_DAY];
+            //previous usage //int[][] result = new int[this.ames.NUM_HOURS_PER_DAY][this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR];
+            //for (int i = 0; i < cd.commitmentDecisions.length; i++) {
+                result = Arrays.copyOf(cd.commitmentDecisions, cd.commitmentDecisions.length);
                 // For Java versions prior to Java 6 use the next:
                 // System.arraycopy(original[i], 0, result[i], 0, original[i].length);
-            }
+                //System.out.println("result i: "+ Arrays.toString(result[i]));
+            //}
 
+                //System.out.println("result: "+ Arrays.toString(result));
             this.ames.getGenAgentByName(cd.generatorName).addCommitmentForDay(day, result); //previously commCopy
         }
     }

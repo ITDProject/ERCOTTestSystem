@@ -653,7 +653,7 @@ public class DataFileWriter {
                 ,
                  powerT0 //2
                 ,
-                 ga.getUnitOnStateT0NextDay() //ga.getUnitOnStateT0NextDay() // ga.getUnitOnT0State(day - 1) //3
+                 ga.getUnitOnT0State(day - 1) //ga.getUnitOnStateT0NextDay() // ga.getUnitOnT0State(day - 1) //3
                 ,
                  capMin //4
                 ,
@@ -864,7 +864,7 @@ public class DataFileWriter {
 
                 int[] commitmentVector = new int[TAU];
                 for (int k = 0; k < TAU; k++) {
-                    commitmentVector[k] = cd.commitmentDecisions[h][m + k];
+                    commitmentVector[k] = cd.commitmentDecisions[h];
                 }
                 //Boolean[] commitmentVector = gencoCommitments.get(g);
                 if (commitmentVector == null) { //yes, I'm being very cautious.

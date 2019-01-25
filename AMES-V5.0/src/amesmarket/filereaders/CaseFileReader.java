@@ -563,7 +563,7 @@ public class CaseFileReader {
     /**
      * Parse/read the data for the scuc input.
      * Assume a single data line looks like:
-     * Name    PowerT0 UnitOnT0    MinUpTime   MinDownTime NominalRampUp   NominalRampDown StartupRampLim ShutdownRampLim
+     * Name    PowerT0 UnitOnT0State    MinUpTime   MinDownTime NominalRampUp   NominalRampDown StartupRampLim ShutdownRampLim
      * @param testConf
      * @throws BadDataFileFormatException
      */
@@ -577,7 +577,7 @@ public class CaseFileReader {
                 String[] lineElems = s.split(WS_REG_EX);
                 testConf.putScucData(lineElems[0],
                         numRecog.stod(lineElems[1]),//PowerT0
-                        numRecog.stoi(lineElems[2]),//UnitOnT0
+                        numRecog.stoi(lineElems[2]),//UnitOnT0State
                         numRecog.stoi(lineElems[3]),//MinUp
                         numRecog.stoi(lineElems[4]),//MinDown
                         numRecog.stod(lineElems[5]),//NominalRampUp

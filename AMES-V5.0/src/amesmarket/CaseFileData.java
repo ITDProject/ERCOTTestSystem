@@ -479,7 +479,7 @@ public class CaseFileData {
      * Put the scuc data for a single genco.
      * @param gencoName
      * @param powerT0
-     * @param unitOnT0
+     * @param unitOnT0State
      * @param minUpTime
      * @param minDownTime
      * @param NominalRampUp
@@ -489,10 +489,10 @@ public class CaseFileData {
      * @param schedule1
      * @param schedule2
      */
-    public void putScucData(String gencoName, double powerT0, int unitOnT0,
+    public void putScucData(String gencoName, double powerT0, int unitOnT0State,
             int minUpTime, int minDownTime, double nominalRampUp, double nominalRampDown,
             double startupRampLim, double shutdownRampLim, int schedule1, int schedule2) {
-        SCUCInputData sid = new SCUCInputData(powerT0, unitOnT0, minUpTime,
+        SCUCInputData sid = new SCUCInputData(powerT0, unitOnT0State, minUpTime,
                 minDownTime, nominalRampUp, nominalRampDown, startupRampLim,
                 shutdownRampLim, schedule1, schedule2);
 
@@ -710,10 +710,10 @@ public class CaseFileData {
     * @param genCo
     * @return -1 if genco not found, or the value.
     */
-   public int unitOnT0(String genCo) {
+   public int unitOnT0State(String genCo) {
        SCUCInputData inputData = scucData.get(genCo);
        if (inputData != null) {
-           return inputData.unitOnT0;
+           return inputData.unitOnT0State;
        } else {
            return -1;
        }
@@ -870,7 +870,7 @@ public class CaseFileData {
      */
     public static class SCUCInputData {
         private double powerT0;
-        private int unitOnT0;
+        private int unitOnT0State;
         private int minUpTime;
         private int minDownTime;
         private double nominalRampUp;
@@ -882,7 +882,7 @@ public class CaseFileData {
 
         /**
          * @param powerT0
-         * @param unitOnT0
+         * @param unitOnT0State
          * @param minUpTime
          * @param minDownTime
          * @param nominalRampUp
@@ -892,12 +892,12 @@ public class CaseFileData {
          * @param schedule1
          * @param schedule2
          */
-        public SCUCInputData(double powerT0, int unitOnT0, int minUpTime,
+        public SCUCInputData(double powerT0, int unitOnT0State, int minUpTime,
                 int minDownTime, double nominalRampUp, double nominalRampDown,
                 double startupRampLim, double shutdownRampLim, int schedule1,
                 int schedule2) {
             this.powerT0 = powerT0;
-            this.unitOnT0 = unitOnT0;
+            this.unitOnT0State = unitOnT0State;
             this.minUpTime = minUpTime;
             this.minDownTime = minDownTime;
             this.nominalRampUp = nominalRampUp;
@@ -925,15 +925,15 @@ public class CaseFileData {
         /**
          * @return the unitOnT0
          */
-        public int getUnitOnT0() {
-            return unitOnT0;
+        public int getUnitOnT0State() {
+            return unitOnT0State;
         }
 
         /**
-         * @param unitOnT0 the unitOnT0 to set
+         * @param unitOnT0State the unitOnT0State to set
          */
-        public void setUnitOnT0(int unitOnT0) {
-            this.unitOnT0 = unitOnT0;
+        public void setUnitOnT0State(int unitOnT0State) {
+            this.unitOnT0State = unitOnT0State;
         }
 
         /**

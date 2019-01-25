@@ -145,9 +145,9 @@ public class LSEAgent implements Drawable {
                 }
             }
             for (int i = 0; i < 24; i++) {
-                loadForecast[i] = temp[i];//ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
+                loadForecast[i] = 400; //temp value needs to be changed back to temp[i];//ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
             }
-            return loadForecast;
+            return loadProfile; // loadForecast; // temp fixed to loadProfile
         } else {
             return loadProfile;
         }
@@ -210,6 +210,7 @@ public class LSEAgent implements Drawable {
                     //System.out.println("temp - loadforecast: " + temp[j]);
                 }
             }
+            System.out.println("check check check check ");
             //reportDemandBid = temp;
             return reportDemandBid;
         }

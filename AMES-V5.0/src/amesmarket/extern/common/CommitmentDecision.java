@@ -30,7 +30,7 @@ import amesmarket.filereaders.BadDataFileFormatException;
 public class CommitmentDecision {
     public final String generatorName;
     public final int generatorIdx;
-    public final int[][] commitmentDecisions;
+    public final int[] commitmentDecisions;
     //public final int[] commitmentDecisionsbyTAU;
 
     /**
@@ -39,7 +39,7 @@ public class CommitmentDecision {
      * @param commitmentDecisions
      */
     public CommitmentDecision(String generatorName, int generatorIdx,
-            int[][] commitmentDecisions) {
+            int[] commitmentDecisions) {
         this.generatorName = generatorName;
         this.generatorIdx = generatorIdx;
         this.commitmentDecisions = commitmentDecisions;

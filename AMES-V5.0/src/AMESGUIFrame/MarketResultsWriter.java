@@ -63,11 +63,11 @@ public class MarketResultsWriter {
         out.write(sb.toString());
 
         for( GenAgent ga : ames.getGenAgentList() ) {
-            Map<Integer, int[][]> cds = ga.getCommitmentDecisions();
+            Map<Integer, int[]> cds = ga.getCommitmentDecisions();
             for(int d = 0; d <= ames.DAY_MAX; d++) {
                 sb = new StringBuilder(); //zero out the stringbuilder.
                 sb.append(ga.getID()); sb.append(COL_SEP);
-                int[][] cd = cds.get(d);
+                int[] cd = cds.get(d);
                 if(cd != null) {
                     sb.append(d); sb.append(COL_SEP);
                     for(int h = 0; h<cd.length; h++) {
@@ -173,13 +173,13 @@ public class MarketResultsWriter {
 
         for(int i = 0; i<agents.size(); i++ ) {
             GenAgent g =  agents.get(i);
-            Map<Integer, int[][]> commitments =g.getCommitmentDecisions();
+            Map<Integer, int[]> commitments =g.getCommitmentDecisions();
             int hoursCommitted = 0;
-            for(int[][] cs : commitments.values()) {
+            for(int[] cs : commitments.values()) {
                 for(int h = 0; h < cs.length; h++) {
                     
                     // Hardcoded, update
-                    if(cs[h][0] == 1){
+                    if(cs[h] == 1){
                         hoursCommitted++;
                     }
                 }
@@ -319,13 +319,13 @@ public class MarketResultsWriter {
         
         for(int i = 0; i<agents.size(); i++ ) {
             GenAgent g =  agents.get(i);
-            Map<Integer, int[][]> commitments =g.getCommitmentDecisions();
+            Map<Integer, int[]> commitments =g.getCommitmentDecisions();
             int hoursCommitted = 0;
             int numDay = 1; //start from day 1 for every generator
-            for(int[][] cs : commitments.values()) {
+            for(int[] cs : commitments.values()) {
                 for(int h = 0; h < cs.length; h++) {
                     // hardcoded, update
-                    if(cs[h][0] == 1){
+                    if(cs[h] == 1){
                         hoursCommitted++;
                     }
                 }
@@ -473,13 +473,13 @@ public class MarketResultsWriter {
         
         for(int i = 0; i<agents.size(); i++ ) {
             GenAgent g =  agents.get(i);
-            Map<Integer, int[][]> commitments =g.getCommitmentDecisions();
+            Map<Integer, int[]> commitments =g.getCommitmentDecisions();
             int hoursCommitted = 0;
-            for(int[][] cs : commitments.values()) {
+            for(int[] cs : commitments.values()) {
                 for(int h = 0; h < cs.length; h++) {
                     
                     // hardcoded, update
-                    if(cs[h][0] == 1){
+                    if(cs[h] == 1){
                         hoursCommitted++;
                     }
                 }

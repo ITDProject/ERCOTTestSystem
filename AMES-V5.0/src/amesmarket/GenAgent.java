@@ -32,7 +32,7 @@ import edu.iastate.jrelm.rl.ReinforcementLearner;
 import edu.iastate.jrelm.rl.SimpleStatelessLearner;
 import edu.iastate.jrelm.rl.rotherev.variant.VREParameters;
 import edu.iastate.jrelm.rl.rotherev.REPolicy;
-
+;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -120,7 +120,7 @@ public class GenAgent implements Drawable, JReLMAgent {
     /**
      * Commit vector for each day d. Now modified to matrix
      */
-    private final HashMap<Integer, int[][]> commitmentByDay;
+    private final HashMap<Integer, int[]> commitmentByDay;
     /**
      * Dispatch levels for each hour hour of each day.
      */
@@ -197,6 +197,7 @@ public class GenAgent implements Drawable, JReLMAgent {
     private int HourUnitON = 0;
     private int T0NextDayUnitOnState = 0;
 
+    private int UnitOnT0State = -2;
     private int minUpTime = 4;
     private int minDownTime = 6;
     private double nominalRampUpLim = 9999;
@@ -285,7 +286,7 @@ public class GenAgent implements Drawable, JReLMAgent {
         marketPower = new double[HOURS_PER_DAY];
 
         // Create historical data records (initialized all to zeros)
-        commitmentByDay = new HashMap<Integer, int[][]>();
+        commitmentByDay = new HashMap<Integer, int[]>();
         dispatchByDay = new HashMap<Integer, double[]>();
         dayAheadLMPByDay = new ArrayList<double[][]>();
         realTimeLMPByDay = new ArrayList<double[][]>();
@@ -783,7 +784,7 @@ public class GenAgent implements Drawable, JReLMAgent {
      */
     public void sanityCheck(int day) {
         //if(isCanary()) return; //don't check for the canaries. They are always commited for the actual rt market calculations.
-        int[][] commitmentsForDay = getCommitmentsForDay(day);
+        int[] commitmentsForDay = getCommitmentsForDay(day);
         double[] dispatchesForDay = getDispatchesForDay(day);
 
         if (dispatchesForDay == null) {
@@ -802,19 +803,30 @@ public class GenAgent implements Drawable, JReLMAgent {
                     + " but no commitment vector.");
         } else {
             for (int h = 0; h < commitmentsForDay.length; h++) {
-                for (int m = 0; m < commitmentsForDay[h].length; m++) {
-                    if (commitmentsForDay[h][m] == 0 && dispatchesForDay[h] > 0) {
-                        System.err.println("WARNING: " + getID() + " was not commited "
-                                + "on day " + day + " hour " + h + ", but is has a "
-                                + "dispatch value for " + dispatchesForDay[h]
-                        );
-                    } else if (!isCanary
-                            && commitmentsForDay[h][m] == 1
-                            && //FIXME: Negation logic to complicated
-                            !Support.doubleIsDifferent(dispatchesForDay[h], 1e-6)) {//close to zero
-                        //System.out.println(getID() + " committed but not dispatched at hour " + (h + 1));
-                    }
+                if (commitmentsForDay[h] == 0 && dispatchesForDay[h] > 0) {
+                    System.err.println("WARNING: " + getID() + " was not commited "
+                            + "on day " + day + " hour " + h + ", but is has a "
+                            + "dispatch value for " + dispatchesForDay[h]
+                            );
+                } else if (
+                        !isCanary &&
+                        commitmentsForDay[h] == 1 &&  //FIXME: Negation logic to complicated
+                        !Support.doubleIsDifferent(dispatchesForDay[h], 1e-6)) {//close to zero
+                    //System.out.println(getID() + " committed but not dispatched at hour " + (h + 1));
                 }
+//                for (int m = 0; m < commitmentsForDay[h].length; m++) {
+//                    if (commitmentsForDay[h][m] == 0 && dispatchesForDay[h] > 0) {
+//                        System.err.println("WARNING: " + getID() + " was not commited "
+//                                + "on day " + day + " hour " + h + ", but is has a "
+//                                + "dispatch value for " + dispatchesForDay[h]
+//                        );
+//                    } else if (!isCanary
+//                            && commitmentsForDay[h][m] == 1
+//                            && //FIXME: Negation logic to complicated
+//                            !Support.doubleIsDifferent(dispatchesForDay[h], 1e-6)) {//close to zero
+//                        //System.out.println(getID() + " committed but not dispatched at hour " + (h + 1));
+//                    }
+//                }
             }
         }
     }
@@ -854,7 +866,7 @@ public class GenAgent implements Drawable, JReLMAgent {
         return index;
     }
 
-    public Map<Integer, int[][]> getCommitmentDecisions() {
+    public Map<Integer, int[]> getCommitmentDecisions() {
         return commitmentByDay;
     }
 
@@ -1021,7 +1033,7 @@ public class GenAgent implements Drawable, JReLMAgent {
      * @param d
      * @return
      */
-    public int[][] getCommitmentsForDay(int d) {
+    public int[] getCommitmentsForDay(int d) {
         return commitmentByDay.get(d);
     }
 
@@ -1062,37 +1074,60 @@ public class GenAgent implements Drawable, JReLMAgent {
      *
      */
     public int getUnitOnT0State(int day) {
-        final int[][] commitmentsForDay = getCommitmentsForDay(day);
+        if(day ==1){
+            return UnitOnT0State;
+        }
+        final int[] commitmentsForDay = getCommitmentsForDay(day);
         // Don't know anything about the day. Assume it has been on
         // for 1 hour.
         if (commitmentsForDay == null) {
             return 1;
         }
-
+        
+         final int lastHourState = commitmentsForDay[commitmentsForDay.length - 1];
+        int numHourSame = 0;
         // Assumes last min state == last hour state
-        final int lastMinState = commitmentsForDay[commitmentsForDay.length - 1][commitmentsForDay[commitmentsForDay.length - 1].length - 1];
-        int numMinSame = 0;
+        //final int lastMinState = commitmentsForDay[commitmentsForDay.length - 1][commitmentsForDay[commitmentsForDay.length - 1].length - 1];
+        //int numMinSame = 0;
 
-        //count how many minutes were the same generator state (on or off)
-        for (int i = commitmentsForDay.length - 1; i >= 0; i--) {
-            for (int j = commitmentsForDay[i].length - 1; j >= 0; j--) {
-                if (commitmentsForDay[i][j] == lastMinState) {
-                    numMinSame++;
-                } else { //state changed, done counting.
-                    break;
-                }
+                //count how many hours were the same generator state (on or off)
+        for (int i=commitmentsForDay.length-1; i>=0; i--) {
+            if (commitmentsForDay[i] == lastHourState) {
+                numHourSame++;
+                //System.out.println("i: " + i + " numHourSame:" + numHourSame);
+            } else { //state changed, done counting.
+                break;
             }
         }
+        
+//        //count how many minutes were the same generator state (on or off)
+//        for (int i = commitmentsForDay.length - 1; i >= 0; i--) {
+//            for (int j = commitmentsForDay[i].length - 1; j >= 0; j--) {
+//                if (commitmentsForDay[i][j] == lastMinState) {
+//                    numMinSame++;
+//                } else { //state changed, done counting.
+//                    break;
+//                }
+//            }
+//        }
 
         //'guess' the genco will have the same state for its initial first
-        // hour. See method comment for reason.
-        numMinSame++;
+        // hour. See method comment for reason. 
+        // numHourSame++; // Modified:Swathi - commented it as the first hour has already been counted 
 
-        if (lastMinState == 1) { //Generator has been on.
-            return numMinSame;
+        if (lastHourState == 1) { //Generator has been on.
+            return numHourSame;
         } else { //invert the sign. Generator has been off.
-            return -numMinSame;
+            return -numHourSame;
         }
+        
+//        numMinSame++;
+//
+//        if (lastMinState == 1) { //Generator has been on.
+//            return numMinSame;
+//        } else { //invert the sign. Generator has been off.
+//            return -numMinSame;
+//        }
     }
 
     public int getUnitOnHour() {
@@ -1114,6 +1149,7 @@ public class GenAgent implements Drawable, JReLMAgent {
 
     public void setPowerT0(double p) {
         defaultT0pwer = p;
+        T0NextDayPower = p;
     }
 
     public double getPowerT0NextDay() {
@@ -1138,6 +1174,10 @@ public class GenAgent implements Drawable, JReLMAgent {
 
     public void setPowerPrevInterval(double p) {
         PrevIntervalPower = p;
+    }
+    
+    public void setUnitOnT0State(int n){
+       UnitOnT0State = n;
     }
 
     public int getMinUpTime() {
@@ -1210,7 +1250,7 @@ public class GenAgent implements Drawable, JReLMAgent {
 
     public void addExtraData(SCUCInputData sid) {
         setPowerT0(sid.getPowerT0());
-        //setUnitOn
+        setUnitOnT0State(sid.getUnitOnT0State());
         setMinUpTime(sid.getMinUpTime());
         setMinDownTime(sid.getMinDownTime());
         setNominalRampUpLim(sid.getNominalRampUp());
@@ -1284,7 +1324,7 @@ public class GenAgent implements Drawable, JReLMAgent {
      * @param d
      * @param commitment
      */
-    public void addCommitmentForDay(int d, int[][] commitment) {
+    public void addCommitmentForDay(int d, int[] commitment) {
         commitmentByDay.put(d, commitment);
     }
 

@@ -243,8 +243,9 @@ public class PSSTSCUC implements SCUC {
         this.GenDAMCommitmentStatusNextDay = new int[this.numHours][this.numGenAgents];
         this.GenDAMSchedule = new double[this.numHours][this.numGenAgents];
         for (int j = 0; j < this.numGenAgents; j++) {
-            //System.out.print("j: " + j + " ");
-            int[][] schedule = new int[this.numHours][this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M];
+            System.out.print("GenCo " + (j+1) + " ");
+            int[] schedule = new int[this.numHours];
+            //int[][] schedule = new int[this.numHours][this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M];
             int i = 0;
             String genCoMarker = raf.nextLine().trim();
             //System.out.println("genCoMarker: "+genCoMarker);
@@ -270,10 +271,12 @@ public class PSSTSCUC implements SCUC {
 //				for (int m = 0; m < values.length; m++)
 //                                    System.out.print(" m: "+ m + " "+ values[m]);
 //                                System.out.println("");
-                // Assigning 1's throughout the hour interval as of now
-                for (int k = 0; k < (this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M); k++) {
-                    schedule[i][k] = Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2));
-                }
+                System.out.print( " : "+ Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2)));
+                schedule[i] = Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2));
+//                for (int k = 0; k < (this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M); k++) {
+//                    schedule[i][k] = Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2));
+//                }
+                
                 //System.out.println("Double.parseDouble(values[1]): "+ Double.parseDouble(values[2]));
                 GenDAMSchedule[i][j] = Double.parseDouble(values[2]) * ames.getBaseS();
                 GenDAMCommitmentStatusNextDay[i][j] = Integer.parseInt(values[1]);
@@ -284,7 +287,7 @@ public class PSSTSCUC implements SCUC {
                 gc.setPowerT0NextDay(temp1);
                 gc.setUnitOnStateT0NextDay(temp2);
             }
-
+            System.out.println("");
             // reading the 25th hour gen sechule
 //            strTemp = raf.nextLine();
 //            String delims = "[ ]+";
