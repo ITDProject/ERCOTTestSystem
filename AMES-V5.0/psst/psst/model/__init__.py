@@ -129,6 +129,8 @@ def build_model(case,
 
     generator_bus_contribution_factor(model)
 
+    #print("previous_unit_commitment_df 1 :", previous_unit_commitment_df, flush=True)
+    
     if previous_unit_commitment_df is None:
         previous_unit_commitment = dict()
         for g in generator_df.index:
@@ -136,23 +138,34 @@ def build_model(case,
         previous_unit_commitment_df = pd.DataFrame(previous_unit_commitment)
         previous_unit_commitment_df.index = load_df.index
 
+    #print("previous_unit_commitment_df 2 :", previous_unit_commitment_df, flush=True)
+    
     diff = previous_unit_commitment_df.diff()
+    #print("diff?:", diff, flush=True)
 
     initial_state_dict = dict()
     for col in diff.columns:
         s = diff[col].dropna()
         diff_s = s[s!=0]
         if diff_s.empty:
+            ##print("Checking 1:", flush=True)
             check_row = previous_unit_commitment_df[col].head(1)
+            #print("check_row: ", check_row, flush=True)
         else:
+            ##print("Checking 2:", flush=True)
             check_row = diff_s.tail(1)
 
         if check_row.values == -1 or check_row.values == 0:
+            ##print("Checking 3:", flush=True)
             initial_state_dict[col] = -1 * (len(load_df) - int(check_row.index.values))
+            #print("initial_state_dict[col]: len(load_df): int(check_row.index.values): ", initial_state_dict[col], len(load_df), int(check_row.index.values), flush=True)
         else:
+            ##print("Checking 4:", flush=True)
             initial_state_dict[col] = len(load_df) - int(check_row.index.values)
 
     logger.debug("Initial State of generators is {}".format(initial_state_dict))
+    initial_state_dict = generator_df['UnitOnT0State'].to_dict()
+    print("Gen initial_state_dict:", initial_state_dict, flush=True)
 
     initial_state(model, initial_state=initial_state_dict)
 

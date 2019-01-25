@@ -159,6 +159,8 @@ def read_model(model_data):
             g, pg, status, min_g, max_g, min_up_time, min_down_time, ramp_up_rate, ramp_down_rate, startup_ramp_rate, shutdown_ramp_rate, coldstartcost, hotstartcost, shutdowncostcoefficient = l.split()
             c.gen.loc[g, 'PMAX'] = float(max_g.replace(',', '.'))  # Handle europe number format TODO: use better fix!
             c.gen.loc[g, 'PG'] = float(pg.replace(',', '.'))
+            c.gen.loc[g, 'UnitOnT0State'] = int(status.replace(',','.'))
+            click.echo("In psst - UnitOnT0State :" + str(c.gen.loc[g, 'UnitOnT0State']))
             c.gen.loc[g, 'PMIN'] = float(min_g.replace(',', '.'))
             c.gen.loc[g, 'MINIMUM_UP_TIME'] = int(min_up_time)
             c.gen.loc[g, 'MINIMUM_DOWN_TIME'] = int(min_down_time)

@@ -227,7 +227,7 @@ def compute_shutdown_costs_rule(m, g, t):
 def enforce_up_time_constraints_initial(m, g):
    if value(m.InitialTimePeriodsOnLine[g]) == 0:
       return Constraint.Skip
-   return sum((1 - m.UnitOn[g, t]) for t in m.TimePeriods if t <= value(m.InitialTimePeriodsOnLine[g])) == 0.0
+   return sum((1 - m.UnitOn[g, t]) for t in m.TimePeriods if (t+1) <= value(m.InitialTimePeriodsOnLine[g])) == 0.0 #Modified:Swathi - changed t to (t+1)
 
 
 # constraint for each time period after that not involving the initial condition.
@@ -258,7 +258,7 @@ def enforce_up_time_constraints_subsequent(m, g, t):
 def enforce_down_time_constraints_initial(m, g):
    if value(m.InitialTimePeriodsOffLine[g]) == 0:
       return Constraint.Skip
-   return sum(m.UnitOn[g, t] for t in m.TimePeriods if t <= value(m.InitialTimePeriodsOffLine[g])) == 0.0
+   return sum(m.UnitOn[g, t] for t in m.TimePeriods if (t+1) <= value(m.InitialTimePeriodsOffLine[g])) == 0.0
 
 
 # constraint for each time period after that not involving the initial condition.
