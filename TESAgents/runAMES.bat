@@ -1,6 +1,8 @@
 set fncslibdir=C:\tesp\src\java
-set ITDdir=C:\Users\rohit\Dropbox\ERCOT\ToUpload
-set ames3dir=%ITDdir%\AMES-V5.0\
+set ITDdir=C:\Users\swathi\Dropbox\AMESTrailVersion
+set AmesVersion=AMES-V5.0
+rem AMES-V5.0 AMES-v3.2
+set amesdir=%ITDdir%\%AmesVersion%\
 set apidir=%ITDdir%\TESAgents
 set logfilesdir=%apidir%\logfiles
 
@@ -15,7 +17,7 @@ set FNCS_LOG_LEVEL=DEBUG4
 set FNCS_TRACE=no
 set FNCS_CONFIG_FILE=%apidir%/ames.yaml
 
-start /b cmd /c java -jar -Djava.library.path=%fncslibdir% "%ames3dir%/dist/AMES-V5.0.jar"^ > %logfilesdir%/ames.log 2^>^&1
+start /b cmd /c java -jar -Djava.library.path=%fncslibdir% "%amesdir%/dist/%AmesVersion%.jar"^ > %logfilesdir%/ames.log 2^>^&1
 
 cd %apidir%
 
