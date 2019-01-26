@@ -6,29 +6,47 @@ import fncs
 import re
 import cmath
 
-def loadforecast_RP(loadforecast, h, d):
+FileName = 'NetLoadScenarioDatabyClusterMethod2Size8.json'
+
+def NetLoadScenarioDataJsonFormat(filename):
+	NLSE = 0
+	NDay = 0
+	f = open(filename,'r')
+	NetLoadScenarioData = json.load(f)
+	NLSE = len(NetLoadScenarioData)
+	NDay = [len(val) for key, val in NetLoadScenarioData[0].items()]
+	return NDay[0], NLSE, NetLoadScenarioData
+
+def loadforecast_RP(loadforecast, h, d, filename):
 	time = []
-	LSE2 = [200, 176.8,	161.47,	153.73,	146.13,	149.93,	153.73,	169.2, 207.6,	238.4,	246.13,	249.93,	246.13,	238.4,	234.6,	234.6, 249.93,	284.53,	269.2,	265.26,	261.47,	253.73,	234.6,	211.53]
-	LSE1 = [250.00,	222.93,	205.04,	196.02,	187.16,	191.59,	196.02,	214.07, 258.86,	294.8,	303.82,	308.25,	303.82,	294.8,	290.37,	290.37, 308.25,	348.62,	330.73,	326.14,	321.71,	312.69,	290.37,	263.46]
-	LSE3 = [287.50,	259.89,	244.06,	230.63,	224.44,	226.52,	240.97,	265.73, 291.54,	317.35,	338.00,	346.26,	345.24,	342.15,	342.15,	352.45, 360.72,	368.95,	376.15,	377.17,	363.78,	348.31,	332.17,	302.98]
+	NDay, NLSE, NetLoadScenarioData = NetLoadScenarioDataJsonFormat(filename)
+	ListLSENodes = []
 	loadforecastRTM = [[] for i in range(3)]
 	loadforecastDAM = []
 	unit = 1 #1000000000
-	if h == 23:
-		h1 = 0
-	else:
-		h1 = h +1
+	for ele in NetLoadScenarioData:
+		for k in ele:
+			ListLSENodes.append(k)
+	#print('ListLSENodes:', ListLSENodes)
+	h1 = 0 if h == 23 else h+1
+	d1 = 0 if d >= NDay else d
+	d2 = d if h == 23 else d-1
+	d2 = 0 if d2 >= NDay else d2
+	
+	print('h, d:', h, d)
 	#24 hour vector -> DAM
 	if(len(loadforecast) > 1):
+		#print('Im here 1')
 		x = (d* day_len)*unit + ((hour_len)/2)*unit - 1*unit
-		for j in range(24):
-			load.append((x,'loadforecastDAM_h'+str(j), float(loadforecast[j])*1)) # replace 1 with
+		for i in range(NLSE):
+			for j in range(24):
+				#load.append((x,'loadforecastDAM_h'+str(j), float(loadforecast[j])*1)) # replace 1 with
+				load.append((x,'loadforecastDAM_LSE' +str(i+1)+ '_H'+str(j), float(NetLoadScenarioData[i][ListLSENodes[i]][d1][j])))
 	else:
 		#RTM
 		y = (h* hour_len)*unit + (d)*(day_len)*unit + ((hour_len)/2)*unit - 1*unit #10*10*1000000000
-		load.append((y, 'loadforecastRTM_'+str(2), + float(LSE2[h1]+loadforecast[0])*1))
-		load.append((y, 'loadforecastRTM_'+str(1), float(LSE1[h1])))
-		load.append((y, 'loadforecastRTM_'+str(3), float(LSE3[h1])))
+		for i in range(NLSE):
+			load.append((y, 'loadforecastRTM_'+str(i+1), float(NetLoadScenarioData[i][ListLSENodes[i]][d2][h1])))
 	return None
 
 def get_number(value):
@@ -61,11 +79,11 @@ dloadvec = []
 flag = 0
 prev_day = 0
 while ts <= tmax:
-	print ('time step: ',ts, flush = True)
+	#print ('time step: ',ts, flush = True)
 	day = int(ts / day_len)# - ts % 2400 # day = 24*100s $ day_len = 2400s
 	hour = int((ts - (day * day_len)) / hour_len)
 	minute = (ts - (day * day_len) - hour * hour_len)/60
-	print ('day:', day, 'hour:', hour, 'minute:', minute, flush= True)
+	#print ('day:', day, 'hour:', hour, 'minute:', minute, flush= True)
 
 	#Receive avgsumrealpower:
 	events = fncs.get_events()
@@ -74,12 +92,12 @@ while ts <= tmax:
 		value = fncs.get_value(key).decode()
 
 		if title.startswith('AvgsumRealPower'):
-			print('avgsumrealpower:', value, flush=True)
+			#print('avgsumrealpower:', value, flush=True)
 			AvgsumRealPower_am[day][hour] = get_number(value)
-			print('AvgsumRealPower received: ', AvgsumRealPower_am[day][hour] , flush=True)
+			#print('AvgsumRealPower received: ', AvgsumRealPower_am[day][hour] , flush=True)
 
 		if title.startswith('distribution_load'):
-			print('distribution_load value received:', value, flush=True)
+			#print('distribution_load value received:', value, flush=True)
 			valuesplit = value.split(' ')
 			valuedecoded = valuesplit[0]
 			valuedecoded = valuedecoded.replace('i','j')
@@ -88,10 +106,10 @@ while ts <= tmax:
 			flag = 1
 			dload = valuecomplex.real
 			#dload = get_number(value)
-			print('distribution_load received:', dload, flush=True)
+			#print('distribution_load received:', dload, flush=True)
 
 		if title.startswith('distribution_energy'):
-			print('distribution_energy received:', value, flush=True)
+			#print('distribution_energy received:', value, flush=True)
 			valuesplit = value.split(' ')
 			denergy = float(valuesplit[0])
 
@@ -105,19 +123,19 @@ while ts <= tmax:
 		#print('Average distribution load:', AvgsumRealPower[day][prev_hour], flush=True)
 		AvgsumRealPower[prev_day][prev_hour] = float(denergy - denergy_prev)/1000000
 		denergy_prev = denergy
-		print('prev_day:', prev_day, 'prev_hour:', prev_hour, 'ADE:', AvgsumRealPower[prev_day][prev_hour], flush=True)
+		#print('prev_day:', prev_day, 'prev_hour:', prev_hour, 'ADE:', AvgsumRealPower[prev_day][prev_hour], flush=True)
 		if hour == 23:
-			print('hour:', hour, 'day:', day, 'loadforecast_RP ADE:', AvgsumRealPower[day][0], flush=True)
-			loadforecast_RP([AvgsumRealPower[day][0]], hour, day)
+			#print('hour:', hour, 'day:', day, 'loadforecast_RP ADE:', AvgsumRealPower[day][0], flush=True)
+			loadforecast_RP([AvgsumRealPower[day][0]], hour, day, FileName)
 		elif day>0:
-			print('hour:', hour, 'day:', day, 'loadforecast_RP ADE:', AvgsumRealPower[day-1][hour+1], flush=True)
-			loadforecast_RP([AvgsumRealPower[day-1][hour+1]], hour, day)
+			#print('hour:', hour, 'day:', day, 'loadforecast_RP ADE:', AvgsumRealPower[day-1][hour+1], flush=True)
+			loadforecast_RP([AvgsumRealPower[day-1][hour+1]], hour, day, FileName)
 
-	#if (day>0):
-	#	if (ts%((day)*(day_len))) == 0:
-	#		#print ('ts2: ',ts, flush = True)
-	#		#print ('AvgsumRealPower1: ',AvgsumRealPower, flush = True)
-	#		loadforecast_RP(AvgsumRealPower[day], hour, day)
+	if (day>0):
+		if (ts%((day)*(day_len))) == 0:
+			#print ('ts2: ',ts, flush = True)
+			#print ('AvgsumRealPower1: ',AvgsumRealPower, flush = True)
+			loadforecast_RP(AvgsumRealPower[day], hour, day, FileName)
 	#print ('ts3: ',ts, flush = True)
 	if(len(load)!=0):
 		#print ('ts3: ',ts, flush = True)
@@ -126,7 +144,7 @@ while ts <= tmax:
 			if(ts >= load[i][0]):
 				#print ('ts4: ',ts, flush = True)
 				if(ts == load[i][0]):
-					print('Publishing loadforecast to AMES: ', str(load[i][1]), load[i][2], flush = True)
+					print('Publishing loadforecast to AMES: ', str(load[i][0]), str(load[i][1]), load[i][2], flush = True)
 					fncs.publish(str(load[i][1]), load[i][2])
 			else:
 				break
@@ -137,7 +155,7 @@ while ts <= tmax:
 		timeSim = timeSim + deltaT
 		ts = fncs.time_request(timeSim + deltaT)
 
-	print('Day:', day, 'Hour:', hour, 'loadforecastEnergy:', AvgsumRealPower[day][prev_hour], 'loadforecastDload:', AvgsumRealPower_am[day][hour], flush=True)
+	#print('Day:', day, 'Hour:', hour, 'loadforecastEnergy:', AvgsumRealPower[day][prev_hour], 'loadforecastDload:', AvgsumRealPower_am[day][hour], flush=True)
 	prev_day = day
 	prev_hour = hour
 

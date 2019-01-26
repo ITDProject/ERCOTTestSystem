@@ -1,1 +1,9 @@
 #nanoseconds	topic	value
+84599000000000	loadforecast/loadforecastRTM_1	13222.77
+84599000000000	loadforecast/loadforecastRTM_2	14059.23
+84599000000000	loadforecast/loadforecastRTM_3	-229.28
+84599000000000	loadforecast/loadforecastRTM_4	1126.61
+84599000000000	loadforecast/loadforecastRTM_5	6654.52
+84599000000000	loadforecast/loadforecastRTM_6	369.21
+84599000000000	loadforecast/loadforecastRTM_7	4612.64
+84599000000000	loadforecast/loadforecastRTM_8	114.85
