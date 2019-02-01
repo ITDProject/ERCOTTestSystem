@@ -320,11 +320,15 @@ public class ISO {
         }
          */
         // temp fix
+        //double[] temp = new double[8];
+        //temp[0] = 15167.5; temp[1] = 14875.0; temp[2] = 331.6; temp[3] = 3634.4;
+        //temp[4] = 7603.6; temp[5] = 427.5; temp[6] = 5646.0; temp[7] = 113.8;
+        //System.out.println("Num LSEs: " + J);
         for (int j = 0; j < J; j++) {
             //System.out.println("Temp RealTime Load: ");
             //Hourly forecast is temparorily set uniformly into per minute forecast
             for (int k = 0; k < (ColSize); k++) {
-                hourlyLoadProfileByLSE[j][k] = 400;
+                hourlyLoadProfileByLSE[j][k] = 400; //temp[j];
                 //System.out.println("i:"+i);
             }
         }
