@@ -28,7 +28,7 @@ def cli():
 def scuc(data, output, solver):
     click.echo("Running SCUC using PSST TrailVersion")
 
-    click.echo("printing " + data + ":" + data.strip("'"))
+    click.echo("printing " + data + " : " + data.strip("'"))
     click.echo("printing output: " + output + " solver: " + solver)
     click.echo("SCUC Data is being read")
     c = read_model(data.strip("'"))
@@ -40,6 +40,7 @@ def scuc(data, output, solver):
     click.echo("Model is solved by "+solver)
     with open('./DAMLMP.dat', 'w') as outfile:
         outfile.write("DAMLMP\n")
+        click.echo("..." + str(model.results.lmp))            			
         for h, r in model.results.lmp.iterrows():
             bn = 1
             for _, lmp in r.iteritems():
@@ -90,6 +91,7 @@ def sced(uc, data, output, solver):
 
     with open(output.strip("'"), 'w') as f:
         f.write("LMP\n")
+        click.echo("..." + str(model.results.lmp))  
         for h, r in model.results.lmp.iterrows():
             bn = 1
             for _, lmp in r.iteritems():

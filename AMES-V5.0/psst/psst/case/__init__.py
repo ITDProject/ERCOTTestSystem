@@ -118,6 +118,7 @@ class PSSTCase(object):
         #click.echo(" mpc: "+ str(mpc.bus))
         mpc.name = matpower.find_name(string)
 
+        #click.echo(" mpc.gencost['NCOST']: "+ str(mpc.gencost))
         if auto_assign_names is True:
             #click.echo(" 1 checking: ")
             #click.echo(" mpc.bus_name: "+ str(mpc.bus_name))
@@ -130,6 +131,7 @@ class PSSTCase(object):
             #click.echo(" mpc.bus_name: "+ str(mpc.gen_name))
             #click.echo(" mpc.bus_name: "+ str(mpc.branch_name))
 
+        #click.echo(" mpc.gencost['NCOST']: "+ str(mpc.gencost))
         if fill_loads is True:
             for i, row in mpc.bus.iterrows():
                 mpc.load.loc[:, i] = row['PD']
@@ -142,8 +144,9 @@ class PSSTCase(object):
         mpc.gen['SHUTDOWN_RAMP'] = mpc.gen['PMAX']
         mpc.gen['MINIMUM_UP_TIME'] = 0
         mpc.gen['MINIMUM_DOWN_TIME'] = 0
+        click.echo(" mpc.gencost['NCOST']: "+ str(mpc.gencost))
         try:
-            mpc.gencost.loc[mpc.gencost['COST_2'] == 0, 'NCOST'] = 2
+            mpc.gencost.loc[mpc.gencost['COST_2'] == 0, 'NCOST'] = 2  # Check if it is needed? - Swathi 
         except KeyError as e:
             logger.warning(e)
 
@@ -152,6 +155,7 @@ class PSSTCase(object):
         if reset_generator_status:
             mpc.gen_status.loc[:, :] = pd.np.nan
 
+        click.echo(" mpc.gencost['NCOST']: "+ str(mpc.gencost))
         #click.echo("End _read_matpower: ")
         return mpc
 

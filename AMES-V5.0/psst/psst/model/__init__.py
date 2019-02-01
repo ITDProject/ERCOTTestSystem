@@ -46,7 +46,7 @@ def build_model(case,
     if base_MVA is None:
         base_MVA = case.baseMVA
 
-    #click.echo("In psst model _init_.py build_model")
+    click.echo("In psst model:folder _init_.py build_model method")
     # Configuration
     if config is None:
         config = dict()
@@ -189,10 +189,11 @@ def build_model(case,
             #click.echo("2 printing points: " + str(points[i]))
             values[i] = g['COST_0'] + g['COST_1'] * points[i]
         if g['NCOST'] == 3:
+            #click.echo("printing segments: " + str(segments))
             points[i] = pd.np.linspace(g['PMIN'], g['PMAX'], num=segments)
             values[i] = g['COST_0'] + g['COST_1'] * points[i] + g['COST_2'] * points[i] ** 2
 
-    #click.echo("3 printing points: " + str(points))
+    click.echo("3 printing points: " + str(points))
     #click.echo("printing values: " + str(values))
 	
     for k, v in points.items():

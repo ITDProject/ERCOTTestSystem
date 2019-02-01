@@ -111,6 +111,7 @@ def find_buses(data):
 
 def read_model(model_data):
 
+    click.echo("In psst utils.py read_model method")
     with open(model_data) as f:
         data = f.read()
         #click.echo("printing data:" + data)
@@ -120,7 +121,7 @@ def read_model(model_data):
     #click.echo("printing file path: " + os.path.join(current_directory, '../cases/case.m'))
     #click.echo("printing c: " + str(c))
 
-    #click.echo("1 printing c.gencost: " + str(c.gencost))
+    click.echo("1 printing c.gencost: " + str(c.gencost))
     ag = find_generators(data)
     for g in ag:
         c.gen.loc[g] = c.gen.loc['GenCo0']
@@ -160,7 +161,7 @@ def read_model(model_data):
             c.gen.loc[g, 'PMAX'] = float(max_g.replace(',', '.'))  # Handle europe number format TODO: use better fix!
             c.gen.loc[g, 'PG'] = float(pg.replace(',', '.'))
             c.gen.loc[g, 'UnitOnT0State'] = int(status.replace(',','.'))
-            click.echo("In psst - UnitOnT0State :" + str(c.gen.loc[g, 'UnitOnT0State']))
+            #click.echo("In psst - UnitOnT0State :" + str(c.gen.loc[g, 'UnitOnT0State']))
             c.gen.loc[g, 'PMIN'] = float(min_g.replace(',', '.'))
             c.gen.loc[g, 'MINIMUM_UP_TIME'] = int(min_up_time)
             c.gen.loc[g, 'MINIMUM_DOWN_TIME'] = int(min_down_time)
@@ -172,7 +173,7 @@ def read_model(model_data):
             c.gen.loc[g, 'SHUTDOWN_RAMP'] = float(max_g.replace(',', '.')) if shutdown_ramp == 0 else shutdown_ramp
             cold_start_cost = float(coldstartcost.replace(',', '.'))
             c.gencost.loc[g, "STARTUP_COLD"] = float(max_g.replace(',', '.')) if cold_start_cost == 0 else cold_start_cost
-            #click.echo("In read_model - printing STARTUP or cold_start_cost:" + str(c.gen.loc[g, 'STARTUP']) + str(cold_start_cost))
+            #click.echo("Reading model data - printing STARTUP or cold_start_cost:" + str(c.gen.loc[g, 'STARTUP']) + str(cold_start_cost))
             hot_start_cost = float(hotstartcost.replace(',', '.'))
             c.gencost.loc[g, "STARTUP_HOT"] = float(max_g.replace(',', '.')) if hot_start_cost == 0 else hot_start_cost
             shutdown_costcoefficient = float(shutdowncostcoefficient.replace(',', '.'))
@@ -249,7 +250,8 @@ def read_model(model_data):
             c.gencost.loc[g, "COST_2"] = float(a2.replace(',', '.'))
             c.gencost.loc[g, "COST_1"] = float(a1.replace(',', '.'))
             c.gencost.loc[g, "COST_0"] = float(a0.replace(',', '.'))
-            c.gencost.loc[g, "N_COST"] = 3
+            c.gencost.loc[g, "N_COST"] = 3 # Does DK intend to keep NCOST instead of N_COST?
+            c.gencost.loc[g, "NCOST"] = 3 # Added NCOST to 3 - Swathi
 
     #click.echo("printing c.gencost.loc: " + str(c.gencost.loc))
     #click.echo("printing c.gencost: " + str(c.gencost))
