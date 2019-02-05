@@ -46,7 +46,7 @@ def build_model(case,
     if base_MVA is None:
         base_MVA = case.baseMVA
 
-    click.echo("In psst model:folder _init_.py build_model method")
+    #click.echo("In psst model:folder _init_.py build_model method")
     # Configuration
     if config is None:
         config = dict()
@@ -165,7 +165,7 @@ def build_model(case,
 
     logger.debug("Initial State of generators is {}".format(initial_state_dict))
     initial_state_dict = generator_df['UnitOnT0State'].to_dict()
-    print("Gen initial_state_dict:", initial_state_dict, flush=True)
+    #print("Gen initial_state_dict:", initial_state_dict, flush=True)
 
     initial_state(model, initial_state=initial_state_dict)
 
@@ -193,7 +193,7 @@ def build_model(case,
             points[i] = pd.np.linspace(g['PMIN'], g['PMAX'], num=segments)
             values[i] = g['COST_0'] + g['COST_1'] * points[i] + g['COST_2'] * points[i] ** 2
 
-    click.echo("3 printing points: " + str(points))
+    #click.echo("3 printing points: " + str(points))
     #click.echo("printing values: " + str(values))
 	
     for k, v in points.items():

@@ -38,9 +38,10 @@ def scuc(data, output, solver):
     click.echo("Model is built")
     model.solve(solver=solver)
     click.echo("Model is solved by "+solver)
+    click.echo("Model results ")
+    click.echo(" : "+ str(model.results.lmp))
     with open('./DAMLMP.dat', 'w') as outfile:
-        outfile.write("DAMLMP\n")
-        click.echo("..." + str(model.results.lmp))            			
+        outfile.write("DAMLMP\n")        			
         for h, r in model.results.lmp.iterrows():
             bn = 1
             for _, lmp in r.iteritems():
@@ -72,7 +73,7 @@ def scuc(data, output, solver):
 @click.option('--solver', default=SOLVER, help='Solver')
 def sced(uc, data, output, solver):
 
-    click.echo("check1...Running SCED using PSST")
+    click.echo("Running SCED using PSST")
 
     #click.echo("printing " + data + ":" + data.strip("'"))
     #click.echo("printing output:" + output + " solver:" + solver + " uc:" + uc)
@@ -91,7 +92,7 @@ def sced(uc, data, output, solver):
 
     with open(output.strip("'"), 'w') as f:
         f.write("LMP\n")
-        click.echo("..." + str(model.results.lmp))  
+        #click.echo("..." + str(model.results.lmp))  
         for h, r in model.results.lmp.iterrows():
             bn = 1
             for _, lmp in r.iteritems():

@@ -111,7 +111,7 @@ def find_buses(data):
 
 def read_model(model_data):
 
-    click.echo("In psst utils.py read_model method")
+    #click.echo("In psst utils.py read_model method")
     with open(model_data) as f:
         data = f.read()
         #click.echo("printing data:" + data)
@@ -121,7 +121,8 @@ def read_model(model_data):
     #click.echo("printing file path: " + os.path.join(current_directory, '../cases/case.m'))
     #click.echo("printing c: " + str(c))
 
-    click.echo("1 printing c.gencost: " + str(c.gencost))
+    
+	#click.echo("1 printing c.gencost: " + str(c.gencost))
     ag = find_generators(data)
     for g in ag:
         c.gen.loc[g] = c.gen.loc['GenCo0']
