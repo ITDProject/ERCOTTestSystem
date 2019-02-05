@@ -575,8 +575,8 @@ public class PSSTSCED implements SCED {
 				} catch(NumberFormatException nfe){
 					throw new BadDataFileFormatException(nfe);
 				}
-
-				PSSTSCED.this.voltageAngles[hour][busNum] = voltageAngle;
+                                //System.out.println("busNum: "+ busNum);
+				PSSTSCED.this.voltageAngles[hour][busNum-1] = voltageAngle; // changed busNum to (busNum-1)
 			}while(true);
 		}
 
