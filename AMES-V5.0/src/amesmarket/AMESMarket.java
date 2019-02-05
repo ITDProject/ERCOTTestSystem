@@ -701,10 +701,10 @@ public class AMESMarket extends SimModelImpl {
                 //}
 
                 //System.out.println("time_granted: " + time_granted);
-
+                int NumNodes  = (int) nodeData[0][0];
                 if (hour == (17) && min == 0) { // earlier 17-1
                     JNIfncs.publish("DailyLMP", getStrings(iso.getDailyLMP(), 2)); //node 3
-                    for(int iter = 0; iter < 8; iter++){
+                    for(int iter = 0; iter < NumNodes; iter++){
                     System.out.println("DAM LMP published values: " + getStrings(iso.getDailyLMP(), iter));
                     }
                 }
