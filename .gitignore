@@ -3,3 +3,6 @@
 
 # Log file
 *.log
+
+# out file
+*.out

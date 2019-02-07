@@ -1,47 +1,73 @@
 LMP
-1 : 1 : 1100.0
-2 : 1 : 1100.0
-3 : 1 : 1100.0
-4 : 1 : 1100.0
-5 : 1 : 1100.0
-6 : 1 : 1100.0
-7 : 1 : 1100.0
-8 : 1 : 1100.0
-1 : 2 : 1100.0
-2 : 2 : 1100.0
-3 : 2 : 1100.0
-4 : 2 : 1100.0
-5 : 2 : 1100.0
-6 : 2 : 1100.0
-7 : 2 : 1100.0
-8 : 2 : 1100.0
-1 : 3 : 1100.0
-2 : 3 : 1100.0
-3 : 3 : 1100.0
-4 : 3 : 1100.0
-5 : 3 : 1100.0
-6 : 3 : 1100.0
-7 : 3 : 1100.0
-8 : 3 : 1100.0
-1 : 4 : 1100.0
-2 : 4 : 1100.0
-3 : 4 : 1100.0
-4 : 4 : 1100.0
-5 : 4 : 1100.0
-6 : 4 : 1100.0
-7 : 4 : 1100.0
-8 : 4 : 1100.0
-1 : 5 : 1100.0
-2 : 5 : 1100.0
-3 : 5 : 1100.0
-4 : 5 : 1100.0
-5 : 5 : 1100.0
-6 : 5 : 1100.0
-7 : 5 : 1100.0
-8 : 5 : 1100.0
+1 : 1 : 1200.0
+2 : 1 : 1200.0
+3 : 1 : 1200.0
+4 : 1 : 1200.0
+5 : 1 : 1200.0
+6 : 1 : 1200.0
+7 : 1 : 1200.0
+8 : 1 : 1200.0
+1 : 2 : 1200.0
+2 : 2 : 1200.0
+3 : 2 : 1200.0
+4 : 2 : 1200.0
+5 : 2 : 1200.0
+6 : 2 : 1200.0
+7 : 2 : 1200.0
+8 : 2 : 1200.0
+1 : 3 : 1200.0
+2 : 3 : 1200.0
+3 : 3 : 1200.0
+4 : 3 : 1200.0
+5 : 3 : 1200.0
+6 : 3 : 1200.0
+7 : 3 : 1200.0
+8 : 3 : 1200.0
+1 : 4 : 1200.0
+2 : 4 : 1200.0
+3 : 4 : 1200.0
+4 : 4 : 1200.0
+5 : 4 : 1200.0
+6 : 4 : 1200.0
+7 : 4 : 1200.0
+8 : 4 : 1200.0
+1 : 5 : 1200.0
+2 : 5 : 1200.0
+3 : 5 : 1200.0
+4 : 5 : 1200.0
+5 : 5 : 1200.0
+6 : 5 : 1200.0
+7 : 5 : 1200.0
+8 : 5 : 1200.0
 END_LMP
 GenCoResults
-GenCo5  
+GenCo2  
+Hour: 1
+	PowerGenerated: 10.0
+	ProductionCost: 11000.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 2
+	PowerGenerated: 10.0
+	ProductionCost: 11000.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 3
+	PowerGenerated: 10.0
+	ProductionCost: 11000.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 4
+	PowerGenerated: 10.0
+	ProductionCost: 11000.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 5
+	PowerGenerated: 10.0
+	ProductionCost: 11000.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+GenCo7  
 Hour: 1
 	PowerGenerated: 0.0
 	ProductionCost: 0.0
@@ -67,7 +93,7 @@ Hour: 5
 	ProductionCost: 0.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
-GenCo7  
+GenCo5  
 Hour: 1
 	PowerGenerated: 0.0
 	ProductionCost: 0.0
@@ -119,82 +145,56 @@ Hour: 5
 	ProductionCost: 0.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
-GenCo8  
+GenCo9  
 Hour: 1
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 2
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 3
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 4
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 5
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
-GenCo3  
+GenCo1  
 Hour: 1
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 2
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 3
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 4
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 5
-	PowerGenerated: 0.0
-	ProductionCost: 0.0
-	StartupCost: 0.0
-	ShutdownCost: 0.0
-GenCo2  
-Hour: 1
-	PowerGenerated: 6.0
-	ProductionCost: 5610.0
-	StartupCost: 0.0
-	ShutdownCost: 0.0
-Hour: 2
-	PowerGenerated: 6.0
-	ProductionCost: 5610.0
-	StartupCost: 0.0
-	ShutdownCost: 0.0
-Hour: 3
-	PowerGenerated: 6.0
-	ProductionCost: 5610.0
-	StartupCost: 0.0
-	ShutdownCost: 0.0
-Hour: 4
-	PowerGenerated: 6.0
-	ProductionCost: 5610.0
-	StartupCost: 0.0
-	ShutdownCost: 0.0
-Hour: 5
-	PowerGenerated: 6.0
-	ProductionCost: 5610.0
+	PowerGenerated: 10.0
+	ProductionCost: 10000.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 GenCo6  
@@ -223,30 +223,56 @@ Hour: 5
 	ProductionCost: 0.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
-GenCo1  
+GenCo3  
 Hour: 1
-	PowerGenerated: 10.0
-	ProductionCost: 9000.0
+	PowerGenerated: 2.0
+	ProductionCost: 2400.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 2
-	PowerGenerated: 10.0
-	ProductionCost: 9000.0
+	PowerGenerated: 2.0
+	ProductionCost: 2400.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 3
-	PowerGenerated: 10.0
-	ProductionCost: 9000.0
+	PowerGenerated: 2.0
+	ProductionCost: 2400.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 4
-	PowerGenerated: 10.0
-	ProductionCost: 9000.0
+	PowerGenerated: 2.0
+	ProductionCost: 2400.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 Hour: 5
-	PowerGenerated: 10.0
-	ProductionCost: 9000.0
+	PowerGenerated: 2.0
+	ProductionCost: 2400.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+GenCo8  
+Hour: 1
+	PowerGenerated: 0.0
+	ProductionCost: 0.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 2
+	PowerGenerated: 0.0
+	ProductionCost: 0.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 3
+	PowerGenerated: 0.0
+	ProductionCost: 0.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 4
+	PowerGenerated: 0.0
+	ProductionCost: 0.0
+	StartupCost: 0.0
+	ShutdownCost: 0.0
+Hour: 5
+	PowerGenerated: 0.0
+	ProductionCost: 0.0
 	StartupCost: 0.0
 	ShutdownCost: 0.0
 END_GenCoResults
@@ -256,41 +282,41 @@ Bus1 2 : 0.0
 Bus1 3 : 0.0
 Bus1 4 : 0.0
 Bus1 5 : 0.0
-Bus2 1 : -0.008
-Bus2 2 : -0.008
-Bus2 3 : -0.008
-Bus2 4 : -0.008
-Bus2 5 : -0.008
-Bus3 1 : -0.011148936
-Bus3 2 : -0.011148936
-Bus3 3 : -0.011148936
-Bus3 4 : -0.011148936
-Bus3 5 : -0.011148936
-Bus4 1 : -0.012297872
-Bus4 2 : -0.012297872
-Bus4 3 : -0.012297872
-Bus4 4 : -0.012297872
-Bus4 5 : -0.012297872
-Bus5 1 : -0.012553191
-Bus5 2 : -0.012553191
-Bus5 3 : -0.012553191
-Bus5 4 : -0.012553191
-Bus5 5 : -0.012553191
-Bus6 1 : -0.013758865
-Bus6 2 : -0.013758865
-Bus6 3 : -0.013758865
-Bus6 4 : -0.013758865
-Bus6 5 : -0.013758865
-Bus7 1 : -0.014156028
-Bus7 2 : -0.014156028
-Bus7 3 : -0.014156028
-Bus7 4 : -0.014156028
-Bus7 5 : -0.014156028
-Bus8 1 : -0.014028369
-Bus8 2 : -0.014028369
-Bus8 3 : -0.014028369
-Bus8 4 : -0.014028369
-Bus8 5 : -0.014028369
+Bus2 1 : -0.016
+Bus2 2 : -0.016
+Bus2 3 : -0.016
+Bus2 4 : -0.016
+Bus2 5 : -0.016
+Bus3 1 : -0.02106383
+Bus3 2 : -0.02106383
+Bus3 3 : -0.02106383
+Bus3 4 : -0.02106383
+Bus3 5 : -0.02106383
+Bus4 1 : -0.02412766
+Bus4 2 : -0.02412766
+Bus4 3 : -0.02412766
+Bus4 4 : -0.02412766
+Bus4 5 : -0.02412766
+Bus5 1 : -0.024808511
+Bus5 2 : -0.024808511
+Bus5 3 : -0.024808511
+Bus5 4 : -0.024808511
+Bus5 5 : -0.024808511
+Bus6 1 : -0.027134752
+Bus6 2 : -0.027134752
+Bus6 3 : -0.027134752
+Bus6 4 : -0.027134752
+Bus6 5 : -0.027134752
+Bus7 1 : -0.027971631
+Bus7 2 : -0.027971631
+Bus7 3 : -0.027971631
+Bus7 4 : -0.027971631
+Bus7 5 : -0.027971631
+Bus8 1 : -0.027631206
+Bus8 2 : -0.027631206
+Bus8 3 : -0.027631206
+Bus8 4 : -0.027631206
+Bus8 5 : -0.027631206
 END_VOLTAGE_ANGLES
 DAILY_BRANCH_LMP
 END_DAILY_BRANCH_LMP
