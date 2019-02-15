@@ -11,9 +11,11 @@ import numpy as np
 
 np.seterr(all='raise')
 
-SOLVER = os.getenv('PSST_SOLVER', 'gurobi')  # cbc by default
+SOLVER = os.getenv('PSST_SOLVER', 'cplex')
 #click.echo("Printing PSST_SOLVER:"+SOLVER)
 print("Printing PSST_SOLVER:"+SOLVER)
+
+NL = 4
 
 @click.group()
 @click.version_option('0.1.0', '--version')
@@ -34,8 +36,33 @@ def scuc(data, output, solver):
     c = read_model(data.strip("'"))
     click.echo("SCUC Data is read")
     ##click.echo("printing c:" + c)
-    model = build_model(c)
+    config = {"segments":(NL+1), 'reserve_factor':0}
+    model = build_model(c,config=config)
     click.echo("Model is built")
+    model.solve(solver=solver)
+    click.echo("Model is solved by "+solver)
+    click.echo("Model results ")
+    click.echo(" : "+ str(model.results.lmp))
+    
+    uc = "temp.dat"
+    with open(uc, 'w') as outfile:
+        instance = model._model
+        results = {}
+        resultsPowerGen = {}
+        for g in instance.Generators.value:
+            for t in instance.TimePeriods:
+                results[(g, t)] = instance.UnitOn[g, t]
+                resultsPowerGen[(g, t)] = instance.PowerGenerated[g, t]
+
+        for g in sorted(instance.Generators.value):
+            outfile.write("%s\n" % str(g).ljust(8))
+            for t in sorted(instance.TimePeriods):
+                outfile.write("% 1d \n" % (int(results[(g, t)].value + 0.5)))
+
+    uc_df = pd.DataFrame(read_unit_commitment(uc.strip("'")))
+    c.gen_status = uc_df.astype(int)
+    config = {"segments":(NL+1), 'reserve_factor':0}
+    model = build_model(c,config=config)
     model.solve(solver=solver)
     click.echo("Model is solved by "+solver)
     click.echo("Model results ")
@@ -85,7 +112,8 @@ def sced(uc, data, output, solver):
     #click.echo("SCED Data is read")
     c.gen_status = uc_df.astype(int)
 
-    model = build_model(c)
+    config = {"segments":(NL+1), 'reserve_factor':0}
+    model = build_model(c,config=config)
     model.solve(solver=solver)
     #click.echo("SCED Model is solved by "+solver)
     Interval = 1

@@ -47,18 +47,26 @@ def build_model(case,
         base_MVA = case.baseMVA
 
     #click.echo("In psst model:folder _init_.py build_model method")
+    #click.echo("args: " + str(generator_df) + str(load_df) + str(branch_df) + str(bus_df) + str(previous_unit_commitment_df) + str(base_MVA) + str(base_KV) + str(config))
     # Configuration
     if config is None:
         config = dict()
 
+    click.echo("segments 1: "+ str(config))
     # Get configuration parameters from dictionary
     use_ptdf = config.pop('use_ptdf', False)
     segments = config.pop('segments', 2)
+    reserve_factor = config.pop('reserve_factor', 0)
+    click.echo("segments 2: "+ str(segments))
+    click.echo("reserve_factor 1: "+ str(reserve_factor))
     try:
         reserve_factor = case.reserve_factor
+        click.echo("Try: ")
     except AttributeError:
         reserve_factor = config.pop('reserve_factor', 0)
+        click.echo("Except: ")
 
+    #click.echo("reserve_factor 2: "+ str(reserve_factor))
     # Get case data
     #click.echo("case.gen: "+ str(case.gen))
     #click.echo("case.gencost: "+ str(case.gencost))
@@ -189,7 +197,7 @@ def build_model(case,
             #click.echo("2 printing points: " + str(points[i]))
             values[i] = g['COST_0'] + g['COST_1'] * points[i]
         if g['NCOST'] == 3:
-            #click.echo("printing segments: " + str(segments))
+            click.echo("printing segments: " + str(segments))
             points[i] = pd.np.linspace(g['PMIN'], g['PMAX'], num=segments)
             values[i] = g['COST_0'] + g['COST_1'] * points[i] + g['COST_2'] * points[i] ** 2
 

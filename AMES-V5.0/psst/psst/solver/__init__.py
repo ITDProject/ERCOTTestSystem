@@ -19,7 +19,7 @@ def solve_model(model, solver='glpk', solver_io=None, keepfiles=True, verbose=Tr
     model.preprocess()
     if is_mip:
         solver.options['mipgap'] = mipgap
-    solver.options['seconds'] = 30 # Maximum Time Limit
+    #solver.options['seconds'] = 10 # Maximum Time Limit
     #solver.options['solution'] = 'qwerty.txt'   #NA
 
     with warnings.catch_warnings():
