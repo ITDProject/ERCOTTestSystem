@@ -50,11 +50,11 @@ public class CaseFileReader {
     //TOKENS
     private static final String BASE_S = "BASE_S";
     private static final String BASE_V = "BASE_V";
-    private static final String MAX_DAY = "Max_Day";
-    private static final String RANDOM_SEED = "Random_Seed";
+    private static final String MAX_DAY = "MaxDay";
+    private static final String RANDOM_SEED = "RandomSeed";
     private static final String CAP_MARGIN = "Capacity_Margin";
     private static final String LOAD_CASE_CONTROL = "Load_Case_Control_File";
-    private static final String THRESH_PROB = "Threshold_Probability";
+    private static final String THRESH_PROB = "ThresholdProbability";
     private static final String SCUC_TYPE = "SCUC_Type";
     private static final String SCUC_DET = "Deterministic";
     private static final String SCUC_STOC = "Stochastic";

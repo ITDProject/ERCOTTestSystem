@@ -1617,9 +1617,9 @@ public class AMESFrame  extends JFrame{
           caseBufferWriter.write("BASE_V	10\n\n");
 
           caseBufferWriter.write("// Simulation Parameters\n");
-          caseBufferWriter.write("Max_Day	"+iMaxDay+"\n");
-          caseBufferWriter.write("Random_Seed	"+RandomSeed+"\n");
-          caseBufferWriter.write("Threshold_Probability     "+dThresholdProbability+"\n");
+          caseBufferWriter.write("MaxDay	"+iMaxDay+"\n");
+          caseBufferWriter.write("RandomSeed	"+RandomSeed+"\n");
+          caseBufferWriter.write("ThresholdProbability     "+dThresholdProbability+"\n");
                     
           caseBufferWriter.write("#NodeDataStart\n");
           strTemp=String.format("//%1$8s\t%2$15s\n", "NN", "PenaltyWeight");

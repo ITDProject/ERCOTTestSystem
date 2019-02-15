@@ -73,7 +73,7 @@ public class RTMarket {
     //TODO-X : Parameterize file paths. Probably should be accessible
     //from the AMESMarket instance.
     private final File scedOutFile = new File("RTSCED.dat");
-    private final File rtRefModelFile = new File("SCUCresources/ScenarioData/RTRefernceModel.dat");// new File("SCUCresources/ScenarioData/RTRefernceModel.dat");
+    private final File rtRefModelFile = new File("SCUCresources/ScenarioData/RTReferenceModel.dat");// new File("SCUCresources/ScenarioData/RTRefernceModel.dat");
     private final File unitCommitmentFile = new File("rt-unitcommitments.dat");
 
     // constructor

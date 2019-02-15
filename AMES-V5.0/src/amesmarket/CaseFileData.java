@@ -162,7 +162,7 @@ public class CaseFileData {
         dLearningCheckDifference = 0.001;
         iDailyNetEarningStartDay = 1;
         iDailyNetEarningDayLength = 5;
-        reserveRequirements = 1000;
+        reserveRequirements = 1000; //TODOCheck:Swathi
         hasStorage = 0;
         hasNDG = 0;
 
