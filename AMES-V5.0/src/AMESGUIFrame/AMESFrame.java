@@ -682,9 +682,46 @@ public class AMESFrame  extends JFrame{
         }
     }
 
-  private void loadBatchModeFileData(File randomSeedsFile) {
-     bMultiRandomSeeds=false;
-     bMultiCases=false;
+    
+    private void loadCaseItemActionPerformed(String filename) {
+        bLoadCase = false;
+        bCaseResult = false;
+
+        caseFile = new File(filename);
+        caseFileDirectory = caseFile.getParentFile();
+        
+        if (caseFile.isFile()) {
+            bOpen = true;
+
+            loadCaseFileData();
+            System.out.println("Load user selected case data file:" + caseFile.getName());
+
+            config1.SetInitParameters(iNodeData, iBranchData, 0, iGenData, iLSEData, baseV, baseS);
+            config2.loadData(branchData);
+            config4.loadData(genData);
+            config5.loadData(lseData, lsePriceSensitiveDemand, lseHybridDemand);
+
+            learnOption1.loadData(genData, genLearningData);
+            simulationControl.SetInitParameters(iMaxDay, bMaximumDay, dThresholdProbability, bThreshold, dDailyNetEarningThreshold, bDailyNetEarningThreshold, iDailyNetEarningStartDay, iDailyNetEarningDayLength, iStartDay, iCheckDayLength, dActionProbability, bActionProbabilityCheck, //
+                    iLearningCheckStartDay, iLearningCheckDayLength, dLearningCheckDifference, bLearningCheck, dGenPriceCap, dLSEPriceCap, RandomSeed, priceSensitiveLSE, hostName, databaseName, userName, password, iLSEData);
+
+            // Verify Data
+            String strError = checkCaseData();
+            if (!strError.isEmpty()) {
+                System.out.println("Case Data Verify Message:\n" + strError);
+                return;
+            }
+
+            setbLoadCase(true);
+            setbCaseResult(false);
+
+            InitializeAMESMarket();
+        }
+    }
+
+    private void loadBatchModeFileData(File randomSeedsFile) {
+      bMultiRandomSeeds=false;
+      bMultiCases=false;
      
       try {
           FileReader       batchModeFileReader = new FileReader(randomSeedsFile);
@@ -4911,6 +4948,9 @@ public class CheckCalculationEndRunnable implements Runnable {
 
                     bCaseResult=true;
                     saveOutputData();
+                    if (noGUI) {
+                      exitItemActionPerformed(null);
+                    }
                     
                     enableViewMenu();
                 }
@@ -5550,33 +5590,45 @@ public long GetRandomSeed(){
     menuBar.add(helpMenu);
    }
 
-private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
- 
-    About about=new About();
-    
-    Toolkit theKit = about.getToolkit(); 
-    Dimension wndSize = theKit.getScreenSize();       
+  private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
+   
+      About about=new About();
+      
+      Toolkit theKit = about.getToolkit(); 
+      Dimension wndSize = theKit.getScreenSize();       
 
-    Rectangle configBounds=about.getBounds();
+      Rectangle configBounds=about.getBounds();
 
-    about.setLocation( (wndSize.width-configBounds.width)/2, (wndSize.height-configBounds.height)/2);
-    about.setVisible(true);
-}
+      about.setLocation( (wndSize.width-configBounds.width)/2, (wndSize.height-configBounds.height)/2);
+      about.setVisible(true);
+  }
  
     public static void main(String[] args) {
-	fncs.JNIfncs.initialize();
-	assert JNIfncs.is_initialized();
-	System.out.println("AMESFrame main");
-    mainFrameWindow = new AMESFrame( );        
+      fncs.JNIfncs.initialize();
+      assert JNIfncs.is_initialized();
+      System.out.println("AMESFrame main");
+      mainFrameWindow = new AMESFrame( );        
     
-    Toolkit theKit = mainFrameWindow.getToolkit();       
-    Dimension wndSize = theKit.getScreenSize(); 
+      Toolkit theKit = mainFrameWindow.getToolkit();       
+      Dimension wndSize = theKit.getScreenSize(); 
 
-    // Set the position to screen center & size to half screen size
-    mainFrameWindow.setBounds(wndSize.width/6, wndSize.height/6,       
+      // Set the position to screen center & size to half screen size
+      mainFrameWindow.setBounds(wndSize.width/6, wndSize.height/6,       
                       wndSize.width*2/3, wndSize.height*2/3);     
     
-    mainFrameWindow.setVisible(true);
+      if (args.length > 0) {
+          mainFrameWindow.noGUI = true;
+          for (String arg : args) {
+              System.out.println(arg);
+              mainFrameWindow.loadCaseItemActionPerformed(arg);
+              if (!mainFrameWindow.bLoadCase) {
+                 mainFrameWindow.exitItemActionPerformed(null);
+              }
+              mainFrameWindow.startItemActionPerformed(null);
+          }
+      } else {
+          mainFrameWindow.setVisible(true);
+      }
     }
 
      public void addBranchNumber( ) {
@@ -5755,6 +5807,7 @@ private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
   public   LearnOption1 learnOption1;
   public   SimulationControl simulationControl;
   
+  private boolean noGUI = false;
   private File outputFile;
   private File batchFile;
   
