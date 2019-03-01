@@ -693,9 +693,14 @@ public class AMESFrame  extends JFrame{
         if (caseFile.isFile()) {
             bOpen = true;
 
-            loadCaseFileData();
-            System.out.println("Load user selected case data file:" + caseFile.getName());
+//            loadCaseFileData();
+            CaseFileReader cfr = new CaseFileReader();
+            CaseFileData config = cfr.loadCaseFileData(this.caseFile);
 
+            this.setupSimFromConfigFile(config);            
+            System.out.println("Load user selected case data file:" + caseFile.getName());
+            this.SetDefaultSimulationParameters();
+            
             config1.SetInitParameters(iNodeData, iBranchData, 0, iGenData, iLSEData, baseV, baseS);
             config2.loadData(branchData);
             config4.loadData(genData);
@@ -5013,43 +5018,43 @@ public class CheckCalculationEndRunnable implements Runnable {
      
      strMessage=config1.DataVerify();
      if(!strMessage.isEmpty()){
-         activeConfig1();
+         if (!noGUI) activeConfig1();
          return strMessage;
      }
 
      strMessage=config2.DataVerify();
      if(!strMessage.isEmpty()){
-         activeConfig2();
+         if (!noGUI) activeConfig2();
          return strMessage;
      }
      
      strMessage=config4.DataVerify();
      if(!strMessage.isEmpty()){
-         activeConfig4();
+         if (!noGUI) activeConfig4();
          return strMessage;
      }
      
      strMessage=config5.DataVerify();
      if(!strMessage.isEmpty()){
-          activeConfig5();
+          if (!noGUI) activeConfig5();
           return strMessage;
      }
      
      strMessage=learnOption1.DataVerify();
      if(!strMessage.isEmpty()){
-         activeLearnOption1();
+         if (!noGUI) activeLearnOption1();
          return strMessage;
      }
      
      strMessage=simulationControl.DataVerify();
      if(!strMessage.isEmpty()){
-         activeSimulationControl();
+         if (!noGUI) activeSimulationControl();
          return strMessage;
      }
      
      strMessage=config5.PriceCapVerify(dLSEPriceCap);
      if(!strMessage.isEmpty()){
-          activeConfig5();
+          if (!noGUI) activeConfig5();
           return strMessage;
      }
      
@@ -5608,14 +5613,8 @@ public long GetRandomSeed(){
       assert JNIfncs.is_initialized();
       System.out.println("AMESFrame main");
       mainFrameWindow = new AMESFrame( );        
-    
-      Toolkit theKit = mainFrameWindow.getToolkit();       
-      Dimension wndSize = theKit.getScreenSize(); 
-
-      // Set the position to screen center & size to half screen size
-      mainFrameWindow.setBounds(wndSize.width/6, wndSize.height/6,       
-                      wndSize.width*2/3, wndSize.height*2/3);     
-    
+      mainFrameWindow.setVisible(false);
+       
       if (args.length > 0) {
           mainFrameWindow.noGUI = true;
           for (String arg : args) {
@@ -5627,7 +5626,13 @@ public long GetRandomSeed(){
               mainFrameWindow.startItemActionPerformed(null);
           }
       } else {
-          mainFrameWindow.setVisible(true);
+        Toolkit theKit = mainFrameWindow.getToolkit();       
+        Dimension wndSize = theKit.getScreenSize(); 
+
+        // Set the position to screen center & size to half screen size
+        mainFrameWindow.setBounds(wndSize.width/6, wndSize.height/6,       
+                      wndSize.width*2/3, wndSize.height*2/3);     
+        mainFrameWindow.setVisible(true);
       }
     }
 
@@ -5807,7 +5812,7 @@ public long GetRandomSeed(){
   public   LearnOption1 learnOption1;
   public   SimulationControl simulationControl;
   
-  private boolean noGUI = false;
+  public  boolean noGUI = false;
   private File outputFile;
   private File batchFile;
   
