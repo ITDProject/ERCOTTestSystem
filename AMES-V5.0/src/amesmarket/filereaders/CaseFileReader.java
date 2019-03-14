@@ -88,8 +88,8 @@ public class CaseFileReader {
     private static final String HAS_NDG = "NDGFlag";   
     private static final String STORAGE_INPUT_DATA_START = "#StorageInputDataStart";
     private static final String STORAGE_INPUT_DATA_END = "#StorageInputDataEnd";
-    private static final String ZONE_NAMES_START = "#ZoneNamesStart";
-    private static final String ZONE_NAMES_END = "#ZoneNamesEnd";
+//    private static final String ZONE_NAMES_START = "#ZoneNamesStart";
+//    private static final String ZONE_NAMES_END = "#ZoneNamesEnd";
     private static final String GEN_COST_START = "#GenCostStart";
     private static final String GEN_COST_END = "#GenCostEnd";
 
@@ -117,8 +117,10 @@ public class CaseFileReader {
      * @throws BadDataFileFormatException
      */
     public CaseFileData loadCaseFileData(final File testCaseFile) {
+        System.out.println("Inside loadCaseFileData Method");
         inputReader = new SimpleLineReader(testCaseFile);
-        this.testCaseFile = testCaseFile;
+        this.testCaseFile = testCaseFile;        
+        System.out.println("Calling loadCaseFileData Method(bool)");
         return loadCaseFileData(true);
     }
 
@@ -156,9 +158,11 @@ public class CaseFileReader {
      * @throws BadDataFileFormatException
      */
     private CaseFileData loadCaseFileData(boolean doFinishActions) {
+        System.out.println("Inside loadCaseFileData Method(bool)");
         CaseFileData testConf = new CaseFileData();
 
         try {
+        System.out.println("Calling parseDataFile Method");
             parseDataFile(testConf, doFinishActions);
         } catch (BadDataFileFormatException ex) {
             Logger.getLogger(CaseFileReader.class.getName()).log(Level.SEVERE, null, ex);
@@ -181,6 +185,7 @@ public class CaseFileReader {
 
     private void parseDataFile(CaseFileData testConf, boolean doFinishActions) throws BadDataFileFormatException {
 
+        System.out.println("Inside parseDataFile Method");
         while (inputReader.hasNext() && move()) {
             if(currentLine.startsWith(BASE_S)) {
                 parseBASE_S(testConf);
@@ -227,8 +232,8 @@ public class CaseFileReader {
             } else if(currentLine.equals(GEN_LEARNING_DATA_START)) {
                 testConf.setHasGenLearningData(true);
                 parseGenLearningData(testConf);
-            } else if(currentLine.equals(ZONE_NAMES_START)){
-                parseZoneNames(testConf);
+//            } else if(currentLine.equals(ZONE_NAMES_START)){
+//                parseZoneNames(testConf);
             } else if(currentLine.equals(GEN_COST_START)) {
                 parseGenCoCosts(testConf);
             } else if(currentLine.startsWith(RESERVE_REQUIREMENTS)) {
@@ -241,6 +246,8 @@ public class CaseFileReader {
             }
         }
 
+        System.out.println("Data parsing completed");
+        System.out.println("Calling finish method within parseDataFile Method");
         if(doFinishActions)
             finish(testConf);
     }
@@ -251,6 +258,9 @@ public class CaseFileReader {
      * @throws BadDataFileFormatException
      */
     private void finish(CaseFileData testConf) throws BadDataFileFormatException {
+        
+        
+        System.out.println("Inside finish method of parseDataFile Method");
         if(!testConf.hasGenLearningData()) {
             loadDefaultGenLearningData(testConf);
         }
@@ -274,8 +284,12 @@ public class CaseFileReader {
         //Make sure the hybrid flags match the data source.
         testConf.checkLSEHybridDemandSources();
 
+        System.out.println("Calling ensureLSEData");
         testConf.ensureLSEData();
+        System.out.println("Calling ensureLSEPriceSenstiveDemandData");
         testConf.ensureLSEPriceSenstiveDemandData();
+        testConf.ensureLSEHybridDemandData();
+        testConf.ensureNDGData();
     }
 
     /**
@@ -449,7 +463,7 @@ public class CaseFileReader {
     private void parseBranchData(CaseFileData testConf) throws BadDataFileFormatException {
         move();
 
-        IZoneIndexProvider zoneIdxs = testConf.getZoneNames();
+//        IZoneIndexProvider zoneIdxs = testConf.getZoneNames();
         ArrayList<String> branchDataList = collectLines(BRANCH_DATA_END);
 
         int iBranchNumber = branchDataList.size();
@@ -471,18 +485,19 @@ public class CaseFileReader {
 
                 String strData = strBranch.substring(iIndex + 1);
                 strData = strData.trim();
-
+                //System.out.println("strBranch: " + strBranch + " iIndex: "+ iIndex + " strData: "+strData);
                 if (iBranchFields > 2) {
                     double dTemp = Support.parseDouble(strData);
                     testConf.branchData[i][iBranchFields] = String.format("%1$15.4f", dTemp);
                 } else {
-
-                    if(!zoneIdxs.hasIndexForName(strData)) {
-                        unknownZoneName(strData);
-                    }
-
-                    int zidx = zoneIdxs.get(strData);
-                    testConf.branchData[i][iBranchFields] = zidx;
+// Commenting zone for now
+//                    if(!zoneIdxs.hasIndexForName(strData)) {
+//                        unknownZoneName(strData);
+//                    }
+//
+//                    int zidx = zoneIdxs.get(strData);      
+//                    System.out.println("zidx: " + zidx);
+                    testConf.branchData[i][iBranchFields] = Integer.parseInt(strData); //zidx
                 }
 
                 iBranchFields--;
@@ -490,6 +505,7 @@ public class CaseFileReader {
                 if (iIndex > 0) {
                     strBranch = strBranch.substring(0, iIndex);
                 }
+                
             }
 
             if (strBranch.length() > 0) {
@@ -509,7 +525,7 @@ public class CaseFileReader {
     private void parseGenData(CaseFileData testConf) throws BadDataFileFormatException {
         move();
 
-        IZoneIndexProvider zoneNames = testConf.getZoneNames();
+//        IZoneIndexProvider zoneNames = testConf.getZoneNames();
 
         ArrayList<String> genDataList = collectLines(GEN_DATA_END);
 
@@ -526,7 +542,7 @@ public class CaseFileReader {
                 throw new BadDataFileFormatException(inputReader.sourceFile, inputReader.lineNum, strGen);
             }
 
-            Integer atBusIdx = zoneNames.get(lineElems[2]);
+            Integer atBusIdx = Integer.parseInt(lineElems[2]); //zoneNames.get(lineElems[2]);
             if(atBusIdx == null) {
                 throw new BadDataFileFormatException(
                         inputReader.sourceFile,
@@ -638,7 +654,7 @@ public class CaseFileReader {
     private void parseLSEFixedDemand(CaseFileData testConf) throws BadDataFileFormatException {
         move();
         final ArrayList<String> LSEDataList = collectLines(LSE_DATA_FIXED_DEM_END);
-        final IZoneIndexProvider zip = testConf.getZoneNames();
+//        final IZoneIndexProvider zip = testConf.getZoneNames();
 
         int iLSENumber = LSEDataList.size() / 3;
         testConf.lseSec1Data = new Object[iLSENumber][11];
@@ -673,13 +689,14 @@ public class CaseFileReader {
                         //Special Cases:
                         //when ILSE fields is 2, we need to lookup an index from the name
                         if(iLSEFields == 2) {
-                            if(zip.hasIndexForName(strData)) {
-                                int zidx = zip.get(strData);
-                                testConf.lseSec1Data[iLSEIndex][iLSEFields] = zidx;
-                                testConf.lseData[iLSEIndex][iLSEFields] = zidx;
-                            } else {
-                                unknownZoneName(strData);
-                            }
+//                            if(zip.hasIndexForName(strData)) {
+//                                int zidx = zip.get(strData);
+                                testConf.lseSec1Data[iLSEIndex][iLSEFields] = Integer.parseInt(strData);//zidx;
+                                testConf.lseData[iLSEIndex][iLSEFields] = Integer.parseInt(strData);;//zidx;
+//                            } 
+//                            else {
+//                                unknownZoneName(strData);
+//                            }
                         } else { //otherwise, it is just an Int.
                             int id = Integer.parseInt(strData);
                             testConf.lseSec1Data[iLSEIndex][iLSEFields] = id;
@@ -695,12 +712,12 @@ public class CaseFileReader {
                       //Special Cases:
                         //when ILSE fields is 2, we need to lookup an index from the name
                         if(iLSEFields == 2) {
-                            if(zip.hasIndexForName(strData)) {
-                                int zidx = zip.get(strData);
-                                testConf.lseSec2Data[iLSEIndex][iLSEFields] = zidx;
-                            } else {
-                                unknownZoneName(strData);
-                            }
+//                            if(zip.hasIndexForName(strData)) {
+//                                int zidx = zip.get(strData);
+                                testConf.lseSec2Data[iLSEIndex][iLSEFields] = Integer.parseInt(strData); //zidx;
+//                            } else {
+//                                unknownZoneName(strData);
+//                            }
                         } else {
                             testConf.lseSec2Data[iLSEIndex][iLSEFields] = Integer.parseInt(strData);
                         }
@@ -715,12 +732,12 @@ public class CaseFileReader {
                       //Special Cases:
                         //when ILSE fields is 2, we need to lookup an index from the name
                         if(iLSEFields == 2) {
-                            if(zip.hasIndexForName(strData)) {
-                                int zidx = zip.get(strData);
-                                testConf.lseSec3Data[iLSEIndex][iLSEFields] = zidx;
-                            } else {
-                                unknownZoneName(strData);
-                            }
+//                            if(zip.hasIndexForName(strData)) {
+//                                int zidx = zip.get(strData);
+                                testConf.lseSec3Data[iLSEIndex][iLSEFields] = Integer.parseInt(strData); //zidx;
+//                            } else {
+//                                unknownZoneName(strData);
+//                            }
                         } else {
                             testConf.lseSec3Data[iLSEIndex][iLSEFields] = Integer.parseInt(strData);
                         }
@@ -755,8 +772,10 @@ public class CaseFileReader {
     private void parseNDGData(CaseFileData testConf) throws BadDataFileFormatException {
         move();
         final ArrayList<String> NDGDataList = collectLines(NDG_DATA_END);
-        final IZoneIndexProvider zip = testConf.getZoneNames();
+//        final IZoneIndexProvider zip = testConf.getZoneNames();
 
+        System.out.println("NDGDataList: " + NDGDataList.toString());
+        
         int iNDGNumber = NDGDataList.size() / 3;
         testConf.NDGSec1Data = new Object[iNDGNumber][11];
         testConf.NDGSec2Data = new Object[iNDGNumber][11];
@@ -790,13 +809,13 @@ public class CaseFileReader {
                         //Special Cases:
                         //when INDGfields is 2, we need to lookup an index from the name
                         if(iNDGFields == 2) {
-                            if(zip.hasIndexForName(strData)) {
-                                int zidx = zip.get(strData);
-                                testConf.NDGSec1Data[iNDGIndex][iNDGFields] = zidx;
-                                testConf.NDGData[iNDGIndex][iNDGFields] = zidx;
-                            } else {
-                                unknownZoneName(strData);
-                            }
+//                            if(zip.hasIndexForName(strData)) {
+//                                int zidx = zip.get(strData);
+                                testConf.NDGSec1Data[iNDGIndex][iNDGFields] = Integer.parseInt(strData); //zidx;
+                                testConf.NDGData[iNDGIndex][iNDGFields] = Integer.parseInt(strData); //zidx;
+//                            } else {
+//                                unknownZoneName(strData);
+//                            }
                         } else { //otherwise, it is just an Int.
                             int id = Integer.parseInt(strData);
                             testConf.NDGSec1Data[iNDGIndex][iNDGFields] = id;
@@ -812,12 +831,12 @@ public class CaseFileReader {
                       //Special Cases:
                         //when INDGfields is 2, we need to lookup an index from the name
                         if(iNDGFields == 2) {
-                            if(zip.hasIndexForName(strData)) {
-                                int zidx = zip.get(strData);
-                                testConf.NDGSec2Data[iNDGIndex][iNDGFields] = zidx;
-                            } else {
-                                unknownZoneName(strData);
-                            }
+//                            if(zip.hasIndexForName(strData)) {
+//                                int zidx = zip.get(strData);
+                                testConf.NDGSec2Data[iNDGIndex][iNDGFields] = Integer.parseInt(strData); //zidx;
+//                            } else {
+//                                unknownZoneName(strData);
+//                            }
                         } else {
                             testConf.NDGSec2Data[iNDGIndex][iNDGFields] = Integer.parseInt(strData);
                         }
@@ -832,12 +851,12 @@ public class CaseFileReader {
                       //Special Cases:
                         //when INDG fields is 2, we need to lookup an index from the name
                         if(iNDGFields == 2) {
-                            if(zip.hasIndexForName(strData)) {
-                                int zidx = zip.get(strData);
-                                testConf.NDGSec3Data[iNDGIndex][iNDGFields] = zidx;
-                            } else {
-                                unknownZoneName(strData);
-                            }
+//                            if(zip.hasIndexForName(strData)) {
+//                                int zidx = zip.get(strData);
+                                testConf.NDGSec3Data[iNDGIndex][iNDGFields] = Integer.parseInt(strData); //zidx;
+//                            } else {
+//                                unknownZoneName(strData);
+//                            }
                         } else {
                             testConf.NDGSec3Data[iNDGIndex][iNDGFields] = Integer.parseInt(strData);
                         }
@@ -874,7 +893,7 @@ public class CaseFileReader {
     private void parseLSEPSensDemand(CaseFileData testConf) throws BadDataFileFormatException {
         move();
         ArrayList<String> LSEPriceDemandDataList = collectLines(LSE_DATA_PRICE_SENS_DEM_END);
-        final IZoneIndexProvider zip = testConf.getZoneNames();
+//        final IZoneIndexProvider zip = testConf.getZoneNames();
 
         int iLSEDemandNumber = LSEPriceDemandDataList.size() / 24;
         testConf.lsePriceSensitiveDemand = new Object[iLSEDemandNumber][24][7];
@@ -898,11 +917,11 @@ public class CaseFileReader {
                         testConf.lsePriceSensitiveDemand[i][j][iDemandFields] = Support.parseDouble(strData);
                     } else {
                         if(iDemandFields == 2) { //TODO-XX fix special case.
-                            if (zip.hasIndexForName(strData)) {
-                                testConf.lsePriceSensitiveDemand[i][j][iDemandFields] = zip.get(strData);
-                            } else {
-                                unknownZoneName(strData);
-                            }
+//                            if (zip.hasIndexForName(strData)) {
+                                testConf.lsePriceSensitiveDemand[i][j][iDemandFields] = Integer.parseInt(strData); //zip.get(strData);
+//                            } else {
+//                                unknownZoneName(strData);
+//                            }
                         } else {
                             testConf.lsePriceSensitiveDemand[i][j][iDemandFields] = Integer.parseInt(strData);
                         }
@@ -946,8 +965,8 @@ public class CaseFileReader {
 
                 if (i < iLSENumber) {
                     if(iLSEFields == 2) {
-                        testConf.lseHybridDemand[iLSEIndex][iLSEFields] =
-                                testConf.getZoneNames().get(strData);
+                        testConf.lseHybridDemand[iLSEIndex][iLSEFields] = Integer.parseInt(strData);
+                                //testConf.getZoneNames().get(strData);
                     } else if (iLSEFields > 0) {
                         testConf.lseHybridDemand[iLSEIndex][iLSEFields] = Integer.parseInt(strData);
                     }
@@ -1038,16 +1057,16 @@ public class CaseFileReader {
         }
     }
 
-    private void parseZoneNames(CaseFileData testConf) throws BadDataFileFormatException {
-        move();
-        ArrayList<String> zoneNames = collectLines(ZONE_NAMES_END);
-
-        int idx = 1;
-        for(String zoneName : zoneNames) {
-            testConf.addZoneNameMapping(zoneName, idx);
-            idx++; //increment index for next zone.
-        }
-    }
+//    private void parseZoneNames(CaseFileData testConf) throws BadDataFileFormatException {
+//        move();
+//        ArrayList<String> zoneNames = collectLines(ZONE_NAMES_END);
+//        System.out.println("zoneNames: " + zoneNames.toString());
+//        int idx = 1;
+//        for(String zoneName : zoneNames) {
+//            testConf.addZoneNameMapping(zoneName, idx);
+//            idx++; //increment index for next zone.
+//        }
+//    }
 
     private void parseGenCoFuelType(CaseFileData testConf) throws BadDataFileFormatException {
         move();

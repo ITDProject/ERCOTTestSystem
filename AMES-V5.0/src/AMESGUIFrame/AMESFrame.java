@@ -141,7 +141,7 @@ public class AMESFrame  extends JFrame{
     dThresholdProbability=0.999;
     dDailyNetEarningThreshold=10.0;
     dGenPriceCap=1000.0;
-    priceSensitiveLSE=3;
+    priceSensitiveLSE=1; // changed to 1 from 3
     hostName="CO1132-07.ece.iastate.edu";
     userName="root";
     databaseName="IRW";
@@ -682,51 +682,9 @@ public class AMESFrame  extends JFrame{
         }
     }
 
-    
-    private void loadCaseItemActionPerformed(String filename) {
-        bLoadCase = false;
-        bCaseResult = false;
-
-        caseFile = new File(filename);
-        caseFileDirectory = caseFile.getParentFile();
-        
-        if (caseFile.isFile()) {
-            bOpen = true;
-
-//            loadCaseFileData();
-            CaseFileReader cfr = new CaseFileReader();
-            CaseFileData config = cfr.loadCaseFileData(this.caseFile);
-
-            this.setupSimFromConfigFile(config);            
-            System.out.println("Load user selected case data file:" + caseFile.getName());
-            this.SetDefaultSimulationParameters();
-            
-            config1.SetInitParameters(iNodeData, iBranchData, 0, iGenData, iLSEData, baseV, baseS);
-            config2.loadData(branchData);
-            config4.loadData(genData);
-            config5.loadData(lseData, lsePriceSensitiveDemand, lseHybridDemand);
-
-            learnOption1.loadData(genData, genLearningData);
-            simulationControl.SetInitParameters(iMaxDay, bMaximumDay, dThresholdProbability, bThreshold, dDailyNetEarningThreshold, bDailyNetEarningThreshold, iDailyNetEarningStartDay, iDailyNetEarningDayLength, iStartDay, iCheckDayLength, dActionProbability, bActionProbabilityCheck, //
-                    iLearningCheckStartDay, iLearningCheckDayLength, dLearningCheckDifference, bLearningCheck, dGenPriceCap, dLSEPriceCap, RandomSeed, priceSensitiveLSE, hostName, databaseName, userName, password, iLSEData);
-
-            // Verify Data
-            String strError = checkCaseData();
-            if (!strError.isEmpty()) {
-                System.out.println("Case Data Verify Message:\n" + strError);
-                return;
-            }
-
-            setbLoadCase(true);
-            setbCaseResult(false);
-
-            InitializeAMESMarket();
-        }
-    }
-
-    private void loadBatchModeFileData(File randomSeedsFile) {
-      bMultiRandomSeeds=false;
-      bMultiCases=false;
+  private void loadBatchModeFileData(File randomSeedsFile) {
+     bMultiRandomSeeds=false;
+     bMultiCases=false;
      
       try {
           FileReader       batchModeFileReader = new FileReader(randomSeedsFile);
@@ -1470,8 +1428,10 @@ public class AMESFrame  extends JFrame{
  private void loadCaseFileData( ) {
 		System.out.println("Loading " + this.caseFile.getPath());
 		CaseFileReader cfr = new CaseFileReader();
+                System.out.println("Calling loadCaseFileData Method");
 		CaseFileData config = cfr.loadCaseFileData(this.caseFile);
 
+                System.out.println("Calling setupSimFromConfigFile with in loadCaseFileData Method");
 		this.setupSimFromConfigFile(config);
 
 		this.bLoadCase=true;
@@ -4953,9 +4913,6 @@ public class CheckCalculationEndRunnable implements Runnable {
 
                     bCaseResult=true;
                     saveOutputData();
-                    if (noGUI) {
-                      exitItemActionPerformed(null);
-                    }
                     
                     enableViewMenu();
                 }
@@ -5018,43 +4975,43 @@ public class CheckCalculationEndRunnable implements Runnable {
      
      strMessage=config1.DataVerify();
      if(!strMessage.isEmpty()){
-         if (!noGUI) activeConfig1();
+         activeConfig1();
          return strMessage;
      }
 
      strMessage=config2.DataVerify();
      if(!strMessage.isEmpty()){
-         if (!noGUI) activeConfig2();
+         activeConfig2();
          return strMessage;
      }
      
      strMessage=config4.DataVerify();
      if(!strMessage.isEmpty()){
-         if (!noGUI) activeConfig4();
+         activeConfig4();
          return strMessage;
      }
      
      strMessage=config5.DataVerify();
      if(!strMessage.isEmpty()){
-          if (!noGUI) activeConfig5();
+          activeConfig5();
           return strMessage;
      }
      
      strMessage=learnOption1.DataVerify();
      if(!strMessage.isEmpty()){
-         if (!noGUI) activeLearnOption1();
+         activeLearnOption1();
          return strMessage;
      }
      
      strMessage=simulationControl.DataVerify();
      if(!strMessage.isEmpty()){
-         if (!noGUI) activeSimulationControl();
+         activeSimulationControl();
          return strMessage;
      }
      
      strMessage=config5.PriceCapVerify(dLSEPriceCap);
      if(!strMessage.isEmpty()){
-          if (!noGUI) activeConfig5();
+          activeConfig5();
           return strMessage;
      }
      
@@ -5146,20 +5103,21 @@ public class CheckCalculationEndRunnable implements Runnable {
      
      if(iNodeCount!=config1.iTotalNodeNumber)
          strMessage+="The total bus number in step1 is not equal to the number in step2\n";
-         
-     for(int i=0; i<24; i++){
-        if(dMinGenCapacity>dLoad[i]){
-            strMessage+="GenCos min capacity sum greater than fixed load sum at "+i+" hour is not allowed!\n";
-        }
-        
-        if(dMaxGenCapacity<dLoad[i]){
-            strMessage+="GenCos max capacity sum less than fixed load sum at "+i+" hour is not allowed!\n";
-        }
-        
-        if(dMaxGenCapacityWithPCap<dLoad[i]){
-            strMessage+="GenCos max capacity sum with PriceCap less than fixed load sum at "+i+" hour is not allowed!\n";
-        }
-     }
+       
+    // The following is handles via slack variables in AMES V5.0. Commneting out in AMES V5.0. TODO: Check - Swathi
+//     for(int i=0; i<24; i++){
+//        if(dMinGenCapacity>dLoad[i]){
+//            strMessage+="GenCos min capacity sum greater than fixed load sum at "+i+" hour is not allowed!\n";
+//        }
+//        
+//        if(dMaxGenCapacity<dLoad[i]){
+//            strMessage+="GenCos max capacity sum less than fixed load sum at "+i+" hour is not allowed!\n";
+//        }
+//        
+//        if(dMaxGenCapacityWithPCap<dLoad[i]){
+//            strMessage+="GenCos max capacity sum with PriceCap less than fixed load sum at "+i+" hour is not allowed!\n";
+//        }
+//     }
      
 		Map<String, CaseFileData.SCUCInputData> scucParameters =this.testcaseConfig.getSCUCInputData();
 		//Check for SCUC data
@@ -5231,15 +5189,7 @@ public void InitializeAMESMarket( ) {
             lse[i][j]=Double.parseDouble(lseData[i][j+1].toString());
         }
     }
-    
-    int iNDGRow=NDGData.length;
-    int iNDGCol=NDGData[0].length-1;
-    double [][] NDG=new double[iNDGRow][iNDGCol];
-    for(int i=0; i<iNDGRow; i++) {
-        for(int j=0; j<iNDGCol; j++) {
-            NDG[i][j]=Double.parseDouble(NDGData[i][j+1].toString());
-        }
-    }
+
     
     int iLsePriceRow=lsePriceSensitiveDemand.length;
     int iLsePriceCol=lsePriceSensitiveDemand[0][0].length-1;
@@ -5259,7 +5209,17 @@ public void InitializeAMESMarket( ) {
             lseHybrid[i][j]=Integer.parseInt(lseHybridDemand[i][j+1].toString());
         }
     }
-            
+                
+    // NDG data will be handled later - TODO: Swathi
+    int iNDGRow=NDGData.length;
+    int iNDGCol=NDGData[0].length-1;
+    double [][] NDG=new double[iNDGRow][iNDGCol];
+    for(int i=0; i<iNDGRow; i++) {
+        for(int j=0; j<iNDGCol; j++) {
+            NDG[i][j]=Double.parseDouble(NDGData[i][j+1].toString());
+        }
+    }
+    
     amesMarket.InitLearningParameters(genLearningData);
     
     if(BatchMode==1){
@@ -5595,45 +5555,33 @@ public long GetRandomSeed(){
     menuBar.add(helpMenu);
    }
 
-  private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
-   
-      About about=new About();
-      
-      Toolkit theKit = about.getToolkit(); 
-      Dimension wndSize = theKit.getScreenSize();       
+private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
+ 
+    About about=new About();
+    
+    Toolkit theKit = about.getToolkit(); 
+    Dimension wndSize = theKit.getScreenSize();       
 
-      Rectangle configBounds=about.getBounds();
+    Rectangle configBounds=about.getBounds();
 
-      about.setLocation( (wndSize.width-configBounds.width)/2, (wndSize.height-configBounds.height)/2);
-      about.setVisible(true);
-  }
+    about.setLocation( (wndSize.width-configBounds.width)/2, (wndSize.height-configBounds.height)/2);
+    about.setVisible(true);
+}
  
     public static void main(String[] args) {
-      fncs.JNIfncs.initialize();
-      assert JNIfncs.is_initialized();
-      System.out.println("AMESFrame main");
-      mainFrameWindow = new AMESFrame( );        
-      mainFrameWindow.setVisible(false);
-       
-      if (args.length > 0) {
-          mainFrameWindow.noGUI = true;
-          for (String arg : args) {
-              System.out.println(arg);
-              mainFrameWindow.loadCaseItemActionPerformed(arg);
-              if (!mainFrameWindow.bLoadCase) {
-                 mainFrameWindow.exitItemActionPerformed(null);
-              }
-              mainFrameWindow.startItemActionPerformed(null);
-          }
-      } else {
-        Toolkit theKit = mainFrameWindow.getToolkit();       
-        Dimension wndSize = theKit.getScreenSize(); 
+	fncs.JNIfncs.initialize();
+	assert JNIfncs.is_initialized();
+	System.out.println("AMESFrame main");
+    mainFrameWindow = new AMESFrame( );        
+    
+    Toolkit theKit = mainFrameWindow.getToolkit();       
+    Dimension wndSize = theKit.getScreenSize(); 
 
-        // Set the position to screen center & size to half screen size
-        mainFrameWindow.setBounds(wndSize.width/6, wndSize.height/6,       
+    // Set the position to screen center & size to half screen size
+    mainFrameWindow.setBounds(wndSize.width/6, wndSize.height/6,       
                       wndSize.width*2/3, wndSize.height*2/3);     
-        mainFrameWindow.setVisible(true);
-      }
+    
+    mainFrameWindow.setVisible(true);
     }
 
      public void addBranchNumber( ) {
@@ -5812,7 +5760,6 @@ public long GetRandomSeed(){
   public   LearnOption1 learnOption1;
   public   SimulationControl simulationControl;
   
-  public  boolean noGUI = false;
   private File outputFile;
   private File batchFile;
   

@@ -265,15 +265,16 @@ public class DAMarket {
             strTemp += String.format("\t%1$15s", lseName);
         }
 
-        for (int j = 0; j < numNDGenAgents; j++) {
-            NDGenAgent ndg = (NDGenAgent) NDGenAgentList.get(j);
-            
-            // Important: Assumption that all ND Gen and LSE are placed at every bus
-            NDGProfile = ndg.submitDAMforecast(d, j);
-            for(int k = 0; k < loadProfileByLSE[j].length; k++){
-            loadProfileByLSE[j][k] = loadProfileByLSE[j][k] - NDGProfile[k];  // Add each load profile from LSE_j to loadProfileByLSE in row j
-            }
-        }
+        // NL is claculated at an early stage. The following is not required to be done. Check - Swathi
+//        for (int j = 0; j < numNDGenAgents; j++) {
+//            NDGenAgent ndg = (NDGenAgent) NDGenAgentList.get(j);
+//            
+//            // Important: Assumption that all ND Gen and LSE are placed at every bus
+//            NDGProfile = ndg.submitDAMforecast(d, j);
+//            for(int k = 0; k < loadProfileByLSE[j].length; k++){
+//            loadProfileByLSE[j][k] = loadProfileByLSE[j][k] - NDGProfile[k];  // Add each load profile from LSE_j to loadProfileByLSE in row j
+//            }
+//        }
         
         /* Temperory remove output -----------    
       System.out.println("Demand Bids Reported by LSEs - Fixed Loads");

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import amesmarket.filereaders.IZoneIndexProvider;
 import amesmarket.filereaders.IZoneIndexProvider.NamedIndexProvider;
+import java.util.Arrays;
 
 /**
  * Configuration parameters.
@@ -19,14 +20,15 @@ import amesmarket.filereaders.IZoneIndexProvider.NamedIndexProvider;
  * Parameters are public to make adapting the existing code quicker.
  *
  * Adapted from {@link AMESGUIFrame.AMESFrame}
+ *
  * @author Sean L. Mooney
  */
 public class CaseFileData {
 
     /**
-     * Where the LSE data comes from. Either comes from the load case,
-     * or directly specified in the TestCase file.
-     * One of {@link #LSE_DEMAND_TEST_CASE} or {@link #LSE_DEMAND_LOAD_CASE}.
+     * Where the LSE data comes from. Either comes from the load case, or
+     * directly specified in the TestCase file. One of
+     * {@link #LSE_DEMAND_TEST_CASE} or {@link #LSE_DEMAND_LOAD_CASE}.
      */
     private int lseDemandSource;
 
@@ -57,7 +59,7 @@ public class CaseFileData {
     public Object[][] NDGSec1Data;  // First 8-hour NDG data
     public Object[][] NDGSec2Data;  // Second 8-hour NDG data
     public Object[][] NDGSec3Data;  // Third 8-hour NDG data
-    
+
     // Learning and action domain parameters
     public double Default_Cooling;
     public double Default_Experimentation;
@@ -110,15 +112,15 @@ public class CaseFileData {
     private boolean hasGenLearningData = false;
 
     /**
-     * Name of the file that describes the load scenarios.
-     * Must be specified by the TestCase file.
+     * Name of the file that describes the load scenarios. Must be specified by
+     * the TestCase file.
      */
     public String loadCaseControlFile;
     /**
-     * The capacity reserve margin. Used to scale 'real' input data
-     * to generation capacity of the grid.
-     * Stored a decimal [-1, 1] not as  a percentage, [-100, 100].
-     * See {@link DefaultLPCProvider#scaleLoadProfileCollections(double, double)}.
+     * The capacity reserve margin. Used to scale 'real' input data to
+     * generation capacity of the grid. Stored a decimal [-1, 1] not as a
+     * percentage, [-100, 100]. See
+     * {@link DefaultLPCProvider#scaleLoadProfileCollections(double, double)}.
      * Defaults to 10, unless set in the TestCase file.
      */
     public double capacityMargin;
@@ -126,12 +128,10 @@ public class CaseFileData {
 
     private final Map<String, SCUCInputData> scucData;
     private final Map<String, StorageInputData> storageData;
-    
-    
 
     /**
-     * Store an association between zone names and the array index
-     * used to model that zone in the bulk of the program.
+     * Store an association between zone names and the array index used to model
+     * that zone in the bulk of the program.
      */
     private final NamedIndexProvider zoneIndexMap;
 
@@ -162,12 +162,12 @@ public class CaseFileData {
         dLearningCheckDifference = 0.001;
         iDailyNetEarningStartDay = 1;
         iDailyNetEarningDayLength = 5;
-        reserveRequirements = 1000; //TODOCheck:Swathi
+        reserveRequirements = 900; //TODOCheck:Swathi
         hasStorage = 0;
         hasNDG = 0;
 
         lseDemandSource = LSE_DEMAND_TEST_CASE;
-        loadCaseControlFile="DATA/ControlFile.dat";
+        loadCaseControlFile = "DATA/ControlFile.dat";
 
         zoneIndexMap = new NamedIndexProvider();
 
@@ -176,14 +176,14 @@ public class CaseFileData {
 
         scucData = new HashMap<String, CaseFileData.SCUCInputData>();
         storageData = new HashMap<String, CaseFileData.StorageInputData>();
-        
+
         noLoadCosts = new HashMap<String, Double>();
         shutDownCosts = new HashMap<String, Double>();
         coldStartUpCosts = new HashMap<String, Double>();
         hotStartUpCosts = new HashMap<String, Double>();
 
         fuelType = new HashMap<String, String>();
-}
+    }
 
     /**
      * @param should be one of the LSE_DEMAND_* constants.
@@ -193,7 +193,8 @@ public class CaseFileData {
     }
 
     /**
-     * @return one of {@link #LSE_DEMAND_TEST_CASE} or {@link #LSE_DEMAND_LOAD_CASE}
+     * @return one of {@link #LSE_DEMAND_TEST_CASE} or
+     * {@link #LSE_DEMAND_LOAD_CASE}
      */
     public int getLSEDemandSource() {
         return lseDemandSource;
@@ -202,21 +203,24 @@ public class CaseFileData {
     public void setCanaryGenCo(ArrayList<String> alertGenCos) {
         this.canaryGenCos.addAll(alertGenCos);
     }
-    
+
     /**
      * FIXME Valid values
+     *
      * @param type
      */
     public void setSCUCType(int type) {
         this.scucType = type;
     }
-    
+
     public int getSCUCType() {
         return scucType;
     }
 
     public void markCanaryGenCos() {
-        if(canaryGenCos.size() == 0) return;
+        if (canaryGenCos.size() == 0) {
+            return;
+        }
 
         //quick-to-implement algorithm. Iterate over the entire
         //list until we find the genco with the same name.
@@ -226,10 +230,10 @@ public class CaseFileData {
         //Not sure if there is an implied order between the
         //the list of genco's and how the rest of the network
         //gets connected up.
-        for(String genName : canaryGenCos) {
+        for (String genName : canaryGenCos) {
             boolean foundCanary = false;
-            for(int g = 0; g < genData.length && !foundCanary; g++) {
-                if(genData[g].name.equals(genName)) {
+            for (int g = 0; g < genData.length && !foundCanary; g++) {
+                if (genData[g].name.equals(genName)) {
                     genData[g].isCanary = true;
                     foundCanary = true;
                 }
@@ -242,35 +246,33 @@ public class CaseFileData {
     }
 
     /**
-     * Check to see if any of the gencos is missing SCUC data. If so,
-     * generate a default set of parameters.
+     * Check to see if any of the gencos is missing SCUC data. If so, generate a
+     * default set of parameters.
+     *
      * @param testConf
      */
     public void ensureSCUCData() {
-        if(genData == null) return;
-        for(GenData gd : genData) {
-            if(scucData.get(gd.name) == null) {
+        if (genData == null) {
+            return;
+        }
+        for (GenData gd : genData) {
+            if (scucData.get(gd.name) == null) {
                 scucData.put(gd.name, new SCUCInputData(gd.capU, 1, 0, 0, 0, 0, 0, 0, 1, 1));
             }
         }
     }
 
-    
     /**
      * Check to see if any of the Storage Units is missing Storage data. If so,
      * generate a default set of parameters.
+     *
      * @param testConf
-     
-    public void ensureStorageData() {
-        if(genData == null) return;
-        for(GenData gd : genData) {
-            if(storageData.get(gd.name) == null) {
-                storageData.put(gd.name, new StorageInputData(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0));
-            }
-        }
-    }
-    */
-    
+     *
+     * public void ensureStorageData() { if(genData == null) return; for(GenData
+     * gd : genData) { if(storageData.get(gd.name) == null) {
+     * storageData.put(gd.name, new StorageInputData(0, 0, 0, 0, 0, 0, 0, 0, 0,
+     * 0, 0 ,0)); } } }
+     */
     /**
      * Check to see if the hybrid demand sources match the DemandSourceFlag. If
      * the demand source is set to {@link #LSE_DEMAND_LOAD_CASE}, force all the
@@ -288,20 +290,22 @@ public class CaseFileData {
      * programmatically set to 1, ensuring DCOPFJ, if used, behaves correctly.
      */
     public void checkLSEHybridDemandSources() {
-        if(getLSEDemandSource() == LSE_DEMAND_LOAD_CASE) {
+        if (getLSEDemandSource() == LSE_DEMAND_LOAD_CASE) {
+
+            System.out.println("checking if this prints");
             //make sure the flags are all one
-            for(int i = 0; i<lseHybridDemand.length; i++) {
+            for (int i = 0; i < lseHybridDemand.length; i++) {
                 //Start at one. Index 0 is the LSE name.
-                for(int k = 3; k < lseHybridDemand[i].length; k++) {
-                    int flag = (Integer)lseHybridDemand[i][k];
+                for (int k = 3; k < lseHybridDemand[i].length; k++) {
+                    int flag = (Integer) lseHybridDemand[i][k];
                     int exFlag = 1;
 
-                    if(flag != exFlag) {
+                    if (flag != exFlag) {
                         System.err.println(
-                                "Warning: LSEDemandSource is LoadCase. " +
-                                "Expected " + lseHybridDemand[i][0] + " hour " + (k + 1) +
-                                " demand flag to be " + exFlag + ". Found " + flag + "."
-                                );
+                                "Warning: LSEDemandSource is LoadCase. "
+                                + "Expected " + lseHybridDemand[i][0] + " hour " + (k + 1)
+                                + " demand flag to be " + exFlag + ". Found " + flag + "."
+                        );
                         System.err.println("Setting flag to " + exFlag);
                         lseHybridDemand[i][k] = 1;
                     }
@@ -311,9 +315,8 @@ public class CaseFileData {
     }
 
     /**
-     * Helper method to prevent NPEs where the TestCase uses
-     * a LoadCase for the demand source and there is no fixed
-     * demand in the TestCase file.
+     * Helper method to prevent NPEs where the TestCase uses a LoadCase for the
+     * demand source and there is no fixed demand in the TestCase file.
      */
     public void ensureLSEData() {
         //don't modify the data if the LSE demand is supposed
@@ -322,19 +325,19 @@ public class CaseFileData {
             return;
         }
 
-
         iLSEData = zoneIndexMap.getNumZones();
+        System.out.println("iLSEData: " + iLSEData);
         lseSec1Data = new Object[iLSEData][11];
         lseSec2Data = new Object[iLSEData][11];
         lseSec3Data = new Object[iLSEData][11];
         lseData = new Object[iLSEData][27];
 
-        for(int z = 0; z < lseData.length; z++) {
-            lseData[z][0] = "LSE" + (z+1); //NAME
-            lseData[z][1] = (z+1);         //ID
-            lseData[z][2] = (z+1);         //At bus
+        for (int z = 0; z < lseData.length; z++) {
+            lseData[z][0] = "LSE" + (z + 1); //NAME
+            lseData[z][1] = (z + 1);         //ID
+            lseData[z][2] = (z + 1);         //At bus
             //hourly demand
-            for(int h = 3; h < lseData[z].length; h++){
+            for (int h = 3; h < lseData[z].length; h++) {
                 lseData[z][h] = 0; //dummy no demand data
             }
         }
@@ -342,26 +345,29 @@ public class CaseFileData {
     }
 
     /**
-     * Generate some dummy price sensitive demand date, if not in
-     * the test case. Make to call after {@link #ensureLSEData()}, or
-     * may crash.
+     * Generate some dummy price sensitive demand date, if not in the test case.
+     * Make to call after {@link #ensureLSEData()}, or may crash.
      */
     public void ensureLSEPriceSenstiveDemandData() {
         //don't modify the data if the LSE demand is supposed
         //to be in the TestCase.
-        if (lseDemandSource == LSE_DEMAND_TEST_CASE
-                || lsePriceSensitiveDemand != null) {
+        System.out.println("Inside ensureLSEPriceSenstiveDemandData");
+//        if (lseDemandSource == LSE_DEMAND_TEST_CASE
+//                || lsePriceSensitiveDemand != null) {    
+        if (lsePriceSensitiveDemand != null) {
+            System.out.println("Inside if condition");
             return;
         }
 
         final int numHours = 24;
         final int numCols = 7;
 
-        iLSEData = zoneIndexMap.getNumZones();
+        //iLSEData = ; //zoneIndexMap.getNumZones();
+        //System.out.println("iLSEData: "+ iLSEData);
         lsePriceSensitiveDemand = new Object[iLSEData][numHours][numCols];
 
-        for(int l = 0; l < iLSEData; l++){
-            for(int h = 0; h < 24; h++) {
+        for (int l = 0; l < iLSEData; l++) {
+            for (int h = 0; h < 24; h++) {
                 lsePriceSensitiveDemand[l][h][0] = lseData[l][0]; //NAME
                 lsePriceSensitiveDemand[l][h][1] = lseData[l][1]; //ID
                 lsePriceSensitiveDemand[l][h][2] = lseData[l][2]; //BUS
@@ -371,6 +377,64 @@ public class CaseFileData {
                 lsePriceSensitiveDemand[l][h][6] = 0;             //SLMax
             }
         }
+        //System.out.println("lsePriceSensitiveDemand: "+ (lsePriceSensitiveDemand[1][3][6]));
+    }
+
+    public void ensureLSEHybridDemandData() {
+        System.out.println("Inside ensureLSEHybridDemandData");
+        
+        //don't modify the data if the LSE demand is supposed
+        //to be in the TestCase.
+
+        if (lseHybridDemand != null) {
+            System.out.println("Inside if condition");
+            return;
+        }
+
+        final int numHours = 24;
+        final int numCols = 7;
+
+        //iLSEData = ; //zoneIndexMap.getNumZones();
+        //System.out.println("iLSEData: "+ iLSEData);
+        lseHybridDemand = new Object[iLSEData][27];
+
+        for (int l = 0; l < iLSEData; l++) {
+            lseHybridDemand[l][0] = lseData[l][0]; //NAME
+            lseHybridDemand[l][1] = lseData[l][1]; //ID
+            lseHybridDemand[l][2] = lseData[l][2]; //BUS
+            for (int h = 0; h < 24; h++) {
+                lseHybridDemand[l][h + 3] = 1; //flag - default value is kept 1 i.e. fixed demand
+            }
+        }
+        //System.out.println("lsePriceSensitiveDemand: "+ (lsePriceSensitiveDemand[1][3][6]));
+    }
+    public void ensureNDGData() {
+        System.out.println("Inside ensureNDGData");
+        
+        //don't modify the data if the LSE demand is supposed
+        //to be in the TestCase.
+
+        if (NDGData != null) {
+            System.out.println("Inside if condition");
+            return;
+        }
+
+        final int numHours = 24;
+        final int numCols = 7;
+
+        //iLSEData = ; //zoneIndexMap.getNumZones();
+        //System.out.println("iLSEData: "+ iLSEData);
+        NDGData = new Object[iLSEData][27];
+
+        for (int l = 0; l < iLSEData; l++) {
+            NDGData[l][0] = lseData[l][0]; //NAME
+            NDGData[l][1] = lseData[l][1]; //ID
+            NDGData[l][2] = lseData[l][2]; //BUS
+            for (int h = 0; h < 24; h++) {
+                NDGData[l][h + 3] = 0; //flag - default value is kept 1 i.e. fixed demand
+            }
+        }
+        //System.out.println("lsePriceSensitiveDemand: "+ (lsePriceSensitiveDemand[1][3][6]));
     }
 
     ///////////////////////CONSTANTS////////////////////////////////////////////
@@ -386,6 +450,7 @@ public class CaseFileData {
 
     /**
      * Model the GenData section of the input file.
+     *
      * @author Sean L. Mooney
      *
      */
@@ -403,7 +468,7 @@ public class CaseFileData {
          * @param initMoney
          */
         public GenData(String name, int id, int atBus, double sCost, double a,
-                       double b, double capL, double capU, double initMoney) {
+                double b, double capL, double capU, double initMoney) {
             this.name = name;
             this.id = id;
             this.atBus = atBus;
@@ -422,12 +487,13 @@ public class CaseFileData {
          * Creates a copy of the parameters to a double array.
          *
          * Utility method to make loading data into the AMESMarket easy.
+         *
          * @return
          */
         public Object[] asArray() {
-            return new Object[] {
-                       name, id, atBus, sCost, a, b, capL, capU, initMoney, isCanary
-                   };
+            return new Object[]{
+                name, id, atBus, sCost, a, b, capL, capU, initMoney, isCanary
+            };
         }
 
         public final String name;
@@ -440,11 +506,10 @@ public class CaseFileData {
         public final double capU;
         public final double initMoney;
         /**
-         * Whether or not the generator is a 'canary' generator.
-         * Like the canary in a coal mine, canary generators
-         * indicate a problem with the grid. Canary generators provide
-         * a means to ensure a load profile can be met, since AMES does
-         * not yet handle reserves/reserve markets.
+         * Whether or not the generator is a 'canary' generator. Like the canary
+         * in a coal mine, canary generators indicate a problem with the grid.
+         * Canary generators provide a means to ensure a load profile can be
+         * met, since AMES does not yet handle reserves/reserve markets.
          */
         //not final because the list of 'canaries' get 'matched up'
         //with generators until after the entire file is read.
@@ -452,31 +517,34 @@ public class CaseFileData {
     }
 
     /**
-     * Adjusts the control file path as relative to the
-     * TestCase file, if needed.
-     * 
+     * Adjusts the control file path as relative to the TestCase file, if
+     * needed.
+     *
      * The path is adjusted if these conditions hold:
      * <ol>
      * <li>{@link #testCaseFile} is not null</li>
      * <li>The path for the control file is not null</li>
      * </ol>
+     *
      * @param root root file location. Does nothing if the root is null.
      */
-    public void adjustLoadControlFilePath(File root){
-        if(root == null) return; //ignore a null root.
-
+    public void adjustLoadControlFilePath(File root) {
+        if (root == null) {
+            return; //ignore a null root.
+        }
         File loadCaseControl = new File(loadCaseControlFile);
-        if(!loadCaseControl.isAbsolute()){
+        if (!loadCaseControl.isAbsolute()) {
             File rootDir = root.getParentFile();
-            if(rootDir != null) {
+            if (rootDir != null) {
                 loadCaseControlFile = new File(rootDir, loadCaseControlFile).getPath();
             }
         }
     }
 
-        //TODO: add individual setters if needed.
+    //TODO: add individual setters if needed.
     /**
      * Put the scuc data for a single genco.
+     *
      * @param gencoName
      * @param powerT0
      * @param unitOnT0State
@@ -499,28 +567,28 @@ public class CaseFileData {
         scucData.put(gencoName, sid);
     }
 
-
     /**
-      * Put the Storage data for a single Storage Unit.
-      * @param ID
-      * @param atBus
-      * @param EndPointSoc
-      * @param MaximumEnergy
-      * @param NominalRampDownInput
-      * @param NominalRampUpInput
-      * @param NominalRampDownOutput
-      * @param NominalRampUpOutput
-      * @param MaximumPowerInput
-      * @param MinimumPowerInput
-      * @param MaximumPowerOutput
-      * @param MinimumPowerOutput
-      * @param MinimumSoc
-      * @param EfficiencyEnergy
-      */
+     * Put the Storage data for a single Storage Unit.
+     *
+     * @param ID
+     * @param atBus
+     * @param EndPointSoc
+     * @param MaximumEnergy
+     * @param NominalRampDownInput
+     * @param NominalRampUpInput
+     * @param NominalRampDownOutput
+     * @param NominalRampUpOutput
+     * @param MaximumPowerInput
+     * @param MinimumPowerInput
+     * @param MaximumPowerOutput
+     * @param MinimumPowerOutput
+     * @param MinimumSoc
+     * @param EfficiencyEnergy
+     */
     public void putStorageData(int ID, int atBus, double EndPointSoc, double MaximumEnergy, double NominalRampDownInput,
-                double NominalRampUpInput, double NominalRampDownOutput, double NominalRampUpOutput,
-                double MaximumPowerInput, double MinimumPowerInput, double MaximumPowerOutput,
-                double MinimumPowerOutput, double MinimumSoc, double EfficiencyEnergy) {
+            double NominalRampUpInput, double NominalRampDownOutput, double NominalRampUpOutput,
+            double MaximumPowerInput, double MinimumPowerInput, double MaximumPowerOutput,
+            double MinimumPowerOutput, double MinimumSoc, double EfficiencyEnergy) {
         StorageInputData sid = new StorageInputData(ID, atBus, EndPointSoc, MaximumEnergy, NominalRampDownInput,
                 NominalRampUpInput, NominalRampDownOutput, NominalRampUpOutput,
                 MaximumPowerInput, MinimumPowerInput, MaximumPowerOutput,
@@ -528,13 +596,12 @@ public class CaseFileData {
         storageData.put(Integer.toString(ID), sid);
     }
 
-
     /**
-     * Get reference to the mapping from ZoneNames to array indexes.
-     * If anything is changed here, it will be reflected everywhere in
-     * the system.
+     * Get reference to the mapping from ZoneNames to array indexes. If anything
+     * is changed here, it will be reflected everywhere in the system.
      *
      * Use {@link #addZoneNameMapping(String, int)} to add new mappings.
+     *
      * @return map from zone names to indexes.
      */
     public IZoneIndexProvider getZoneNames() {
@@ -542,26 +609,29 @@ public class CaseFileData {
     }
 
     public void addFuelType(String genCo, String fuel) {
-        fuelType.put(genCo,fuel);
+        fuelType.put(genCo, fuel);
     }
-    
-    public void addNoLoadCost(String genCo, double cost){
+
+    public void addNoLoadCost(String genCo, double cost) {
         noLoadCosts.put(genCo, cost);
     }
-    public void addColdStartUpCost(String genCo, double cost){
+
+    public void addColdStartUpCost(String genCo, double cost) {
         coldStartUpCosts.put(genCo, cost);
     }
-    public void addHotStartUpCost(String genCo, double cost){
+
+    public void addHotStartUpCost(String genCo, double cost) {
         hotStartUpCosts.put(genCo, cost);
     }
-    public void addShutDownCost(String genCo, double cost){
+
+    public void addShutDownCost(String genCo, double cost) {
         shutDownCosts.put(genCo, cost);
     }
 
     public boolean hasFuelType(String genCo) {
         return fuelType.containsKey(genCo);
     }
-    
+
     public boolean hasNoLoadCost(String genCo) {
         return noLoadCosts.containsKey(genCo);
     }
@@ -569,6 +639,7 @@ public class CaseFileData {
     public boolean hasColdStartUpCost(String genCo) {
         return coldStartUpCosts.containsKey(genCo);
     }
+
     public boolean hasHotStartUpCost(String genCo) {
         return hotStartUpCosts.containsKey(genCo);
     }
@@ -585,31 +656,34 @@ public class CaseFileData {
      */
     public double getNoLoadCostForGen(String genCo) {
         Double d = noLoadCosts.get(genCo);
-        if(d == null){
+        if (d == null) {
             throw new IllegalArgumentException("Unknown key " + genCo);
         } else {
             return d.doubleValue();
         }
     }
+
     public double getShutDownCostForGen(String genCo) {
         Double d = shutDownCosts.get(genCo);
-        if(d == null){
+        if (d == null) {
             throw new IllegalArgumentException("Unknown key " + genCo);
         } else {
             return d.doubleValue();
         }
     }
+
     public double getColdStartUpCostForGen(String genCo) {
         Double d = coldStartUpCosts.get(genCo);
-        if(d == null){
+        if (d == null) {
             throw new IllegalArgumentException("Unknown key " + genCo);
         } else {
             return d.doubleValue();
         }
     }
+
     public double getHotStartUpCostForGen(String genCo) {
         Double d = hotStartUpCosts.get(genCo);
-        if(d == null){
+        if (d == null) {
             throw new IllegalArgumentException("Unknown key " + genCo);
         } else {
             return d.doubleValue();
@@ -618,14 +692,13 @@ public class CaseFileData {
 
     public String getFuelTypeForGen(String genCo) {
         String d = fuelType.get(genCo);
-        if(d == null){
+        if (d == null) {
             throw new IllegalArgumentException("Unknown key " + genCo);
         } else {
             return d;
         }
     }
 
-    
     /**
      * @return and empty string, or a list of names we didn't know about.
      */
@@ -644,26 +717,28 @@ public class CaseFileData {
 //        if(unknownName)
 //            return sb.toString();
 //        else
-            return "";
+        return "";
     }
 
     /**
      * Map zoneName to idx.
+     *
      * @param zoneName name of the zone. Not null.
      * @param idx
      * @throws IllegalArgumentException if zoneName is null.
      */
     public void addZoneNameMapping(String zoneName, int idx) {
-        if( zoneName == null)
+        if (zoneName == null) {
             throw new IllegalArgumentException();
+        }
         zoneIndexMap.put(zoneName, idx);
     }
 
     /**
      * Get a reference to the map storing the input data.
      *
-     * This is useful to move the entire set of parameters
-     * around at once.
+     * This is useful to move the entire set of parameters around at once.
+     *
      * @return
      */
     public Map<String, SCUCInputData> getSCUCInputData() {
@@ -673,18 +748,18 @@ public class CaseFileData {
     /**
      * Get a reference to the map storing the input data.
      *
-     * This is useful to move the entire set of parameters
-     * around at once.
+     * This is useful to move the entire set of parameters around at once.
+     *
      * @return
      */
     public Map<String, StorageInputData> getStorageInputData() {
         return storageData;
     }
-    
-    
+
     public double getReserveRequirements() {
         return reserveRequirements;
     }
+
     ///////////////////////////////SCUC ACCESSORS//////////////////////////////
     /*
      * Accessor for pieces of scuc data.
@@ -692,174 +767,175 @@ public class CaseFileData {
      * Added for test purposes.
      */
     /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public double getPowGenT0(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.powerT0;
-       } else {
-           return -1;
-       }
-   }
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public double getPowGenT0(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.powerT0;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public int unitOnT0State(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.unitOnT0State;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public int unitOnT0State(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.unitOnT0State;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public int minUpTime(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.minUpTime;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public int minUpTime(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.minUpTime;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo Name of the genco
-    * @return -1 if genco not found, or the value.
-    */
-   public double minDownTime(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.minDownTime;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo Name of the genco
+     * @return -1 if genco not found, or the value.
+     */
+    public double minDownTime(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.minDownTime;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public double nominalRampUp(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.nominalRampUp;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public double nominalRampUp(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.nominalRampUp;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public double nominalRampDown(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.nominalRampDown;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public double nominalRampDown(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.nominalRampDown;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public int scucSchedule2(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.schedule2;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public int scucSchedule2(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.schedule2;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public int scucSchedule1(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.schedule1;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public int scucSchedule1(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.schedule1;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public int reserveReq(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return 0; //FIXME: Value for reserve req.
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public int reserveReq(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return 0; //FIXME: Value for reserve req.
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public double startupRampLim(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.startupRampLim;
-       } else {
-           return -1;
-       }
-   }
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public double startupRampLim(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.startupRampLim;
+        } else {
+            return -1;
+        }
+    }
 
-   /**
-    *
-    * @param genCo
-    * @return -1 if genco not found, or the value.
-    */
-   public double shutdownRampLim(String genCo) {
-       SCUCInputData inputData = scucData.get(genCo);
-       if (inputData != null) {
-           return inputData.shutdownRampLim;
-       } else {
-           return -1;
-       }
-   }
-   /////////////////////////////END SCUC ACCESSORS////////////////////////////
+    /**
+     *
+     * @param genCo
+     * @return -1 if genco not found, or the value.
+     */
+    public double shutdownRampLim(String genCo) {
+        SCUCInputData inputData = scucData.get(genCo);
+        if (inputData != null) {
+            return inputData.shutdownRampLim;
+        } else {
+            return -1;
+        }
+    }
+    /////////////////////////////END SCUC ACCESSORS////////////////////////////
 
-   /**
-    * Mark if the TestCase included learning data for the gencos.
-    * @param b
-    */
-   public void setHasGenLearningData(boolean b) {
-       this.hasGenLearningData = b;
-   }
+    /**
+     * Mark if the TestCase included learning data for the gencos.
+     *
+     * @param b
+     */
+    public void setHasGenLearningData(boolean b) {
+        this.hasGenLearningData = b;
+    }
 
-   /**
-    * {@link #hasGenLearningData()}.
-    */
-   public boolean hasGenLearningData(){
-       return hasGenLearningData;
-   }
+    /**
+     * {@link #hasGenLearningData()}.
+     */
+    public boolean hasGenLearningData() {
+        return hasGenLearningData;
+    }
 
     /**
      * Struct to model the scuc input data for a single GenCo.
@@ -869,6 +945,7 @@ public class CaseFileData {
      *
      */
     public static class SCUCInputData {
+
         private double powerT0;
         private int unitOnT0State;
         private int minUpTime;
@@ -1053,13 +1130,12 @@ public class CaseFileData {
         }
     }
 
-
-
-   /**
+    /**
      * Struct to model the Storage input data for a single GenCo.
      *
      */
     public static class StorageInputData {
+
         private int ID;
         private int atBus;
         private double EndPointSoc;
@@ -1152,8 +1228,6 @@ public class CaseFileData {
         public void setEndPointSoc(double EndPointSoc) {
             this.EndPointSoc = EndPointSoc;
         }
-
-
 
         /**
          * @return the MaximumEnergy
