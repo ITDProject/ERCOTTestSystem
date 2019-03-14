@@ -44,8 +44,16 @@ class PSSTResults(object):
         return self._get('MaximumPowerAvailable', self._model)
 
     @property
+    def minimum_power_available(self):
+        return self._get('MinimumPowerAvailable', self._model)
+
+    @property
     def power_generated(self):
         return self._get('PowerGenerated', self._model)
+
+    @property
+    def slack_variables(self):
+        return self._get('LoadGenerateMismatch', self._model)
 
     @property
     def regulating_reserve_up_available(self):

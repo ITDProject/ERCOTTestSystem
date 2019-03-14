@@ -52,21 +52,27 @@ def build_model(case,
     if config is None:
         config = dict()
 
-    click.echo("segments 1: "+ str(config))
+    #click.echo("segments 1: "+ str(config))
     # Get configuration parameters from dictionary
     use_ptdf = config.pop('use_ptdf', False)
     segments = config.pop('segments', 2)
-    reserve_factor = config.pop('reserve_factor', 0)
-    click.echo("segments 2: "+ str(segments))
-    click.echo("reserve_factor 1: "+ str(reserve_factor))
+    #reserve_factor = config.pop('reserve_factor', 0)
+    #click.echo("segments 2: "+ str(segments))
     try:
-        reserve_factor = case.reserve_factor
-        click.echo("Try: ")
+        reserve_up_factor = case.reserve_up_factor
+        #click.echo("Try: ")
     except AttributeError:
-        reserve_factor = config.pop('reserve_factor', 0)
-        click.echo("Except: ")
+        reserve_up_factor = config.pop('reserve_up_factor', 0)
+        #click.echo("reserve_up_factor: "+ str(reserve_up_factor))
+        #click.echo("Except: ")    
+    try:
+        reserve_down_factor = case.reserve_down_factor
+        #click.echo("Try: ")
+    except AttributeError:
+        reserve_down_factor = config.pop('reserve_down_factor', 0)
+        #click.echo("reserve_down_factor: "+ str(reserve_down_factor))
+        #click.echo("Except: ")
 
-    #click.echo("reserve_factor 2: "+ str(reserve_factor))
     # Get case data
     #click.echo("case.gen: "+ str(case.gen))
     #click.echo("case.gencost: "+ str(case.gencost))
@@ -197,7 +203,7 @@ def build_model(case,
             #click.echo("2 printing points: " + str(points[i]))
             values[i] = g['COST_0'] + g['COST_1'] * points[i]
         if g['NCOST'] == 3:
-            click.echo("printing segments: " + str(segments))
+            #click.echo("printing segments: " + str(segments))
             points[i] = pd.np.linspace(g['PMIN'], g['PMAX'], num=segments)
             values[i] = g['COST_0'] + g['COST_1'] * points[i] + g['COST_2'] * points[i] ** 2
 
@@ -239,7 +245,8 @@ def build_model(case,
     # Initialize Pyomo Variables
     initialize_model(model)
 
-    initialize_global_reserves(model, reserve_factor=reserve_factor)
+    #initialize_global_reserves(model, reserve_factor=reserve_factor)
+    initialize_global_reserves(model, reserve_up_factor=reserve_up_factor, reserve_down_factor=reserve_down_factor)
     initialize_regulating_reserves(model, )
     # initialize_zonal_reserves(model, )
 

@@ -10,13 +10,21 @@ def _form_generator_reserve_zones(m,rz):
     return (g for g in m.Generators if m.ReserveZoneLocation[g]==rz)
 
 
-def _reserve_requirement_rule(m, t):
-    return m.ReserveFactor * sum(value(m.Demand[b,t]) for b in m.Buses)
+# def _reserve_requirement_rule(m, t):
+    # return m.ReserveFactor * sum(value(m.Demand[b,t]) for b in m.Buses)
+def _reserve_up_requirement_rule(m, t):
+    return m.ReserveUpFactor * sum(value(m.Demand[b,t]) for b in m.Buses)
+def _reserve_down_requirement_rule(m, t):
+    return m.ReserveDownFactor * sum(value(m.Demand[b,t]) for b in m.Buses)
 
-def initialize_global_reserves(model, reserve_factor=0.0, reserve_requirement=_reserve_requirement_rule):
+def initialize_global_reserves(model, reserve_up_factor=0.0, reserve_down_factor=0.0, reserve_up_requirement=_reserve_up_requirement_rule, reserve_down_requirement=_reserve_down_requirement_rule):
 
-    model.ReserveFactor = Param(within=Reals, initialize=reserve_factor, mutable=True)
-    model.ReserveRequirement = Param(model.TimePeriods, initialize=reserve_requirement, within=NonNegativeReals, default=0.0, mutable=True)
+    #model.ReserveFactor = Param(within=Reals, initialize=reserve_factor, mutable=True)
+    model.ReserveUpFactor = Param(within=Reals, initialize=reserve_up_factor, mutable=True)
+    model.ReserveDownFactor = Param(within=Reals, initialize=reserve_down_factor, mutable=True)
+    #model.ReserveRequirement = Param(model.TimePeriods, initialize=reserve_requirement, within=NonNegativeReals, default=0.0, mutable=True)
+    model.ReserveUpRequirement = Param(model.TimePeriods, initialize=reserve_up_requirement, within=NonNegativeReals, default=0.0, mutable=True)
+    model.ReserveDownRequirement = Param(model.TimePeriods, initialize=reserve_down_requirement, within=NonNegativeReals, default=0.0, mutable=True)
 
 
 def initialize_regulating_reserves(model):

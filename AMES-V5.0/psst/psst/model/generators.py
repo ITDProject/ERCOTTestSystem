@@ -29,6 +29,8 @@ def initialize_maximum_power(model):
 
     # maximum power output for each generator, at each time period.
     model.MaximumPowerAvailable = Var(model.Generators, model.TimePeriods, within=NonNegativeReals)
+    model.MinimumPowerAvailable = Var(model.Generators, model.TimePeriods, within=NonNegativeReals)
+
 
     model.EnforceMaximumPower = Param(model.Generators, model.TimePeriods, within=NonNegativeReals)
 

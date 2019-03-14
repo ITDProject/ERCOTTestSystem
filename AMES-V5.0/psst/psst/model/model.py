@@ -75,6 +75,9 @@ def initialize_model(model,
     # maximum power output for each generator, at each time period.
     model.MaximumPowerAvailable = Var(model.Generators, model.TimePeriods, within=NonNegativeReals)
 
+    # minimum possible power output for each generator, at each time period.
+    model.MinimumPowerAvailable = Var(model.Generators, model.TimePeriods, within=NonNegativeReals)
+
     # voltage angles at the buses (S) (lock the first bus at 0) in radians
     model.Angle = Var(model.Buses, model.TimePeriods, within=Reals, bounds=(-3.14159265,3.14159265))
 

@@ -79,7 +79,27 @@ def posneg_rule(m, b, t):
 def global_posneg_rule(m, t):
     return m.posGlobalLoadGenerateMismatch[t] - m.negGlobalLoadGenerateMismatch[t] == m.GlobalLoadGenerateMismatch[t]
 
-def enforce_reserve_requirements_rule(m, t, StorageFlag=False,
+# def enforce_reserve_requirements_rule(m, t, StorageFlag=False,
+                                        # NDGFlag=False,
+                                        # has_global_reserves=False):
+
+    # constraint = sum(m.MaximumPowerAvailable[g, t] for g in m.Generators)
+
+    # if NDGFlag is True:
+        # constraint = constraint + sum(m.NondispatchablePowerUsed[n,t] for n in m.NondispatchableGenerators)
+
+    # if StorageFlag is True:
+        # constraint = constraint + sum(m.PowerOutputStorage[s,t] for s in m.Storage)
+
+    # if has_global_reserves is True:
+        # constraint = constraint - m.ReserveRequirement[t]
+
+    # constraint = constraint == m.TotalDemand[t] + m.GlobalLoadGenerateMismatch[t]
+    ##constraint = constraint >= m.TotalDemand[t] 
+
+    # return constraint
+
+def enforce_reserve_up_requirements_rule(m, t, StorageFlag=False,
                                         NDGFlag=False,
                                         has_global_reserves=False):
 
@@ -88,30 +108,55 @@ def enforce_reserve_requirements_rule(m, t, StorageFlag=False,
     if NDGFlag is True:
         constraint = constraint + sum(m.NondispatchablePowerUsed[n,t] for n in m.NondispatchableGenerators)
 
-    if StorageFlag is True:
-        constraint = constraint + sum(m.PowerOutputStorage[s,t] for s in m.Storage)
+    # if StorageFlag is True:
+        # constraint = constraint + sum(m.PowerOutputStorage[s,t] for s in m.Storage)
 
     if has_global_reserves is True:
-        constraint = constraint - m.ReserveRequirement[t]
+        constraint = constraint - m.ReserveUpRequirement[t]
 
-    constraint = constraint == m.TotalDemand[t] + m.GlobalLoadGenerateMismatch[t]
+    #constraint = constraint == m.TotalDemand[t] + m.GlobalLoadGenerateMismatch[t]
+    constraint = constraint >= m.TotalDemand[t] 
 
     return constraint
+def enforce_reserve_down_requirements_rule(m, t, StorageFlag=False,
+                                        NDGFlag=False,
+                                        has_global_reserves=False):
 
+    constraint = sum(m.MinimumPowerAvailable[g, t] for g in m.Generators)
+
+    if NDGFlag is True:
+        constraint = constraint + sum(m.NondispatchablePowerUsed[n,t] for n in m.NondispatchableGenerators)
+
+    # if StorageFlag is True:
+        # constraint = constraint + sum(m.PowerOutputStorage[s,t] for s in m.Storage)
+
+    if has_global_reserves is True:
+        constraint = constraint + m.ReserveDownRequirement[t]
+
+    #constraint = constraint == m.TotalDemand[t] + m.GlobalLoadGenerateMismatch[t]
+    constraint = constraint <= m.TotalDemand[t] 
+
+    return constraint
 def calculate_regulating_reserve_up_available_per_generator(m, g, t):
     return m.RegulatingReserveUpAvailable[g, t] == m.MaximumPowerAvailable[g,t] - m.PowerGenerated[g,t]
 
 def enforce_zonal_reserve_requirement_rule(m, rz, t):
     return sum(m.RegulatingReserveUpAvailable[g,t] for g in m.GeneratorsInReserveZone[rz]) >= m.ZonalReserveRequirement[rz, t]
 
+# def enforce_generator_output_limits_rule_part_a(m, g, t):
+   # return m.MinimumPowerOutput[g] * m.UnitOn[g, t] <= m.PowerGenerated[g,t]
+
 def enforce_generator_output_limits_rule_part_a(m, g, t):
-   return m.MinimumPowerOutput[g] * m.UnitOn[g, t] <= m.PowerGenerated[g,t]
+   return m.MinimumPowerAvailable[g,t] <= m.PowerGenerated[g,t]
 
 def enforce_generator_output_limits_rule_part_b(m, g, t):
    return m.PowerGenerated[g,t] <= m.MaximumPowerAvailable[g, t]
 
 def enforce_generator_output_limits_rule_part_c(m, g, t):
    return m.MaximumPowerAvailable[g,t] <= m.MaximumPowerOutput[g] * m.UnitOn[g, t]
+
+def enforce_generator_output_limits_rule_part_d(m, g, t):
+   return m.MinimumPowerAvailable[g,t] >= m.MinimumPowerOutput[g] * m.UnitOn[g, t]
 
 def enforce_max_available_ramp_up_rates_rule(m, g, t):
    # 4 cases, split by (t-1, t) unit status (RHS is defined as the delta from m.PowerGenerated[g, t-1])
@@ -157,6 +202,26 @@ def enforce_max_available_ramp_down_rates_rule(m, g, t):
                 m.MaximumPowerOutput[g] * m.UnitOn[g, t] + \
                 m.ShutdownRampLimit[g] * (m.UnitOn[g, t-1] - m.UnitOn[g, t])
 
+# Old Constraint (19) 
+# def enforce_ramp_down_limits_rule(m, g, t):
+    # # 4 cases, split by (t-1, t) unit status:
+    # # (0, 0) - unit staying off:   RHS = maximum generator output (degenerate upper bound)
+    # # (0, 1) - unit switching on:  RHS = standard ramp-down limit minus shutdown ramp limit plus maximum generator output - this is the strangest case
+    # #NOTE: This may never be physically true, but if a generator has ShutdownRampLimit >> MaximumPowerOutput, this constraint causes problems
+    # # (1, 0) - unit switching off: RHS = shutdown ramp limit
+    # # (1, 1) - unit staying on:    RHS = standard ramp-down limit
+    # if t == 0:
+        # return m.PowerGeneratedT0[g] - m.PowerGenerated[g, t] <= \
+                # m.NominalRampDownLimit[g] * m.UnitOn[g, t] + \
+                # m.ShutdownRampLimit[g]  * (m.UnitOnT0[g] - m.UnitOn[g, t]) + \
+                # m.MaximumPowerOutput[g] * (1 - m.UnitOnT0[g])
+    # else:
+       # return m.PowerGenerated[g, t-1] - m.PowerGenerated[g, t] <= \
+               # m.NominalRampDownLimit[g]  * m.UnitOn[g, t] + \
+               # m.ShutdownRampLimit[g]  * (m.UnitOn[g, t-1] - m.UnitOn[g, t]) + \
+               # m.MaximumPowerOutput[g] * (1 - m.UnitOn[g, t-1])
+
+# Modified Constraint (19) 
 def enforce_ramp_down_limits_rule(m, g, t):
     # 4 cases, split by (t-1, t) unit status:
     # (0, 0) - unit staying off:   RHS = maximum generator output (degenerate upper bound)
@@ -165,12 +230,12 @@ def enforce_ramp_down_limits_rule(m, g, t):
     # (1, 0) - unit switching off: RHS = shutdown ramp limit
     # (1, 1) - unit staying on:    RHS = standard ramp-down limit
     if t == 0:
-        return m.PowerGeneratedT0[g] - m.PowerGenerated[g, t] <= \
+        return m.PowerGeneratedT0[g] - m.MinimumPowerAvailable[g, t] <= \
                 m.NominalRampDownLimit[g] * m.UnitOn[g, t] + \
                 m.ShutdownRampLimit[g]  * (m.UnitOnT0[g] - m.UnitOn[g, t]) + \
                 m.MaximumPowerOutput[g] * (1 - m.UnitOnT0[g])
     else:
-       return m.PowerGenerated[g, t-1] - m.PowerGenerated[g, t] <= \
+       return m.PowerGenerated[g, t-1] - m.MinimumPowerAvailable[g, t] <= \
                m.NominalRampDownLimit[g]  * m.UnitOn[g, t] + \
                m.ShutdownRampLimit[g]  * (m.UnitOn[g, t-1] - m.UnitOn[g, t]) + \
                m.MaximumPowerOutput[g] * (1 - m.UnitOn[g, t-1])
@@ -344,10 +409,18 @@ def constraint_reserves(model, StorageFlag=False,
                             has_zonal_reserves=False):
 
     if has_global_reserves is True:
-        fn_enforce_reserve_requirements = partial(enforce_reserve_requirements_rule, StorageFlag=StorageFlag,
+        # fn_enforce_reserve_requirements = partial(enforce_reserve_requirements_rule, StorageFlag=StorageFlag,
+                                                # NDGFlag=NDGFlag,
+                                                # has_global_reserves=has_global_reserves)
+        fn_enforce_reserve_up_requirements = partial(enforce_reserve_up_requirements_rule, StorageFlag=StorageFlag,
                                                 NDGFlag=NDGFlag,
                                                 has_global_reserves=has_global_reserves)
-        model.EnforceReserveRequirements = Constraint(model.TimePeriods, rule=fn_enforce_reserve_requirements)
+        fn_enforce_reserve_down_requirements = partial(enforce_reserve_down_requirements_rule, StorageFlag=StorageFlag,
+                                                NDGFlag=NDGFlag,
+                                                has_global_reserves=has_global_reserves)
+        #model.EnforceReserveRequirements = Constraint(model.TimePeriods, rule=fn_enforce_reserve_requirements)
+        model.EnforceReserveUpRequirements = Constraint(model.TimePeriods, rule=fn_enforce_reserve_up_requirements)
+        model.EnforceReserveDownRequirements = Constraint(model.TimePeriods, rule=fn_enforce_reserve_down_requirements)
 
     if has_regulating_reserves is True:
         model.CalculateRegulatingReserveUpPerGenerator = Constraint(model.Generators, model.TimePeriods, rule=calculate_regulating_reserve_up_available_per_generator)
@@ -361,6 +434,7 @@ def constraint_generator_power(model):
     model.EnforceGeneratorOutputLimitsPartA = Constraint(model.Generators, model.TimePeriods, rule=enforce_generator_output_limits_rule_part_a)
     model.EnforceGeneratorOutputLimitsPartB = Constraint(model.Generators, model.TimePeriods, rule=enforce_generator_output_limits_rule_part_b)
     model.EnforceGeneratorOutputLimitsPartC = Constraint(model.Generators, model.TimePeriods, rule=enforce_generator_output_limits_rule_part_c)
+    model.EnforceGeneratorOutputLimitsPartD = Constraint(model.Generators, model.TimePeriods, rule=enforce_generator_output_limits_rule_part_d)
     model.EnforceMaxAvailableRampUpRates = Constraint(model.Generators, model.TimePeriods, rule=enforce_max_available_ramp_up_rates_rule)
     model.EnforceMaxAvailableRampDownRates = Constraint(model.Generators, model.TimePeriods, rule=enforce_max_available_ramp_down_rates_rule)
     model.EnforceNominalRampDownLimits = Constraint(model.Generators, model.TimePeriods, rule=enforce_ramp_down_limits_rule)

@@ -30,13 +30,13 @@ def cli():
 def scuc(data, output, solver):
     click.echo("Running SCUC using PSST TrailVersion")
 
-    click.echo("printing " + data + " : " + data.strip("'"))
-    click.echo("printing output: " + output + " solver: " + solver)
+    #click.echo("printing " + data + " : " + data.strip("'"))
+    #click.echo("printing output: " + output + " solver: " + solver)
     click.echo("SCUC Data is being read")
     c = read_model(data.strip("'"))
     click.echo("SCUC Data is read")
     ##click.echo("printing c:" + c)
-    config = {"segments":(NL+1), 'reserve_factor':0}
+    config = {"segments":(NL+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
     click.echo("Model is built")
     model.solve(solver=solver)
@@ -61,7 +61,7 @@ def scuc(data, output, solver):
 
     uc_df = pd.DataFrame(read_unit_commitment(uc.strip("'")))
     c.gen_status = uc_df.astype(int)
-    config = {"segments":(NL+1), 'reserve_factor':0}
+    config = {"segments":(NL+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
     model.solve(solver=solver)
     click.echo("Model is solved by "+solver)
@@ -92,6 +92,19 @@ def scuc(data, output, solver):
             for t in sorted(instance.TimePeriods):
                 outfile.write("% 1d %6.2f %6.2f %6.2f\n" % (int(results[(g, t)].value + 0.5), resultsPowerGen[(g, t)].value, 0.0, 0.0)) # not sure why DK added 0.0, 0.0
 
+    with open('./Results.dat', 'w') as outfile:
+        instance = model._model
+        SlackVariablePower = {}
+        for b in instance.Buses.value:
+            for t in instance.TimePeriods:
+                SlackVariablePower[(b, t)] = instance.LoadGenerateMismatch[b, t]
+
+        for b in sorted(instance.Buses.value):
+            outfile.write("%s\n" % str(b).ljust(8))
+            for t in sorted(instance.TimePeriods):
+                outfile.write(" %6.2f \n" % (SlackVariablePower[(b, t)].value)) 
+
+
 
 @cli.command()
 @click.option('--uc', default=None, type=click.Path(), help='Path to unit commitment file')
@@ -112,12 +125,23 @@ def sced(uc, data, output, solver):
     #click.echo("SCED Data is read")
     c.gen_status = uc_df.astype(int)
 
-    config = {"segments":(NL+1), 'reserve_factor':0}
+    config = {"segments":(NL+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
     model.solve(solver=solver)
     #click.echo("SCED Model is solved by "+solver)
     Interval = 1
 
+    with open('./ResultsSCED.dat', 'w') as outfile:
+        instance = model._model
+        SlackVariablePower = {}
+        for b in instance.Buses.value:
+            for t in instance.TimePeriods:
+                SlackVariablePower[(b, t)] = instance.LoadGenerateMismatch[b, t]
+
+        for b in sorted(instance.Buses.value):
+            outfile.write("%s\n" % str(b).ljust(8))
+            for t in sorted(instance.TimePeriods):
+                outfile.write(" %6.2f \n" % (SlackVariablePower[(b, t)].value)) 
     with open(output.strip("'"), 'w') as f:
         f.write("LMP\n")
         #click.echo("..." + str(model.results.lmp))  
