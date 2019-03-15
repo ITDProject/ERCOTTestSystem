@@ -15,7 +15,7 @@ SOLVER = os.getenv('PSST_SOLVER', 'cplex')
 #click.echo("Printing PSST_SOLVER:"+SOLVER)
 print("Printing PSST_SOLVER:"+SOLVER)
 
-NL = 4
+NS = 4
 
 @click.group()
 @click.version_option('0.1.0', '--version')
@@ -36,7 +36,7 @@ def scuc(data, output, solver):
     c = read_model(data.strip("'"))
     click.echo("SCUC Data is read")
     ##click.echo("printing c:" + c)
-    config = {"segments":(NL+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
+    config = {"segments":(NS+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
     click.echo("Model is built")
     model.solve(solver=solver)
@@ -61,7 +61,7 @@ def scuc(data, output, solver):
 
     uc_df = pd.DataFrame(read_unit_commitment(uc.strip("'")))
     c.gen_status = uc_df.astype(int)
-    config = {"segments":(NL+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
+    config = {"segments":(NS+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
     model.solve(solver=solver)
     click.echo("Model is solved by "+solver)
@@ -125,7 +125,7 @@ def sced(uc, data, output, solver):
     #click.echo("SCED Data is read")
     c.gen_status = uc_df.astype(int)
 
-    config = {"segments":(NL+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
+    config = {"segments":(NS+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
     model.solve(solver=solver)
     #click.echo("SCED Model is solved by "+solver)
