@@ -64,10 +64,10 @@ public class CaseFileReader {
     private static final String LSE_DATA_LOADCASE = "LoadCase";
     private static final String GEN_FUELTYPE_START = "#GenFuelTypeStart";
     private static final String GEN_FUELTYPE_END = "#GenFuelTypeEnd";
-    private static final String NODE_DATA_START = "#NodeDataStart";
-    private static final String NODE_DATA_END = "#NodeDataEnd";
-    private static final String BRANCH_DATA_START = "#BranchDataStart";
-    private static final String BRANCH_DATA_END = "#BranchDataEnd";
+    private static final String BUS_DATA_START = "#BusDataStart";
+    private static final String BUS_DATA_END = "#BusDataEnd";
+    private static final String LINE_DATA_START = "#LineDataStart";
+    private static final String LINE_DATA_END = "#LineDataEnd";
     private static final String GEN_DATA_START = "#GenDataStart";
     private static final String GEN_DATA_END = "#GenDataEnd";
     private static final String LSE_DATA_FIXED_DEM_START = "#LSEDataFixedDemandStart";
@@ -209,10 +209,10 @@ public class CaseFileReader {
                 parseHasNDG(testConf);
             } else if(currentLine.startsWith(BASE_V)) {
                 parseBASE_V(testConf);
-            } else if(currentLine.equals(NODE_DATA_START)) {
-                parseNodeData(testConf);
-            } else if(currentLine.equals(BRANCH_DATA_START)) {
-                parseBranchData(testConf);
+            } else if(currentLine.equals(BUS_DATA_START)) {
+                parseBusData(testConf);
+            } else if(currentLine.equals(LINE_DATA_START)) {
+                parseLineData(testConf);
             } else if(currentLine.equals(GEN_DATA_START)) {
                 parseGenData(testConf);
             } else if(currentLine.equals(ALERT_GEN_START)) {
@@ -440,7 +440,7 @@ public class CaseFileReader {
     
     
     
-    private void parseNodeData(CaseFileData testConf) throws BadDataFileFormatException {
+    private void parseBusData(CaseFileData testConf) throws BadDataFileFormatException {
         testConf.nodeData = new Object[1][2];
         move();
 
@@ -457,14 +457,14 @@ public class CaseFileReader {
         testConf.nodeData[0][1] = Support.parseDouble(splits[1]);
 
         move();
-        match(NODE_DATA_END);
+        match(BUS_DATA_END);
     }
 
-    private void parseBranchData(CaseFileData testConf) throws BadDataFileFormatException {
+    private void parseLineData(CaseFileData testConf) throws BadDataFileFormatException {
         move();
 
 //        IZoneIndexProvider zoneIdxs = testConf.getZoneNames();
-        ArrayList<String> branchDataList = collectLines(BRANCH_DATA_END);
+        ArrayList<String> branchDataList = collectLines(LINE_DATA_END);
 
         int iBranchNumber = branchDataList.size();
         testConf.branchData = new Object[iBranchNumber][5];
