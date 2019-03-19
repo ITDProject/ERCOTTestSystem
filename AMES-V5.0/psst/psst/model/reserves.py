@@ -36,6 +36,8 @@ def initialize_zonal_reserves(model, buses=None, generator_reserve_zones=_form_g
         buses = model.Buses
     model.ReserveZones = Set(initialize=buses)
     model.ZonalReserveRequirement = Param(model.ReserveZones, model.TimePeriods, default=0.0, mutable=True, within=NonNegativeReals)
+    #model.ZonalReserveUpRequirement = Param(model.ReserveZones, model.TimePeriods, default=0.0, mutable=True, within=NonNegativeReals)
+    #model.ZonalReserveDownRequirement = Param(model.ReserveZones, model.TimePeriods, default=0.0, mutable=True, within=NonNegativeReals)
     model.ReserveZoneLocation = Param(model.Generators, initialize=zone_generator_map)
 
     model.GeneratorsInReserveZone = Set(model.ReserveZones, initialize=generator_reserve_zones)
