@@ -74,7 +74,7 @@ def scuc(data, output, solver):
             for _, lmp in r.iteritems():
                 if lmp is None:
                     lmp = 0
-                outfile.write(str(bn) + ' : ' + str(h + 1) +' : ' + str(lmp) +"\n")
+                outfile.write(str(bn) + ' : ' + str(h + 1) +' : ' + str(round(lmp,2)) +"\n")
                 bn = bn + 1
         outfile.write("END_LMP\n")
 
@@ -150,7 +150,7 @@ def sced(uc, data, output, solver):
             for _, lmp in r.iteritems():
                 if lmp is None:
                     lmp = 0
-                f.write(str(bn) + ' : ' + str(h + 1) +' : ' + str(lmp) +"\n")
+                f.write(str(bn) + ' : ' + str(h + 1) +' : ' + str(round(lmp,2)) +"\n")
                 bn = bn + 1
         f.write("END_LMP\n")
 
