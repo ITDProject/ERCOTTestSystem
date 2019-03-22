@@ -271,7 +271,7 @@ public class PSSTSCED implements SCED {
 		String s = null;
 		System.out.println("Here is the standard output of the command with SCED:\n");
 		while ((s = stdInput.readLine()) != null) {
-			System.out.println("SCED output: "+s);
+			System.out.println("SCED: "+s);
 		}
 
 		// read any errors from the attempted command
@@ -437,11 +437,12 @@ public class PSSTSCED implements SCED {
 				Support.trimAllStrings(p);
 
 				//assume p[0] looks like 'BusN'
-				// TODO - fix below for more than 9 buses
-				p[0] = p[0].substring(p[0].length() - 1, p[0].length());
+                                // commented the following for buses >= 10
+				//p[0] = p[0].substring(p[0].length() - 1, p[0].length());
 				int h = this.stoi(p[1]) - 1; //adjust for array index
 				int b = this.stoi(p[0]) - 1;
 				//deal with the current line to find the lmp.
+                                //System.out.println("b: " + b);
 				lmp[interval][b] = this.stod(p[2]);
                                 //System.out.println("interval p[2]: "+ interval + p[2]);
                                 //lmp[b] = this.stod(p[2]);

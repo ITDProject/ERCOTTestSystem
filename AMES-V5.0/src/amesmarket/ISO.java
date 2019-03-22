@@ -161,7 +161,7 @@ public class ISO {
             System.out.println("iso.RTMOperation is called at h:" + h + " interval: " + interval + " m: " + m);
             // evaluateRealTimeBidsOffers(h, d); // fncs.get_events() is called to receive RTM forecast (ISO does it in BUC)
             double[][] realtimeload = this.getRealTimeLoad(h, d);
-            System.out.println("realtime load: ");
+            //System.out.println("realtime load: ");
             // Added additionally
             //this.rtm.realTimeOperation(h, d);
 //            for (int count = 0; count < this.genScheduleRT.size(); count++) {
@@ -271,7 +271,7 @@ public class ISO {
 
         int ColSize = this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR; // previous usage was this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR //TODO:Swathi - check
 
-        System.out.println("printing size of RTL array: " + ColSize);
+        //System.out.println("printing size of RTL array: " + ColSize);
         double[][] hourlyLoadProfileByLSE = new double[J][ColSize];
         double[][] hourlyNDGProfileByBus = new double[L][ColSize];
 
@@ -331,7 +331,7 @@ public class ISO {
             for (int k = 0; k < (ColSize); k++) {
                 hourlyLoadProfileByLSE[j][k] = this.dam.getLoadProfileByLSE()[j][h]; //400; //temp[j];
             }
-                System.out.println("h: "+ h + " : " + hourlyLoadProfileByLSE[j][0]);
+                //System.out.println("h: "+ h + " : " + hourlyLoadProfileByLSE[j][0]);
         }
 
         return hourlyLoadProfileByLSE;
