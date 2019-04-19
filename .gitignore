@@ -6,3 +6,10 @@
 
 # out file
 *.out
+
+# build directory
+**/build
+
+# __pycached directory
+**/__pycache__
+
