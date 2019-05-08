@@ -50,6 +50,7 @@ public class CaseFileReader {
     //TOKENS
     private static final String BASE_S = "BASE_S";
     private static final String BASE_V = "BASE_V";
+    private static final String RTM = "RTMInterval";
     private static final String MAX_DAY = "MaxDay";
     private static final String RANDOM_SEED = "RandomSeed";
     private static final String CAP_MARGIN = "Capacity_Margin";
@@ -189,6 +190,8 @@ public class CaseFileReader {
         while (inputReader.hasNext() && move()) {
             if(currentLine.startsWith(BASE_S)) {
                 parseBASE_S(testConf);
+            } else if(currentLine.startsWith(RTM)) {
+                parseRTM(testConf);
             } else if(currentLine.startsWith(MAX_DAY)) {
                 parseMaxDay(testConf);
             } else if(currentLine.startsWith(RANDOM_SEED)) {
@@ -338,6 +341,11 @@ public class CaseFileReader {
     private void parseMaxDay(CaseFileData testConf) throws BadDataFileFormatException {
         testConf.iMaxDay = Integer.parseInt(
                                splitValueFromKey(currentLine, MAX_DAY));
+    }
+        // RTM
+    private void parseRTM(CaseFileData testConf) throws BadDataFileFormatException {
+        testConf.RTM = Integer.parseInt(
+                               splitValueFromKey(currentLine, RTM));
     }
 
     /**
