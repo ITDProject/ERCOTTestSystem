@@ -25,7 +25,7 @@ import amesmarket.extern.common.CommitmentDecision;
 
 /**
  *
- * Write the data files used to transfer infermation over to the various coopr
+ * Write the data files used to transfer information over to the various coopr
  * programs.
  *
  * @author Sean L. Mooney
