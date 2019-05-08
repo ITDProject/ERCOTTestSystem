@@ -89,6 +89,7 @@ public class CaseFileData {
     public boolean bGenLearningDataSet = false;
 
     public long RandomSeed;
+    public int RTM;
     public int iMaxDay;
     public double dThresholdProbability;
     public double hasStorage;
@@ -149,6 +150,7 @@ public class CaseFileData {
 
     public CaseFileData() {
         RandomSeed = 695672061;
+        RTM = 15;
         iMaxDay = 50;
         dThresholdProbability = 0.999;
         dDailyNetEarningThreshold = 10.0;

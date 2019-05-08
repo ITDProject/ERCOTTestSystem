@@ -55,10 +55,14 @@ public class AMESMarket extends SimModelImpl {
     public static final int NUM_HOURS_PER_DAY = 24;
     public static final int NUM_HOURS_PER_DAY_UC = 24; // Number of hours for UC
 
-    public static final int M = 5; // Interval length => should divide 60
-    public static final int INTERVAL_SIZE = 1; // represents intervla size in minutes - M/INTERVAL_SIZE gives number of time slots in every interval
-    public static final int NUM_INTERVALS_PER_HOUR = 60/M; // Interval length
-    public static final int NUM_INTERVALS_PER_DAY = NUM_HOURS_PER_DAY * NUM_INTERVALS_PER_HOUR;
+    //public static final int M = 5; // Interval length => should divide 60
+    public static final int INTERVAL_SIZE = 1; // represents interval size in minutes - M/INTERVAL_SIZE gives number of time slots in every interval
+    //public static final int NUM_INTERVALS_PER_HOUR = 60/M; // Interval length
+    //public static final int NUM_INTERVALS_PER_DAY = NUM_HOURS_PER_DAY * NUM_INTERVALS_PER_HOUR;
+    
+    public int M;
+    public int NUM_INTERVALS_PER_HOUR;
+    public int NUM_INTERVALS_PER_DAY;
     
     public double COOLING;
     public double EXPERIMENTATION;
@@ -304,6 +308,9 @@ public class AMESMarket extends SimModelImpl {
         day = 1;
         isConverged = false;
         dayMax = DAY_MAX;
+        
+        NUM_INTERVALS_PER_HOUR = 60/M;
+        NUM_INTERVALS_PER_DAY = NUM_HOURS_PER_DAY * NUM_INTERVALS_PER_HOUR;
 
         transGrid = new TransGrid(nodeData, branchData, gridXSize, gridYSize);
 
@@ -325,7 +332,7 @@ public class AMESMarket extends SimModelImpl {
         System.out.println("Print the Simulation Controls: \n");
         //System.out.println("Print the derived learning random seed for each GenAgent:" + "\n");
         //printLearningRandomSeeds();
-
+        System.out.println("M: "+ M);
         System.out.println("Print the Stopping Rule:");
         if (bMaximumDay) {
             System.out.println("\t   (1) Maximum Day Check. The user-specified maximum day: " + DAY_MAX);
@@ -679,7 +686,7 @@ public class AMESMarket extends SimModelImpl {
                 //}
                 //System.out.println("time_granted: " + time_granted);
                 //Performs market operation after receiving events from FNCS (JNIfncs.get_events() is added to methods called in ISO)
-                iso.marketOperation(min, interval, hour, day);                  // Future Work: add minute to marketOperation for 5 minute RT LMP
+                iso.marketOperation(min, interval, hour, day);                  
 
                 //requests time_request for every hour in order to publish LMPs hourly
                 if (day > 1) {
@@ -1172,8 +1179,9 @@ public class AMESMarket extends SimModelImpl {
         }
     }
 
-    public void InitSimulationParameters(int iMax, boolean bMax, double dThreshold, boolean bThresh, double dEarningThreshold, boolean bEarningThresh, int iEarningStart, int iEarningLength, int iStart, int iLength, double dCheck, boolean bCheck, int iLearnStart, int iLearnLength, double dLearnCheck, boolean bLearnCheck, double dGCap, double dLseCap, long lRandom, int iPriceSensitiveLSE, String shostName, String sdatabaseName, String suserName, String spassword, CaseFileData cfd) {
+    public void InitSimulationParameters(int RTM, int iMax, boolean bMax, double dThreshold, boolean bThresh, double dEarningThreshold, boolean bEarningThresh, int iEarningStart, int iEarningLength, int iStart, int iLength, double dCheck, boolean bCheck, int iLearnStart, int iLearnLength, double dLearnCheck, boolean bLearnCheck, double dGCap, double dLseCap, long lRandom, int iPriceSensitiveLSE, String shostName, String sdatabaseName, String suserName, String spassword, CaseFileData cfd) {
         DAY_MAX = iMax;
+        M = RTM;
         bMaximumDay = bMax;
         dThresholdProbability = dThreshold;
         bThreshold = bThresh;

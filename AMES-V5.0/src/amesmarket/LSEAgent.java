@@ -139,13 +139,13 @@ public class LSEAgent implements Drawable {
                     if (events[i].equals("loadforecastDAM_h" + String.valueOf(j))) {
                         System.out.println("receiving DAM loadforecast: " + values[0]);
                         //System.out.println("i:"+i);
-                        temp[j] = loadProfile[j] + Double.parseDouble(values[0]);
+                        temp[j] = Double.parseDouble(values[0]); // loadProfile[j] + Double.parseDouble(values[0]);
                     }
                     //System.out.println("temp - loadforecast: " + temp[j]);
                 }
             }
             for (int i = 0; i < 24; i++) {
-                loadForecast[i] = 400; //temp value needs to be changed back to temp[i];//ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
+                loadForecast[i] = temp[i]; //ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
             }
             return loadProfile; // loadForecast; // temp fixed to loadProfile
         } else {

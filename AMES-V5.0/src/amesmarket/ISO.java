@@ -141,7 +141,7 @@ public class ISO {
         final int tomorrow = d + 1;
         //System.out.println("time_granted: "+ames.getTimeGranted());
         if (h == 1 && m == 0) { // previously h == 0
-            dam.dayAheadOperation(h, d);  // fncs.get_events() is called to receive DAM forecast (LSE)
+            dam.dayAheadOperation(h, d);  // fncs.get_events() is called to receive DAM forecast (inside submitLoadProfile method of LSE)
 
             //newly added
             this.loadProfileByLSE = this.dam.getLoadProfileByLSE();
@@ -160,7 +160,7 @@ public class ISO {
             }
             System.out.println("iso.RTMOperation is called at h:" + h + " interval: " + interval + " m: " + m);
             // evaluateRealTimeBidsOffers(h, d); // fncs.get_events() is called to receive RTM forecast (ISO does it in BUC)
-            double[][] realtimeload = this.getRealTimeLoad(h, d);
+            double[][] realtimeload = this.getRealTimeLoad(h, d); // fncs.get_events() is called to receive RTM forecast
             //System.out.println("realtime load: ");
             // Added additionally
             //this.rtm.realTimeOperation(h, d);
@@ -284,7 +284,7 @@ public class ISO {
 
             for (int j = 0; j < J; j++) {
                 if (events[i].equals("loadforecastRTM_" + String.valueOf(j + 1))) { //assuming the received forecast is net forecast
-                    System.out.println("receiving loadforecast: " + values[0]);
+                    System.out.println("receiving RTM loadforecast: " + values[0]);
 
                     //Hourly forecast is converted uniformly into per interval forecast
                     for (int k = 0; k < (ColSize); k++) {
@@ -294,39 +294,17 @@ public class ISO {
                 }
 //                if (events[i].equals("ndgforecastRTM_" + String.valueOf(j + 1))) {
 //                    System.out.println("receiving ndgforecast: " + values[0]);
-//
 //                    //Hourly forecast is converted uniformly into per interval forecast
 //                    for (int k = 0; k < (ColSize); k++) {
 //                        hourlyNDGProfileByBus[j][k] = Double.parseDouble(values[0]);
 //                        hourlyLoadProfileByLSE[j][k] = hourlyLoadProfileByLSE[j][k] - hourlyNDGProfileByBus[j][k];
-//                        //System.out.println("i:"+i);
 //                    }
 //                }
             }
         }
 
-        //Updating NetLoadForecast
-        /*
-        for (int j = 0; j < J; j++) {
-            for(int k = 0; k < (this.ames.TAU * this.ames.NUM_INTERVALS_PER_HOUR); k++){
-                hourlyLoadProfileByLSE[j][k] = hourlyLoadProfileByLSE[j][k] - hourlyNDGProfileByBus[j][k];
-            }
-        }
-         */
-        //temporary - constant assignment to hourlyloadprofile
-        /*
-        for (int j = 0; j < J; j++) {
-            hourlyLoadProfileByLSE[j] = 250;//ToDo- Double.parseDouble(rs.getString("LSE"+(j+1)));    
-            System.out.println("hourlyLoadProfileByLSE: " + hourlyLoadProfileByLSE[j]);
-        }
-         */
-        // temp fix
-        //double[] temp = new double[J];
-        //temp[0] = 15167.5; temp[1] = 14875.0; temp[2] = 331.6; temp[3] = 3634.4;
-        //temp[4] = 7603.6; temp[5] = 427.5; temp[6] = 5646.0; temp[7] = 113.8;
         //System.out.println("Num LSEs: " + J);
         for (int j = 0; j < J; j++) {
-            //System.out.println("Temp RealTime Load: ");
             //Hourly forecast is temparorily set uniformly into per minute forecast
             for (int k = 0; k < (ColSize); k++) {
                 hourlyLoadProfileByLSE[j][k] = this.dam.getLoadProfileByLSE()[j][h]; //400; //temp[j];
