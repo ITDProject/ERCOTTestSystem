@@ -137,6 +137,7 @@ public class AMESFrame  extends JFrame{
     iRewardSelection=1;
     
     RandomSeed=695672061;
+    RTM = 60;
     iMaxDay=50;
     dThresholdProbability=0.999;
     dDailyNetEarningThreshold=10.0;
@@ -1457,7 +1458,11 @@ public class AMESFrame  extends JFrame{
 
             // BASE_V
             this.baseV = config.baseV;
-
+	    
+            // RTM
+            this.RTM = config.RTM;
+            System.out.println("setupSimFromConfigFile RTM: "+ RTM);
+	    
             //Max Day
             this.iMaxDay = config.iMaxDay;
 
@@ -5227,7 +5232,7 @@ public void InitializeAMESMarket( ) {
             RandomSeed=randomSeedsData[iCurrentRandomSeedsIndex];
     }
     
-    amesMarket.InitSimulationParameters(iMaxDay, bMaximumDay,
+    amesMarket.InitSimulationParameters(RTM, iMaxDay, bMaximumDay,
             dThresholdProbability, bThreshold, dDailyNetEarningThreshold,
             bDailyNetEarningThreshold, iDailyNetEarningStartDay, iDailyNetEarningDayLength,
             iStartDay, iCheckDayLength, dActionProbability,
@@ -5854,6 +5859,7 @@ private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
   private String databaseName;
   private String password;
   private long RandomSeed;
+  private int RTM;
   private int iMaxDay;
   private int priceSensitiveLSE;
   private double dThresholdProbability;
