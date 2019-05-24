@@ -109,7 +109,7 @@ public class PSSTSCED implements SCED {
 		this.I = ames.getNumGenAgents();
 		this.J = ames.getNumLSEAgents();
 		this.H = this.hoursPerDay; //shorter name for local refs.
-                this.NID = ames.NUM_INTERVALS_PER_DAY;
+                this.NID = ames.RTMFrequencyPerDay;
 
 		this.deleteFiles = ames.isDeleteIntermediateFiles();
 	}
@@ -120,17 +120,18 @@ public class PSSTSCED implements SCED {
 	 * to prevent aliasing problems.
 	 */
 	private void createSpaceForSols() {
-		this.dailyCommitment = new double[this.NID][this.I]; // earlier it is initialized to - new double[this.H][this.I]; Changed to NID 
-		this.shutdownCost = new double[this.H][this.I];
-		this.startupCost = new double[this.H][this.I];
-		this.productionCost = new double[this.H][this.I];
+		this.dailyCommitment = new double[ames.M][this.I]; // earlier it is initialized to - new double[ames.M][this.I]; Changed to NID 
+                // earlier all of them are initialized to - new double[ames.M][this.I]; Now H is changed to NID - TODO:check - Swathi
+		this.shutdownCost = new double[ames.M][this.I];
+		this.startupCost = new double[ames.M][this.I];
+		this.productionCost = new double[ames.M][this.I];
                 // previously used
 		// this.dailyLMP        = new double[this.H][this.K];
                 //this.dailyLMP = new double[this.K];
                 this.dailyLMP = new double[this.NID][this.K];
-		this.voltageAngles   = new double[this.H][this.N];
-		this.branchFlow      = new double[this.H][this.N];
-		this.dailyPriceSensitiveDemand = new double [this.H][this.J];
+		this.voltageAngles   = new double[ames.M][this.N];
+		this.branchFlow      = new double[ames.M][this.N];
+		this.dailyPriceSensitiveDemand = new double [ames.M][this.J];
 
 
 		this.hasSolution = new int[this.H];
@@ -221,7 +222,7 @@ public class PSSTSCED implements SCED {
 		//Bootstrap system call to run the SCED.py
 		try {
 			int resCode = this.runPSSTSCED(interval);
-			System.out.println("SCED Result code: " + resCode);
+			System.out.println("SCED Result code: " + resCode +"\n");
 			if (resCode != 0) {
 				throw new RuntimeException(
 						"External SCEC exited with non-zero result code "
@@ -269,13 +270,13 @@ public class PSSTSCED implements SCED {
 
 		// read the output from the command
 		String s = null;
-		System.out.println("Here is the standard output of the command with SCED:\n");
+		System.out.println("\nHere is the standard output of the command with SCED:\n");
 		while ((s = stdInput.readLine()) != null) {
 			System.out.println("SCED: "+s);
 		}
 
 		// read any errors from the attempted command
-		System.err.println("Here is the standard error of the command with SCUC (if any):\n");
+		System.err.println("\nHere is the standard error of the command with SCED (if any):\n");
 		while ((s = stdError.readLine()) != null) {
                         System.out.println("There is error with SCED: ");
 			System.out.println(s);
@@ -305,7 +306,7 @@ public class PSSTSCED implements SCED {
 		//TODO-XXX if this is the correct adaptation of DCOPFJ version, get rid of the 'full' name.
 		double[][] fullVoltAngle = this.voltageAngles;
 
-		for (int h = 0; h < this.hoursPerDay; h++) {
+		for (int h = 0; h < ames.M; h++) {
 			for (int n = 0; n < this.numBranches; n++) {
 				this.branchFlow[h][n] = (1 / this.grid.getReactance()[n])
 						* (fullVoltAngle[h][(int) bi[n][0] - 1] - fullVoltAngle[h][(int) bi[n][1] - 1]);
@@ -494,7 +495,7 @@ public class PSSTSCED implements SCED {
 					try{
 						if(HOUR.equals(keyAndValue[KIDX])) {
 							curHour = Integer.parseInt(keyAndValue[VIDX]);
-							if( (curHour > 0) && (curHour <= PSSTSCED.this.hoursPerDay) ) {
+							if( (curHour > 0) ) { //if( (curHour > 0) && (curHour <= PSSTSCED.this.hoursPerDay) )
 								curHour = curHour -1; //adjust for array index repr.
 							} else {
 								throw new BadDataFileFormatException(this.lineNum,

@@ -146,7 +146,14 @@ def read_model(model_data):
         if l.startswith('param NDGFlag'):
             c.NDGFlag = float(l.split(':=')[1].split(';')[0].replace(' ', ''))
 
-    #click.echo("2 printing c.gencost: " + str(c.gencost))
+    for l in data.splitlines():
+        if l.startswith('param ReserveDownSystemPercent'):
+            c.ReserveDownSystemPercent = float(l.split(':=')[1].split(';')[0].replace(' ', ''))
+        if l.startswith('param ReserveUpSystemPercent'):
+            c.ReserveUpSystemPercent = float(l.split(':=')[1].split(';')[0].replace(' ', ''))
+
+    #click.echo("printing c.ReserveDownSystemPercent: " + str(c.ReserveDownSystemPercent))
+    #click.echo("printing c.ReserveUpSystemPercent: " + str(c.ReserveUpSystemPercent))#click.echo("2 printing c.gencost: " + str(c.gencost))
 
     READ = False
     for l in data.splitlines():
@@ -232,6 +239,46 @@ def read_model(model_data):
     # Make Bus1 slack
     c.bus.loc['Bus1', 'TYPE'] = 3.0
     #click.echo("3 printing c.gencost: " + str(c.gencost))
+
+    # READ = False
+    # DIRECTIVE = 'param: ReserveDownSystemPercent :='
+    # for l in data.splitlines():
+        # if l.strip() == ';':
+            # READ = False
+
+        # if l.strip() == '':
+            # continue
+
+        # if l.startswith('param: ReserveDownSystemPercent :='):
+            # click.echo("ReserveDownSystemPercent: "+str(l))
+            # READ = True
+            # continue
+
+        # if READ is True:
+            # click.echo("printing value: "+str(l))
+            # v = l.split()
+            # c.ReserveDownSystemPercent = float(v.replace(',', '.'))
+            # click.echo("printing: "+c.ReserveUpSystemPercent)
+
+
+    # for l in data.splitlines():
+        # if l.strip() == ';':
+            # READ = False
+
+        # if l.strip() == '':
+            # continue
+
+        # if l.startswith('param: ReserveUpSystemPercent :='):
+            # click.echo("ReserveUpSystemPercent : "+str(l))
+            # READ = True
+            # continue
+
+        # if READ is True:
+            # click.echo("printing value: "+str(l))
+            # v = l.split()
+            # c.ReserveUpSystemPercent = float(v.replace(',', '.'))
+            # click.echo("printing: "+c.ReserveUpSystemPercent)
+
 
     READ = False
     DIRECTIVE = 'param: ProductionCostA0 ProductionCostA1 ProductionCostA2 :='

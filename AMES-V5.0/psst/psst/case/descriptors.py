@@ -105,6 +105,15 @@ class NDGFlag(Descriptor):
     name = 'NDGFlag'
     ty = float
 
+class ReserveDownSystemPercent(Descriptor):
+    ''' Has ReserveDownSystemPercent Variable for a case '''
+    name = 'ReserveDownSystemPercent'
+    ty = float
+
+class ReserveUpSystemPercent(Descriptor):
+    ''' Has ReserveUpSystemPercent Variable for a case '''
+    name = 'ReserveUpSystemPercent'
+    ty = float
 
 class BusName(IndexDescriptor):
     ''' Bus Name Descriptor for a case
@@ -225,7 +234,6 @@ class Period(IndexDescriptor):
         hour = instance.load.index
         instance.bus.index = value
         # TODO : Convert to DateTimeIndex
-
 
 
 class _Attributes(Descriptor):

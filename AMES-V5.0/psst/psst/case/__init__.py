@@ -6,7 +6,7 @@ from builtins import super
 import pandas as pd
 
 from .descriptors import (Name, Version, BaseMVA, BusName, Bus, Branch, BranchName,
-                        Gen, GenName, GenCost, Load, Period, _Attributes, StorageFlag, NDGFlag)
+                        Gen, GenName, GenCost, Load, ReserveDownSystemPercent, ReserveUpSystemPercent, Period, _Attributes, StorageFlag, NDGFlag)
 
 from . import matpower
 
@@ -29,6 +29,8 @@ class PSSTCase(object):
     gen = Gen()
     gencost = GenCost()
     gen_name = GenName()
+    ReserveDownSystemPercent = ReserveDownSystemPercent()
+    ReserveUpSystemPercent = ReserveUpSystemPercent()
     load = Load()
     period = Period()
     _attributes = _Attributes()

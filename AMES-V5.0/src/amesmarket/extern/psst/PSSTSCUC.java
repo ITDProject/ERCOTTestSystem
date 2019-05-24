@@ -27,6 +27,7 @@ import amesmarket.SCUC;
 import amesmarket.Support;
 import amesmarket.extern.common.CommitmentDecision;
 import amesmarket.filereaders.BadDataFileFormatException;
+import java.text.DecimalFormat;
 
 /**
  *
@@ -92,7 +93,7 @@ public class PSSTSCUC implements SCUC {
         //	this.PSSTExt = PSSTConfig.createStochasticPSST(this.referenceModelDir, this.scenarioModelDir, "runefsolprint");
         //	break;
         //case SCUC_DETERM :
-        System.out.print("Running Deterministic SCUC with external call to PSST ");
+        //System.out.print("Running Deterministic SCUC with external call to PSST ");
         this.PSSTExt = PSSTConfig.createDeterministicPSST(new File(this.referenceModelDir, "ReferenceModel.py"),
                 this.referenceFile);
         //	break;
@@ -357,8 +358,9 @@ public class PSSTSCUC implements SCUC {
                 strTemp = ReadLMPFile.nextLine();
                 //System.out.print("strTemp: "+strTemp);
                 String[] data = strTemp.split(":");
+                DecimalFormat LMPFormat = new DecimalFormat("###.####");
                 double lmp = Double.parseDouble(data[2]) / ames.getBaseS();
-                System.out.print(" " + lmp);
+                System.out.print(" " + LMPFormat.format(lmp));
                 this.DAMLMP[j][i] = lmp;
                 i++;
             }

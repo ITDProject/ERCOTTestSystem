@@ -53,7 +53,8 @@ public class CaseFileData {
     public boolean isPU;
     public double baseS;
     public double baseV;
-    public double reserveRequirements;
+    public double ReserveDownSystemPercent;
+    public double ReserveUpSystemPercent;
 
     public Object[][] NDGData;      // Combine 3-sectional to 24-hour NDG data
     public Object[][] NDGSec1Data;  // First 8-hour NDG data
@@ -164,7 +165,8 @@ public class CaseFileData {
         dLearningCheckDifference = 0.001;
         iDailyNetEarningStartDay = 1;
         iDailyNetEarningDayLength = 5;
-        reserveRequirements = 900; //TODOCheck:Swathi
+        ReserveDownSystemPercent = 0.05;
+        ReserveUpSystemPercent = 0.05;  
         hasStorage = 0;
         hasNDG = 0;
 
@@ -758,9 +760,6 @@ public class CaseFileData {
         return storageData;
     }
 
-    public double getReserveRequirements() {
-        return reserveRequirements;
-    }
 
     ///////////////////////////////SCUC ACCESSORS//////////////////////////////
     /*

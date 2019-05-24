@@ -58,20 +58,6 @@ def build_model(case,
     segments = config.pop('segments', 2)
     #reserve_factor = config.pop('reserve_factor', 0)
     #click.echo("segments 2: "+ str(segments))
-    try:
-        reserve_up_factor = case.reserve_up_factor
-        #click.echo("Try: ")
-    except AttributeError:
-        reserve_up_factor = config.pop('reserve_up_factor', 0)
-        #click.echo("reserve_up_factor: "+ str(reserve_up_factor))
-        #click.echo("Except: ")    
-    try:
-        reserve_down_factor = case.reserve_down_factor
-        #click.echo("Try: ")
-    except AttributeError:
-        reserve_down_factor = config.pop('reserve_down_factor', 0)
-        #click.echo("reserve_down_factor: "+ str(reserve_down_factor))
-        #click.echo("Except: ")
 
     # Get case data
     #click.echo("case.gen: "+ str(case.gen))
@@ -80,6 +66,11 @@ def build_model(case,
     load_df = load_df or case.load
     branch_df = branch_df or case.branch
     bus_df = bus_df or case.bus
+    ReserveDownSystemPercent = case.ReserveDownSystemPercent
+    ReserveUpSystemPercent = case.ReserveUpSystemPercent
+
+    #click.echo("ReserveDownSystemPercent: "+ str(ReserveDownSystemPercent))
+    #click.echo("ReserveUpSystemPercent: "+ str(ReserveUpSystemPercent))
     #click.echo("generator_df: "+ str(generator_df))
     #click.echo("load_df: "+ str(load_df))
 
@@ -87,14 +78,15 @@ def build_model(case,
     generator_df.index = generator_df.index.astype(object)
     bus_df.index = bus_df.index.astype(object)
     load_df.index = load_df.index.astype(object)
-    #click.echo("printing T:" + str(load_df.index))
+    #\click.echo("printing T:" + str(load_df.index))
     #click.echo("printing Gen Names:" + str(generator_df.index))
 
     branch_df = branch_df.astype(object)
     generator_df = generator_df.astype(object)
     bus_df = bus_df.astype(object)
     load_df = load_df.astype(object)
-
+    # ReserveDownSystemPercent_df = ReserveDownSystemPercent_df.astype(object)
+    # ReserveUpSystemPercent_df = ReserveUpSystemPercent_df.astype(object)
 
     # Build model information
 
@@ -239,6 +231,7 @@ def build_model(case,
     for i, t in load_df.iterrows():
         for col in columns:
             load_dict[(col, i)] = t[col]
+    #click.echo('load_dict, load_df ' +str(load_dict) + str(load_df))
 
     initialize_demand(model, demand=load_dict)
 
@@ -246,7 +239,7 @@ def build_model(case,
     initialize_model(model)
 
     #initialize_global_reserves(model, reserve_factor=reserve_factor)
-    initialize_global_reserves(model, reserve_up_factor=reserve_up_factor, reserve_down_factor=reserve_down_factor)
+    initialize_global_reserves(model, ReserveDownSystemPercent=ReserveDownSystemPercent, ReserveUpSystemPercent=ReserveUpSystemPercent)
     initialize_regulating_reserves(model, )
     # initialize_zonal_reserves(model, )
 
