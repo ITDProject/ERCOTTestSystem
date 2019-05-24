@@ -5112,8 +5112,11 @@ public class CheckCalculationEndRunnable implements Runnable {
      if(iNodeCount!=config1.iTotalNodeNumber)
          strMessage+="The total bus number in step1 is not equal to the number in step2\n";     
      
-     if(RTM<=0 || RTM%1!=0 || 60%RTM!=0)
-         strMessage+="Hour length is not a multiple of RTMInterval\n";
+    if(RTM<=0 || RTM%1!=0)
+         strMessage+="The RTMDuration parameter should be a positive integer\n";
+    
+    if(RTM<=0 || 60%RTM!=0)
+         strMessage+="60/RTMDuration should be a positive integer\n";
        
     // The following is handles via slack variables in AMES V5.0. Commneting out in AMES V5.0. TODO: Check - Swathi
 //     for(int i=0; i<24; i++){
