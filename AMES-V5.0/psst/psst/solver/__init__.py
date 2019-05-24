@@ -4,7 +4,7 @@ import warnings
 import os
 import click
 from .results import PSSTResults
-
+from pyutilib.services import TempfileManager
 
 PSST_WARNING = os.getenv('PSST_WARNING', 'ignore')
 
@@ -15,7 +15,6 @@ def solve_model(model, solver='glpk', solver_io=None, keepfiles=True, verbose=Tr
         solver = SolverFactory(solver, solver_io=solver_io, is_mip=is_mip)
     else:
         solver = SolverFactory(solver, solver_io=solver_io)
-    #click.echo("In solver 1 "+str(solver_io))
     model.preprocess()
     if is_mip:
         solver.options['mipgap'] = mipgap
@@ -24,10 +23,12 @@ def solve_model(model, solver='glpk', solver_io=None, keepfiles=True, verbose=Tr
 
     with warnings.catch_warnings():
         warnings.simplefilter(PSST_WARNING)
-        resultsPSST = solver.solve(model, suffixes=['dual'], tee=verbose, keepfiles=keepfiles, symbolic_solver_labels=symbolic_solver_labels)
-        #click.echo("solver msg 2 "+str(resultsPSST.solver))
-        #click.echo("solver msg 3 "+str(resultsPSST.solver.status))
-        #click.echo("solver msg 4 "+ str(resultsPSST.solver.termination_condition))
+        TempfileManager.tempdir = "C:\\Users\\swathi\\Dropbox\\AMESLatestVersion\\TESAgents\\PyomoTempFiles" 
+        #click.echo("print check path "+TempfileManager.tempdir)
+        resultsPSST = solver.solve(model, suffixes=['dual'], tee=verbose, keepfiles=True, symbolic_solver_labels=symbolic_solver_labels)
+        #click.echo("solver msg 1 "+str(resultsPSST.solver))
+        #click.echo("solver msg 2 "+str(resultsPSST.solver.status))
+        #click.echo("solver msg 3 "+ str(resultsPSST.solver.termination_condition))
         #click.echo("solver msg " + str(resultsPSST))
 
     #click.echo("End")

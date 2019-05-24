@@ -63,10 +63,11 @@ def scuc(data, output, solver):
     c.gen_status = uc_df.astype(int)
     config = {"segments":(NS+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
+    click.echo("Model is built")
     model.solve(solver=solver)
     click.echo("Model is solved by "+solver)
     click.echo("Model results ")
-    click.echo(" : "+ str(model.results.lmp))
+    click.echo(" : "+ str(round(model.results.lmp,4)))
     with open('./DAMLMP.dat', 'w') as outfile:
         outfile.write("DAMLMP\n")        			
         for h, r in model.results.lmp.iterrows():
@@ -122,13 +123,14 @@ def sced(uc, data, output, solver):
 
     #click.echo("SCED Data is being read") 
     c = read_model(data.strip("'"))
-    #click.echo("SCED Data is read")
+    click.echo("Data is read")
     c.gen_status = uc_df.astype(int)
 
     config = {"segments":(NS+1), 'reserve_up_factor':0.0, 'reserve_down_factor':0.0}
     model = build_model(c,config=config)
+    click.echo("Model is built")
     model.solve(solver=solver)
-    #click.echo("SCED Model is solved by "+solver)
+    click.echo("Model is solved by "+solver)
     Interval = 1
 
     with open('./ResultsSCED.dat', 'w') as outfile:
