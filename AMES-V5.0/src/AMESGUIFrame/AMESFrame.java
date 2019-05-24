@@ -654,8 +654,9 @@ public class AMESFrame  extends JFrame{
             caseFileDirectory = selectCasetDialog.getCurrentDirectory();
             bOpen = true;
             
+            System.out.println("AMESFrame.java started loading user selected case data file: "+caseFile.getName());
             loadCaseFileData( );
-            System.out.println("Load user selected case data file:"+caseFile.getName());
+            System.out.println("AMESFrame.java read input data file: "+caseFile.getName() + "\n");
             
             config1.SetInitParameters(iNodeData, iBranchData, 0, iGenData, iLSEData, baseV, baseS);
             config2.loadData(branchData);
@@ -1427,9 +1428,9 @@ public class AMESFrame  extends JFrame{
  */
  
  private void loadCaseFileData( ) {
-		System.out.println("Loading " + this.caseFile.getPath());
+		System.out.println("AMESFrame.java loads " + this.caseFile.getPath());
 		CaseFileReader cfr = new CaseFileReader();
-                System.out.println("Calling loadCaseFileData Method");
+                System.out.println("Calling loadCaseFileData Method of CaseFileReader");
 		CaseFileData config = cfr.loadCaseFileData(this.caseFile);
 
                 System.out.println("Calling setupSimFromConfigFile with in loadCaseFileData Method");
@@ -1458,13 +1459,14 @@ public class AMESFrame  extends JFrame{
 
             // BASE_V
             this.baseV = config.baseV;
-	    
+
             // RTM
             this.RTM = config.RTM;
             System.out.println("setupSimFromConfigFile RTM: "+ RTM);
-	    
+                    
             //Max Day
             this.iMaxDay = config.iMaxDay;
+            System.out.println("setupSimFromConfigFile iMaxDay: "+ iMaxDay);
 
             //Thresh Prob
             this.dThresholdProbability = config.dThresholdProbability;
@@ -5067,6 +5069,7 @@ public class CheckCalculationEndRunnable implements Runnable {
      if(config1.iTotalLSENumber!=lseData.length)
          strMessage+="The total branch number in step1 is not equal to the number in step5\n";
      
+     
      int iBranch=branchData.length;
      int [] iNode=new int[2*iBranch];
      for(int i=0; i<iBranch*2; i++){
@@ -5107,7 +5110,10 @@ public class CheckCalculationEndRunnable implements Runnable {
      }
      
      if(iNodeCount!=config1.iTotalNodeNumber)
-         strMessage+="The total bus number in step1 is not equal to the number in step2\n";
+         strMessage+="The total bus number in step1 is not equal to the number in step2\n";     
+     
+     if(RTM<=0 || RTM%1!=0 || 60%RTM!=0)
+         strMessage+="Hour length is not a multiple of RTMInterval\n";
        
     // The following is handles via slack variables in AMES V5.0. Commneting out in AMES V5.0. TODO: Check - Swathi
 //     for(int i=0; i<24; i++){
@@ -5157,6 +5163,7 @@ public void InitializeAMESMarket( ) {
     boolean delIntermediateFiles = Boolean.parseBoolean(
 				System.getProperty("DEL_INTER_FILES", "false")
 				);
+    System.out.println("AMESFrame.java initializes AMESMarket object");
     amesMarket = new AMESMarket(delIntermediateFiles);
     double [][] bus=new double[1][2];
     bus[0][0]=Double.parseDouble(nodeData[0][0].toString());
@@ -5232,7 +5239,7 @@ public void InitializeAMESMarket( ) {
             RandomSeed=randomSeedsData[iCurrentRandomSeedsIndex];
     }
     
-    amesMarket.InitSimulationParameters(RTM, iMaxDay, bMaximumDay,
+    amesMarket.InitSimulationParameters(RTM, iMaxDay, this.testcaseConfig.ReserveDownSystemPercent, this.testcaseConfig.ReserveUpSystemPercent, bMaximumDay,
             dThresholdProbability, bThreshold, dDailyNetEarningThreshold,
             bDailyNetEarningThreshold, iDailyNetEarningStartDay, iDailyNetEarningDayLength,
             iStartDay, iCheckDayLength, dActionProbability,
@@ -5240,7 +5247,7 @@ public void InitializeAMESMarket( ) {
             dLearningCheckDifference, bLearningCheck, dGenPriceCap, dLSEPriceCap,
             RandomSeed, priceSensitiveLSE, hostName, databaseName, userName, password, this.testcaseConfig);
     amesMarket.AMESMarketSetupFromGUI(baseS, baseV, bus, branch, gen, lse, NDG, lsePrice, lseHybrid,
-            gencoAlertMarkers, this.testcaseConfig.getSCUCInputData(), this.testcaseConfig.getReserveRequirements(), this.testcaseConfig.getStorageInputData(), hasStorage, hasNDG);
+            gencoAlertMarkers, this.testcaseConfig.getSCUCInputData(), this.testcaseConfig.getStorageInputData(), hasStorage, hasNDG);
 }
 
 private void startItemActionPerformed(java.awt.event.ActionEvent evt) {

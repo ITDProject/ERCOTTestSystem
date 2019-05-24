@@ -50,7 +50,7 @@ public class CaseFileReader {
     //TOKENS
     private static final String BASE_S = "BASE_S";
     private static final String BASE_V = "BASE_V";
-    private static final String RTM = "RTMInterval";
+    private static final String RTM = "RTMDuration";
     private static final String MAX_DAY = "MaxDay";
     private static final String RANDOM_SEED = "RandomSeed";
     private static final String CAP_MARGIN = "Capacity_Margin";
@@ -60,7 +60,9 @@ public class CaseFileReader {
     private static final String SCUC_DET = "Deterministic";
     private static final String SCUC_STOC = "Stochastic";
     private static final String LSE_DATA_SOURCE = "LSEDemandSource";
-    private static final String RESERVE_REQUIREMENTS = "Reserve_Requirement";
+    //private static final String RESERVE_REQUIREMENTS = "Reserve_Requirement";
+    private static final String RESERVE_DOWN_SYSTEM_PERCENT = "ReserveDownSystemPercent";
+    private static final String RESERVE_UP_SYSTEM_PERCENT = "ReserveUpSystemPercent";
     private static final String LSE_DATA_TESTCASE = "TestCase";
     private static final String LSE_DATA_LOADCASE = "LoadCase";
     private static final String GEN_FUELTYPE_START = "#GenFuelTypeStart";
@@ -239,8 +241,10 @@ public class CaseFileReader {
 //                parseZoneNames(testConf);
             } else if(currentLine.equals(GEN_COST_START)) {
                 parseGenCoCosts(testConf);
-            } else if(currentLine.startsWith(RESERVE_REQUIREMENTS)) {
-                parseReserveRequirements(testConf);
+            } else if(currentLine.startsWith(RESERVE_DOWN_SYSTEM_PERCENT)) {
+                parseReserveDownSystemPercent(testConf);
+            } else if(currentLine.startsWith(RESERVE_UP_SYSTEM_PERCENT)) {
+                parseReserveUpSystemPercent(testConf);
             } else if(currentLine.equals(GEN_FUELTYPE_START)) {
                 parseGenCoFuelType(testConf);
             }
@@ -322,9 +326,14 @@ public class CaseFileReader {
         return splits[1];
     }
 
-    private void parseReserveRequirements(CaseFileData testConf) throws BadDataFileFormatException {
-        testConf.reserveRequirements = Support.parseDouble(
-                             splitValueFromKey(currentLine, RESERVE_REQUIREMENTS));
+    private void parseReserveDownSystemPercent(CaseFileData testConf) throws BadDataFileFormatException {
+        testConf.ReserveDownSystemPercent = Support.parseDouble(
+                             splitValueFromKey(currentLine, RESERVE_DOWN_SYSTEM_PERCENT));
+    }
+    
+    private void parseReserveUpSystemPercent(CaseFileData testConf) throws BadDataFileFormatException {
+        testConf.ReserveUpSystemPercent = Support.parseDouble(
+                             splitValueFromKey(currentLine, RESERVE_UP_SYSTEM_PERCENT));
     }
     
     private void parseBASE_S(CaseFileData testConf) throws BadDataFileFormatException {

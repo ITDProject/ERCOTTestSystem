@@ -157,7 +157,8 @@ public class DataFileWriter {
 
         final double[][] branchIndex;
         final double[][] numBranchData;
-        final double reserveRequirements;
+        final double ReserveDownSystemPercent;
+        final double ReserveUpSystemPercent;
         final double hasStorage;
         final double hasNDG;
 
@@ -166,7 +167,8 @@ public class DataFileWriter {
         }
 
         numBranchData = ames.getBranchData();
-        reserveRequirements = ames.getReserveRequirements();
+        ReserveDownSystemPercent = ames.getReserveDownSystemPercent();
+        ReserveUpSystemPercent = ames.getReserveUpSystemPercent();
         branchIndex = ames.getTransGrid().getBranchIndex();
         hasStorage = ames.gethasStorage();
         hasNDG = ames.gethasNDG();
@@ -290,7 +292,28 @@ public class DataFileWriter {
 
             refBufferWriter.write("param NDGFlag := "
                     + hasNDG + " ;\n\n");
+            
+            refBufferWriter.write("param ReserveDownSystemPercent := "
+                    + ReserveDownSystemPercent + " ;\n\n");
 
+            refBufferWriter.write("param ReserveUpSystemPercent := "
+                    + ReserveUpSystemPercent + " ;\n\n");
+//            refBufferWriter.write("param: ReserveDownSystemPercent := \n");
+//
+//            for (int h = 0; h < numIntervalsInSim; h++) {
+//                refBufferWriter.write((h + 1) + " " + ReserveDownSystemPercent + "\n");
+//            }      
+//            
+//            refBufferWriter.write("; \n");
+//            
+//            refBufferWriter.write("param: ReserveUpSystemPercent := \n");
+//
+//            for (int h = 0; h < numIntervalsInSim; h++) {
+//                refBufferWriter.write((h + 1) + " " + ReserveUpSystemPercent + "\n");
+//            }
+//
+//            refBufferWriter.write("; \n");
+            
             refBufferWriter.write("param: NetDemand :=\n");
 
             System.out.println("LoadProfileLSE length: " + LoadProfileLSE[0].length);
@@ -307,7 +330,7 @@ public class DataFileWriter {
                 refBufferWriter.write("\n");
             }
 
-            refBufferWriter.write("; \n");
+            refBufferWriter.write("; \n\n");
 
             // TODO:Swathi - NDG data needs to be written by toggling the following
 //            refBufferWriter.write("param: NDG :=\n");
@@ -325,14 +348,7 @@ public class DataFileWriter {
 //            }
 //
 //            refBufferWriter.write("; \n");
-            refBufferWriter.write("param: ReserveRequirement := \n");
 
-            for (int h = 0; h < numIntervalsInSim; h++) {
-                refBufferWriter.write((h + 1) + " " + reserveRequirements
-                        / baseS + "\n");
-            }
-
-            refBufferWriter.write("; \n");
 
             refBufferWriter
                     .write("param: ProductionCostA0 ProductionCostA1 ProductionCostA2 :=\n");
@@ -384,7 +400,8 @@ public class DataFileWriter {
 
         final double[][] branchIndex;
         final double[][] numBranchData;
-        final double reserveRequirements;
+        final double ReserveDownSystemPercent;
+        final double ReserveUpSystemPercent;
         final double hasStorage;
         final double hasNDG;
 
@@ -393,7 +410,8 @@ public class DataFileWriter {
         }
 
         numBranchData = ames.getBranchData();
-        reserveRequirements = ames.getReserveRequirements();
+        ReserveDownSystemPercent = ames.getReserveDownSystemPercent();
+        ReserveUpSystemPercent = ames.getReserveUpSystemPercent();
         branchIndex = ames.getTransGrid().getBranchIndex();
         hasStorage = ames.gethasStorage();
         hasNDG = ames.gethasNDG();
@@ -488,7 +506,7 @@ public class DataFileWriter {
 
                 refBufferWriter.write(" ;\n");
             }
-
+            System.out.println("numIntervalsInSim: "+numIntervalsInSim);
             refBufferWriter.write("\nparam NumTimePeriods := " + numIntervalsInSim
                     + " ;\n\n");
 
@@ -520,7 +538,27 @@ public class DataFileWriter {
 
             refBufferWriter.write("param NDGFlag := "
                     + hasNDG + " ;\n\n");
+            
+            refBufferWriter.write("param ReserveDownSystemPercent := "
+                    + ReserveDownSystemPercent + " ;\n\n");
 
+            refBufferWriter.write("param ReserveUpSystemPercent := "
+                    + ReserveUpSystemPercent + " ;\n\n");
+//            // Should update reserve requirements by minute
+//            refBufferWriter.write("param: ReserveDownSystemPercent := \n");
+//
+//            for (int h = 0; h < numIntervalsInSim; h++) {
+//                refBufferWriter.write((h + 1) + " " + ReserveDownSystemPercent + "\n");
+//            }      
+//            
+//            refBufferWriter.write("param: ReserveUpSystemPercent := \n");
+//
+//            for (int h = 0; h < numIntervalsInSim; h++) {
+//                refBufferWriter.write((h + 1) + " " + ReserveUpSystemPercent + "\n");
+//            }
+//
+//            refBufferWriter.write("; \n");
+            
             refBufferWriter.write("param: NetDemand :=\n");
 
             for (int i = 0; i < numLSEAgents; i++) {
@@ -538,31 +576,23 @@ public class DataFileWriter {
 
             refBufferWriter.write("; \n");
 
-            refBufferWriter.write("param: NDG :=\n");
+//            refBufferWriter.write("param: NDG :=\n");
+//
+//            for (int i = 0; i < numNDGAgents; i++) {
+//                NDGenAgent ndg = ames.getNDGenAgentList().get(i);
+//                int ndgNode = ndg.getAtNode();
+//
+//                for (int h = 0; h < numIntervalsInSim; h++) {
+//                    refBufferWriter.write("Bus" + ndgNode + " " + (h + 1) + " "
+//                            + ndg.getNDGProfile()[h] / baseS + "\n");
+//                }
+//
+//                refBufferWriter.write("\n");
+//            }
+//
+//            refBufferWriter.write("; \n");
 
-            for (int i = 0; i < numNDGAgents; i++) {
-                NDGenAgent ndg = ames.getNDGenAgentList().get(i);
-                int ndgNode = ndg.getAtNode();
 
-                for (int h = 0; h < numIntervalsInSim; h++) {
-                    refBufferWriter.write("Bus" + ndgNode + " " + (h + 1) + " "
-                            + ndg.getNDGProfile()[h] / baseS + "\n");
-                }
-
-                refBufferWriter.write("\n");
-            }
-
-            refBufferWriter.write("; \n");
-
-            refBufferWriter.write("param: ReserveRequirement := \n");
-
-            // Should update reserve requirements by minute
-            for (int h = 0; h < numIntervalsInSim; h++) {
-                refBufferWriter.write((h + 1) + " " + reserveRequirements
-                        / baseS + "\n");
-            }
-
-            refBufferWriter.write("; \n");
 
             refBufferWriter
                     .write("param: ProductionCostA0 ProductionCostA1 ProductionCostA2 :=\n");

@@ -82,7 +82,7 @@ public class INIT {
   private boolean isPU;
   private static double baseS;
   private static double baseV;
-  private double reserveRequirements;
+  //private double reserveRequirements;
 
   private double[][] NDGData;  // Combine 3-sectional to 24-hour NDG data
   private double[][] NDGSec1Data;  // First 8-hour NDG data
@@ -114,14 +114,6 @@ public class INIT {
   public static double getBaseV(){
      return baseV;
    }
-
-public double getReserveRequirements() {
-    return reserveRequirements;
-}
-
-public void setReserveRequirements(double rR) {
-    reserveRequirements = rR;
-}  
   
   public static void setBaseS(double s){
     baseS=s;

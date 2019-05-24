@@ -293,7 +293,7 @@ public class TransGrid {
       gen.setXY(x,y);
     }
     else{
-      System.out.println();
+      System.out.print("");
     }
   }
 
