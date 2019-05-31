@@ -55,6 +55,7 @@ public class CaseFileData {
     public double baseV;
     public double ReserveDownSystemPercent;
     public double ReserveUpSystemPercent;
+    public int NumberOfReserveZones;
 
     public Object[][] NDGData;      // Combine 3-sectional to 24-hour NDG data
     public Object[][] NDGSec1Data;  // First 8-hour NDG data
@@ -129,6 +130,7 @@ public class CaseFileData {
     private ArrayList<String> canaryGenCos;
 
     private final Map<String, SCUCInputData> scucData;
+    private final Map<String, ZonalData> ZoneData;
     private final Map<String, StorageInputData> storageData;
 
     /**
@@ -167,6 +169,7 @@ public class CaseFileData {
         iDailyNetEarningDayLength = 5;
         ReserveDownSystemPercent = 0.05;
         ReserveUpSystemPercent = 0.05;  
+        NumberOfReserveZones = 1;
         hasStorage = 0;
         hasNDG = 0;
 
@@ -179,6 +182,7 @@ public class CaseFileData {
         canaryGenCos = new ArrayList<String>();
 
         scucData = new HashMap<String, CaseFileData.SCUCInputData>();
+        ZoneData = new HashMap<>();
         storageData = new HashMap<String, CaseFileData.StorageInputData>();
 
         noLoadCosts = new HashMap<String, Double>();
@@ -571,6 +575,12 @@ public class CaseFileData {
         scucData.put(gencoName, sid);
     }
 
+    public void putZoneData(String ZoneName, int[] Buses, double ReserveDownZonalPercent,
+            double ReserveUpZonalPercent) {
+        ZonalData z = new ZonalData(Buses, ReserveDownZonalPercent, ReserveUpZonalPercent);
+
+        ZoneData.put(ZoneName, z);
+    }
     /**
      * Put the Storage data for a single Storage Unit.
      *
@@ -748,7 +758,10 @@ public class CaseFileData {
     public Map<String, SCUCInputData> getSCUCInputData() {
         return scucData;
     }
-
+    
+    public Map<String, ZonalData> getZonalData() {
+        return ZoneData;
+    }
     /**
      * Get a reference to the map storing the input data.
      *
@@ -931,6 +944,31 @@ public class CaseFileData {
         this.hasGenLearningData = b;
     }
 
+        public static class ZonalData {
+
+        private int[] Buses;
+        private double ReserveDownZonalPercent;
+        private double ReserveUpZonalPercent;
+        
+        public ZonalData(int[] Buses, double ReserveDownZonalPercent, double ReserveUpZonalPercent) {
+            this.Buses = Buses;
+            this.ReserveDownZonalPercent = ReserveDownZonalPercent;
+            this.ReserveUpZonalPercent = ReserveUpZonalPercent;
+        }
+        
+        public int[] getBuses() {
+            return Buses;
+        }
+        
+        public double getReserveDownZonalPercent() {
+            return ReserveDownZonalPercent;
+        }
+        
+        public double getReserveUpZonalPercent() {
+            return ReserveUpZonalPercent;
+        }
+        
+        }
     /**
      * {@link #hasGenLearningData()}.
      */

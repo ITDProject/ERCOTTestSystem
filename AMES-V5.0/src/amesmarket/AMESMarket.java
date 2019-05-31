@@ -98,6 +98,7 @@ public class AMESMarket extends SimModelImpl {
     private int numStorageAgents;
     private double ReserveDownSystemPercent;
     private double ReserveUpSystemPercent;
+    private int NumberOfReserveZones;
     private double[][] nodeData;
     private double[][] branchData;
     private double[][] genData;
@@ -990,6 +991,10 @@ public class AMESMarket extends SimModelImpl {
         ReserveUpSystemPercent = rR;
     }
     
+    public CaseFileData getTestCaseConfig() {
+        return testcaseConfig;
+    }
+    
     public double[][] getBranchData() {
         return branchData;
     }
@@ -1242,6 +1247,7 @@ public class AMESMarket extends SimModelImpl {
         ReserveUpSystemPercent = RUS;
         RANDOM_SEED = (int) lRandom;
         testcaseConfig = cfd;
+        NumberOfReserveZones = cfd.NumberOfReserveZones;
     }
 
     public void SetRandomSeed(long lSeed) {

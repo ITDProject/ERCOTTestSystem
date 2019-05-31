@@ -617,7 +617,9 @@ public class Support {
             return Double.parseDouble(string.replace(",", "."));
     }
 
-
+    public static double parseInt(String string) {
+            return Integer.parseInt(string);
+    }
   
   
 }

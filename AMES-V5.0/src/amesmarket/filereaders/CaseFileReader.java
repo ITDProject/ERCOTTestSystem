@@ -34,6 +34,7 @@ import amesmarket.CaseFileData.GenData;
 import amesmarket.NumberRecognizer;
 import amesmarket.SCUC;
 import amesmarket.Support;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -87,6 +88,9 @@ public class CaseFileReader {
     private static final String ALERT_GEN_END   = "#AlertGenCoEnd";
     private static final String SCUC_INPUT_DATA_START = "#ScucInputDataStart";
     private static final String SCUC_INPUT_DATA_END = "#ScucInputDataEnd";
+    private static final String NUMBER_RESERVE_ZONES = "NumberOfReserveZones";
+    private static final String ZONE_DATA_START = "#ZoneDataStart";
+    private static final String ZONE_DATA_END = "#ZoneDataEnd";
     private static final String HAS_STORAGE = "StorageFlag";
     private static final String HAS_NDG = "NDGFlag";   
     private static final String STORAGE_INPUT_DATA_START = "#StorageInputDataStart";
@@ -224,6 +228,8 @@ public class CaseFileReader {
                 parseAlertGenCos(testConf);
             } else if(currentLine.equals(SCUC_INPUT_DATA_START)) {
                 parseScucInputData(testConf);
+            } else if(currentLine.equals(ZONE_DATA_START)) {
+                parseZoneData(testConf);
             } else if(currentLine.equals(STORAGE_INPUT_DATA_START)) {
                 parseStorageInputData(testConf);
             } else if(currentLine.equals(LSE_DATA_FIXED_DEM_START)) {
@@ -245,6 +251,8 @@ public class CaseFileReader {
                 parseReserveDownSystemPercent(testConf);
             } else if(currentLine.startsWith(RESERVE_UP_SYSTEM_PERCENT)) {
                 parseReserveUpSystemPercent(testConf);
+            } else if(currentLine.startsWith(NUMBER_RESERVE_ZONES)) {
+                parseNumberOfReserveZones(testConf);
             } else if(currentLine.equals(GEN_FUELTYPE_START)) {
                 parseGenCoFuelType(testConf);
             }
@@ -334,6 +342,11 @@ public class CaseFileReader {
     private void parseReserveUpSystemPercent(CaseFileData testConf) throws BadDataFileFormatException {
         testConf.ReserveUpSystemPercent = Support.parseDouble(
                              splitValueFromKey(currentLine, RESERVE_UP_SYSTEM_PERCENT));
+    }
+    
+    private void parseNumberOfReserveZones(CaseFileData testConf) throws BadDataFileFormatException {
+        testConf.NumberOfReserveZones = Integer.parseInt(
+                             splitValueFromKey(currentLine, NUMBER_RESERVE_ZONES));
     }
     
     private void parseBASE_S(CaseFileData testConf) throws BadDataFileFormatException {
@@ -628,7 +641,36 @@ public class CaseFileReader {
         }
     }
 
+    private void parseZoneData(CaseFileData testConf) throws BadDataFileFormatException {
+        move();
+        ArrayList<String> ZoneData = collectLines(ZONE_DATA_END);
 
+        for (String s : ZoneData) {
+            try {
+                //Split the line at white space.
+                String[] lineElems = s.split(WS_REG_EX);
+                //System.out.println(""+lineElems[1]); 
+                String[] sTemp = lineElems[1].split(",");
+                int[] tempArray = new int[sTemp.length];
+                //System.out.println(""+Arrays.toString(sTemp));
+                for (int i=0; i<sTemp.length; i++){
+                    //System.out.println("sTemp[i]:"+sTemp[i]);
+                    tempArray[i] = Integer.parseInt(sTemp[i]);
+                    //System.out.println("tempArray[i]:"+tempArray[i]);
+                }
+                System.out.println("");
+                testConf.putZoneData(lineElems[0],
+                        tempArray,//Buses
+                        numRecog.stod(lineElems[2]),//ReserveDownZonalPercent
+                        numRecog.stod(lineElems[3])//ReserveUpZonalPercent
+                );
+            } catch (NumberFormatException nfe) {
+                throw new BadDataFileFormatException(inputReader.sourceFile,
+                        inputReader.lineNum,
+                        "Problem in ZoneData section. " + nfe.getMessage());
+            }
+        }
+    }
     /**
      * Parse/read the data for the Storage input.
      * Assume a single data line looks like:
