@@ -3,7 +3,7 @@ import click
 
 import pandas as pd
 
-from .model import (create_model, initialize_buses,
+from .model import (create_model, initialize_buses, initialize_zones,
                 initialize_time_periods, initialize_model, Suffix
                     )
 from .network import (initialize_network, derive_network, calculate_network_parameters, enforce_thermal_limits)
@@ -38,6 +38,10 @@ def build_model(case,
                 load_df=None,
                 branch_df=None,
                 bus_df=None,
+                zonalData=None,
+                zonalBusData=None,
+                ReserveDownZonalPercent=None,
+                ReserveUpZonalPercent=None,
                 previous_unit_commitment_df=None,
                 base_MVA=None,
                 base_KV=1,
@@ -52,7 +56,9 @@ def build_model(case,
     if config is None:
         config = dict()
 
-    #click.echo("segments 1: "+ str(config))
+    #click.echo("zonalData 1: "+ str(ReserveUpZonalPercent))
+    #click.echo("printing zonalData['Zones']:" + str(zonalData) + str(zonalBusData))
+
     # Get configuration parameters from dictionary
     use_ptdf = config.pop('use_ptdf', False)
     segments = config.pop('segments', 2)
@@ -66,6 +72,7 @@ def build_model(case,
     load_df = load_df or case.load
     branch_df = branch_df or case.branch
     bus_df = bus_df or case.bus
+    #zone_df = zone_df or case.zone
     ReserveDownSystemPercent = case.ReserveDownSystemPercent
     ReserveUpSystemPercent = case.ReserveUpSystemPercent
 
@@ -77,14 +84,19 @@ def build_model(case,
     branch_df.index = branch_df.index.astype(object)
     generator_df.index = generator_df.index.astype(object)
     bus_df.index = bus_df.index.astype(object)
+    #zone_df.index = zone_df.index.astype(object)
     load_df.index = load_df.index.astype(object)
     #\click.echo("printing T:" + str(load_df.index))
-    #click.echo("printing Gen Names:" + str(generator_df.index))
+    #click.echo("printing generator_df.index:" + str(generator_df.index))
+    #click.echo("printing bus_df.index:" + str(bus_df.index))
 
     branch_df = branch_df.astype(object)
     generator_df = generator_df.astype(object)
     bus_df = bus_df.astype(object)
+    #zone_df = zone_df.astype(object)
     load_df = load_df.astype(object)
+    #click.echo("generator_df: "+ str(generator_df))
+
     # ReserveDownSystemPercent_df = ReserveDownSystemPercent_df.astype(object)
     # ReserveUpSystemPercent_df = ReserveUpSystemPercent_df.astype(object)
 
@@ -94,6 +106,7 @@ def build_model(case,
 
     initialize_buses(model, bus_names=bus_df.index)
     initialize_time_periods(model, time_periods=list(load_df.index))
+    #initialize_zones(model, zone_names=zonalData['Zones'], buses_at_each_zone=zonalBusData)
 
     # Build network data
     initialize_network(model, transmission_lines=list(branch_df.index), bus_from=branch_df['F_BUS'].to_dict(), bus_to=branch_df['T_BUS'].to_dict())
@@ -115,6 +128,8 @@ def build_model(case,
 
     for i, g in generator_df.iterrows():
         generator_at_bus[g['GEN_BUS']].append(i)
+
+    #click.echo("printing generator_at_bus:" + str(generator_at_bus))
 
     initialize_generators(model,
                         generator_names=generator_df.index,
@@ -241,7 +256,7 @@ def build_model(case,
     #initialize_global_reserves(model, reserve_factor=reserve_factor)
     initialize_global_reserves(model, ReserveDownSystemPercent=ReserveDownSystemPercent, ReserveUpSystemPercent=ReserveUpSystemPercent)
     initialize_regulating_reserves(model, )
-    # initialize_zonal_reserves(model, )
+    initialize_zonal_reserves(model, zone_names=zonalData['Zones'], buses_at_each_zone=zonalBusData, ReserveDownZonalPercent=ReserveDownZonalPercent, ReserveUpZonalPercent=ReserveUpZonalPercent)
 
     # impose Pyomo Constraints
     if case.StorageFlag == 0:

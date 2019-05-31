@@ -121,8 +121,7 @@ def read_model(model_data):
     #click.echo("printing file path: " + os.path.join(current_directory, '../cases/case.m'))
     #click.echo("printing c: " + str(c))
 
-    
-	#click.echo("1 printing c.gencost: " + str(c.gencost))
+    #click.echo("1 printing c.gencost: " + str(c.gencost))
     ag = find_generators(data)
     for g in ag:
         c.gen.loc[g] = c.gen.loc['GenCo0']
@@ -154,6 +153,44 @@ def read_model(model_data):
 
     #click.echo("printing c.ReserveDownSystemPercent: " + str(c.ReserveDownSystemPercent))
     #click.echo("printing c.ReserveUpSystemPercent: " + str(c.ReserveUpSystemPercent))#click.echo("2 printing c.gencost: " + str(c.gencost))
+
+    zonalData = {'NumberOfZones': 0, 'Zones': ''}
+
+    for l in data.splitlines():
+        if l.startswith('param NumberOfZones'):
+            zonalData['NumberOfZones'] = float(l.split(':=')[1].split(';')[0].replace(' ', ''))
+
+    for l in data.splitlines():
+        DIRECTIVE = 'set Zones := '
+        if l.startswith(DIRECTIVE):
+            zonalData['Zones'] = l.split(DIRECTIVE)[1].strip(';').split()
+
+    ReserveDownZonalPercent = {}
+    ReserveUpZonalPercent = {}
+    zonalBusData = {}
+
+    READ = False
+    for l in data.splitlines():
+        if l.strip() == ';':
+            READ = False
+        if l.startswith('param: Buses ReserveDownZonalPercent ReserveUpZonalPercent'):
+            READ = True
+            continue
+        if READ is True:
+            z, Buses, RDZP, RUZP = l.split(" ")
+            #click.echo('z, Buses, RDZP, RUZP'+ str(z)+str(Buses)+str(RDZP)+str(RUZP))
+            #c.gen.loc[g, 'PMAX'] = float(max_g.replace(',', '.'))  # Handle europe number format TODO: use better fix!
+            ReserveDownZonalPercent[z] = float(RDZP)
+            ReserveUpZonalPercent[z] = float(RUZP)
+            BusTrim = Buses[:-1]
+            BusSplit = BusTrim.split(',')
+            #click.echo('BusSplit'+ str(BusSplit))
+            zonalBusData[z] = BusSplit
+
+    #click.echo("print zonalData: " + str(zonalData))
+    #click.echo("print ReserveDownZonalPercent: " + str(ReserveDownZonalPercent))
+    #click.echo("print ReserveUpZonalPercent: " + str(ReserveUpZonalPercent))
+    #click.echo("print zonalBusData: " + str(zonalBusData))
 
     READ = False
     for l in data.splitlines():
@@ -304,4 +341,4 @@ def read_model(model_data):
     #click.echo("printing c.gencost.loc: " + str(c.gencost.loc))
     #click.echo("printing c.gencost: " + str(c.gencost))
     #click.echo("printing c: " + str(c))
-    return c
+    return c, zonalData, zonalBusData, ReserveDownZonalPercent, ReserveUpZonalPercent

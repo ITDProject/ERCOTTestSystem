@@ -137,11 +137,28 @@ def enforce_reserve_down_requirements_rule(m, t, StorageFlag=False,
     constraint = constraint <= m.TotalDemand[t] 
 
     return constraint
-def calculate_regulating_reserve_up_available_per_generator(m, g, t):
-    return m.RegulatingReserveUpAvailable[g, t] == m.MaximumPowerAvailable[g,t] - m.PowerGenerated[g,t]
 
-def enforce_zonal_reserve_requirement_rule(m, rz, t):
-    return sum(m.RegulatingReserveUpAvailable[g,t] for g in m.GeneratorsInReserveZone[rz]) >= m.ZonalReserveRequirement[rz, t]
+def enforce_zonal_reserve_down_requirement_rule(m, rz, t):
+    constraint = sum(m.MinimumPowerAvailable[g, t] for g in m.GeneratorsInReserveZone[rz])
+
+    constraint = constraint <= (1 - m.ReserveDownZonalPercent[rz])* sum(m.Demand[d, t] for d in m.DemandInReserveZone[rz]) 
+
+    return constraint
+    # return sum(m.MinimumPowerAvailable[g, t] for g in m.GeneratorsInReserveZone[rz]) <= (1 - m.ReserveDownZonalPercent[rz])* sum(m.Demand[d, t] for d in m.DemandInReserveZone[rz])
+
+def enforce_zonal_reserve_up_requirement_rule(m, rz, t):
+    constraint = sum(m.MaximumPowerAvailable[g, t] for g in m.GeneratorsInReserveZone[rz])
+
+    constraint = constraint >= (1 + m.ReserveUpZonalPercent[rz])* sum(m.Demand[d, t] for d in m.DemandInReserveZone[rz]) 
+
+    return constraint
+    # return sum(m.MaximumPowerAvailable[g, t] for g in m.GeneratorsInReserveZone[rz]) >= (1 + m.ReserveUpZonalPercent[rz])* sum(m.Demand[d, t] for d in m.DemandInReserveZone[rz])
+
+# def calculate_regulating_reserve_up_available_per_generator(m, g, t):
+    # return m.RegulatingReserveUpAvailable[g, t] == m.MaximumPowerAvailable[g,t] - m.PowerGenerated[g,t]
+
+# def enforce_zonal_reserve_requirement_rule(m, rz, t):
+    # return sum(m.RegulatingReserveUpAvailable[g,t] for g in m.GeneratorsInReserveZone[rz]) >= m.ZonalReserveRequirement[rz, t]
 
 # def enforce_generator_output_limits_rule_part_a(m, g, t):
    # return m.MinimumPowerOutput[g] * m.UnitOn[g, t] <= m.PowerGenerated[g,t]
@@ -422,11 +439,13 @@ def constraint_reserves(model, StorageFlag=False,
         model.EnforceReserveUpRequirements = Constraint(model.TimePeriods, rule=fn_enforce_reserve_up_requirements)
         model.EnforceReserveDownRequirements = Constraint(model.TimePeriods, rule=fn_enforce_reserve_down_requirements)
 
-    if has_regulating_reserves is True:
-        model.CalculateRegulatingReserveUpPerGenerator = Constraint(model.Generators, model.TimePeriods, rule=calculate_regulating_reserve_up_available_per_generator)
+    # if has_regulating_reserves is True:
+        # model.CalculateRegulatingReserveUpPerGenerator = Constraint(model.Generators, model.TimePeriods, rule=calculate_regulating_reserve_up_available_per_generator)
 
     if has_zonal_reserves is True:
-        model.EnforceZonalReserveRequirements = Constraint(model.ReserveZones, model.TimePeriods, rule=enforce_zonal_reserve_requirement_rule)
+        model.EnforceZonalReserveDownRequirements = Constraint(model.ReserveZones, model.TimePeriods, rule=enforce_zonal_reserve_down_requirement_rule)
+        model.EnforceZonalReserveUpRequirements = Constraint(model.ReserveZones, model.TimePeriods, rule=enforce_zonal_reserve_up_requirement_rule)
+        # model.EnforceZonalReserveRequirements = Constraint(model.ReserveZones, model.TimePeriods, rule=enforce_zonal_reserve_requirement_rule)
 
 
 def constraint_generator_power(model):

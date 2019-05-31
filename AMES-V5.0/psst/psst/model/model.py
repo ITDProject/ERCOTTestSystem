@@ -4,12 +4,20 @@ def create_model():
     model = ConcreteModel()
     return model
 
-
 def initialize_buses(model,
                     bus_names=None,
                     ):
 
     model.Buses = Set(ordered=True, initialize=bus_names)
+
+
+def initialize_zones(model,
+                    zone_names=None,
+                    buses_at_each_zone=None
+                    ):
+
+    model.Zones = Set(ordered=True, initialize=zone_names)
+    model.BusesAtEachZone = Set(model.Zones, initialize=buses_at_each_zone)
 
 def initialize_time_periods(model,
                     time_periods=None
