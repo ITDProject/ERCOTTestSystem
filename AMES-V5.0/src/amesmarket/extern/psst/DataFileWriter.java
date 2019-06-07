@@ -15,6 +15,7 @@ import java.util.List;
 
 import amesmarket.AMESMarket;
 import amesmarket.AMESMarketException;
+import amesmarket.CaseFileData;
 import amesmarket.CaseFileData.StorageInputData;
 import amesmarket.GenAgent;
 import amesmarket.ISO;
@@ -22,6 +23,7 @@ import amesmarket.LSEAgent;
 import amesmarket.NDGenAgent;
 import amesmarket.StorageAgent;
 import amesmarket.extern.common.CommitmentDecision;
+import java.util.Arrays;
 
 /**
  *
@@ -298,6 +300,33 @@ public class DataFileWriter {
 
             refBufferWriter.write("param ReserveUpSystemPercent := "
                     + ReserveUpSystemPercent + " ;\n\n");
+            
+            refBufferWriter.write("param NumberOfZones := "
+                    + ames.getTestCaseConfig().NumberOfReserveZones + " ;\n\n");
+            
+            refBufferWriter.write("set Zones := ");
+
+            for (int i = 0; i < ames.getTestCaseConfig().NumberOfReserveZones; i++) {
+                refBufferWriter.write("Zone" + (i + 1) + " ");
+            }
+            refBufferWriter.write(";\n\n");
+            
+            refBufferWriter
+                    .write("param: Buses ReserveDownZonalPercent ReserveUpZonalPercent :=\n");
+
+            for (String zName : ames.getTestCaseConfig().getZonalData().keySet()) {
+                CaseFileData.ZonalData ZoneData = ames.getTestCaseConfig().getZonalData().get(zName);
+                int[] buses = ZoneData.getBuses();
+                String stemp = "";
+                for (int i=0; i<buses.length; i++){
+                    stemp = stemp + "Bus" + buses[i] + ",";
+                }
+                refBufferWriter.write(zName + " " + stemp + " "+ ZoneData.getReserveDownZonalPercent() + " "+ ZoneData.getReserveUpZonalPercent());
+                refBufferWriter.write("\n");
+            }
+            
+            refBufferWriter.write(";\n\n");
+            
 //            refBufferWriter.write("param: ReserveDownSystemPercent := \n");
 //
 //            for (int h = 0; h < numIntervalsInSim; h++) {
@@ -544,6 +573,34 @@ public class DataFileWriter {
 
             refBufferWriter.write("param ReserveUpSystemPercent := "
                     + ReserveUpSystemPercent + " ;\n\n");
+            
+            
+            refBufferWriter.write("param NumberOfZones := "
+                    + ames.getTestCaseConfig().NumberOfReserveZones + " ;\n\n");
+            
+            refBufferWriter.write("set Zones := ");
+
+            for (int i = 0; i < ames.getTestCaseConfig().NumberOfReserveZones; i++) {
+                refBufferWriter.write("Zone" + (i + 1) + " ");
+            }
+            refBufferWriter.write(";\n\n");
+            
+            refBufferWriter
+                    .write("param: Buses ReserveDownZonalPercent ReserveUpZonalPercent :=\n");
+
+            for (String zName : ames.getTestCaseConfig().getZonalData().keySet()) {
+                CaseFileData.ZonalData ZoneData = ames.getTestCaseConfig().getZonalData().get(zName);
+                int[] buses = ZoneData.getBuses();
+                String stemp = "";
+                for (int i=0; i<buses.length; i++){
+                    stemp = stemp + "Bus" + buses[i] + ",";
+                }
+                refBufferWriter.write(zName + " " + stemp + " "+ ZoneData.getReserveDownZonalPercent() + " "+ ZoneData.getReserveUpZonalPercent());
+                refBufferWriter.write("\n");
+            }
+            
+            refBufferWriter.write(";\n\n");
+            
 //            // Should update reserve requirements by minute
 //            refBufferWriter.write("param: ReserveDownSystemPercent := \n");
 //
