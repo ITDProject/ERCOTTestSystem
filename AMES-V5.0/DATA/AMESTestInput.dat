@@ -11,13 +11,9 @@ ThresholdProbability     0.999
 
 ReserveDownSystemPercent 0.2
 ReserveUpSystemPercent 0.3
-//Reserve_Requirement 800
 
-#BusDataStart
-//      NB	  PenaltyWeight
-         8	         0.0500
-#BusDataEnd
-
+// Bus Data
+NumberofBuses       8
 
 NumberOfReserveZones     3
 
