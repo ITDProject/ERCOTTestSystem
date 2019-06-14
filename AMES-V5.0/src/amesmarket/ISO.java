@@ -140,7 +140,7 @@ public class ISO {
     public void marketOperation(int m, int interval, int h, int d) {
         final int tomorrow = d + 1;
         //System.out.println("time_granted: "+ames.getTimeGranted());
-        if (h == 1 && m == 0) { // previously h == 0
+        if (h == 2 && m == 0) { // h==1 previously h == 0
             dam.dayAheadOperation(h, d);  // fncs.get_events() is called to receive DAM forecast (inside submitLoadProfile method of LSE)
 
             //newly added
@@ -154,13 +154,13 @@ public class ISO {
         }
 
         if (d != 1 && m % this.ames.M == 0) {
-            if (h == 0 && m == 0) {
+            if (h == 1 && m == 0) {
                 System.out.println("Entered iso.RTMOperation at h:" + h + " interval: " + interval + " m: " + m);
                 rtm.realTimeOperation(h, d);
             }
             System.out.println("\n iso.RTMOperation is called at h:" + h + " interval: " + interval + " m: " + m +"\n");
             // evaluateRealTimeBidsOffers(h, d); // fncs.get_events() is called to receive RTM forecast (ISO does it in BUC)
-            double[][] realtimeload = this.getRealTimeLoad(h, d); // fncs.get_events() is called to receive RTM forecast
+            double[][] realtimeload = this.getRealTimeLoad(h-1, d); // fncs.get_events() is called to receive RTM forecast
             //System.out.println("realtime load: ");
             // Added additionally
             //this.rtm.realTimeOperation(h, d);
@@ -183,7 +183,7 @@ public class ISO {
             this.dailyrealtimelmp = this.rtm.getRtLMPs(); // check and validate
         }
 
-        if (h == 2 && m == 0) { // change it to h == 12 
+        if (h == 12 && m == 0) { // change it to h == 12 
             System.out.println("iso.dayAheadOperation is called at h:" + h);
             //evaluateBidsOffers(h, d); //uncommented to add scuc formulation
             System.out.println("SCUC for DAY " + tomorrow + " executing");
@@ -207,7 +207,7 @@ public class ISO {
             //ames.addHasSolutionByDay(buc.getHasSolution()); // TODO:Swathi 
 
         }
-        if (h == 17 && m == 0) {
+        if (h == 16 && m == 0) {
             if (d == 321) {
                 int stop = 1;
             }
@@ -227,7 +227,7 @@ public class ISO {
         }
          */
         //Added additionally
-        if ((h == 23) && (d < this.ames.DAY_MAX) && m == 0) {
+        if ((h == 24) && (d < this.ames.DAY_MAX) && m == 0) {
 
             ArrayList<GenAgent> genAgentList = this.ames.getGenAgentList();
             int[] tempVector = new int[this.ames.NUM_HOURS_PER_DAY];
