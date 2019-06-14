@@ -308,7 +308,7 @@ public class AMESMarket extends SimModelImpl {
         
         min = 0; // AMES 3.1
         interval = 0;
-        hour = 0;
+        hour = 1;
         day = 1;
         isConverged = false;
         dayMax = DAY_MAX;
@@ -675,7 +675,7 @@ public class AMESMarket extends SimModelImpl {
                 //long t = hour_len / 2;
                 long t = (min_len * M) / 2;
                 int NIH = (int) hour_len/(min_len*M) ; // number of intervals in an hour
-                interval = hour*NIH + (int) min/M;
+                interval = (hour-1)*NIH + (int) min/M;
                 //System.out.println("Trail statement...");
                 if(min%min_len == 0){
                 System.out.println("Day: " + day + " Hour: " + hour + " Interval: " +interval+" Minute: " + min);
@@ -683,7 +683,7 @@ public class AMESMarket extends SimModelImpl {
                 
                 if (day > 1) {
                     if(min%5 == 0)
-                    time_next = (day - 1) * (day_len) + hour * (hour_len) + min * (min_len) - t;
+                    time_next = (day - 1) * (day_len) + (hour-1) * (hour_len) + min * (min_len) - t;
                 }
                 
                 // Waits for half the hour_len for day>1
@@ -698,10 +698,10 @@ public class AMESMarket extends SimModelImpl {
                 //requests time_request for every hour in order to publish LMPs hourly
                 if (day > 1) {
                     if(min%5 == 0)
-                        time_next = (day - 1) * (day_len) + (hour) * (hour_len) +  min * (min_len) - 1;
+                        time_next = (day - 1) * (day_len) + (hour-1) * (hour_len) +  min * (min_len) - 1;
                 } else {
                     if(min%5 == 0){
-                        time_next = (day - 1) * (day_len) + (hour) * (hour_len) + min * min_len;
+                        time_next = (day - 1) * (day_len) + (hour-1) * (hour_len) + min * min_len;
 					}
                 }
 //                time_next = (day - 1) * (day_len) + (hour+1) * (hour_len) + min * min_len;
@@ -716,7 +716,7 @@ public class AMESMarket extends SimModelImpl {
 
                 //System.out.println("time_granted: " + time_granted);
                 int NumNodes  = (int) nodeData[0][0];
-                if (hour == (17) && min == 0) { // earlier 17-1
+                if (hour == (16) && min == 0) { // earlier 17-1
                     JNIfncs.publish("DailyLMP", getStrings(iso.getDailyLMP(), 2)); //node 3
                     for(int iter = 0; iter < NumNodes; iter++){
                     System.out.println("DAM LMP published values: " + getStrings(iso.getDailyLMP(), iter));
@@ -752,7 +752,7 @@ public class AMESMarket extends SimModelImpl {
                         }
                     }
 
-                    if ((hour == 23) && (day == dayMax)) {// Only dayMax has been reached
+                    if ((hour == 24) && (day == dayMax)) {// Only dayMax has been reached
                         System.out.println("in STOPCODE: 1");
                         stop();
                         stopCode = stopCode | 0x1;   // first bit
@@ -842,9 +842,9 @@ public class AMESMarket extends SimModelImpl {
                 if (min % min_len == 0){    // change it to 60 or rename it to someother name
                     hour++;
                     min = 0;
-                    if (hour == 24) {
+                    if (hour == 25) {
                         min = 0;
-                        hour = 0;
+                        hour = 1;
                         day++;
                     }
                 }

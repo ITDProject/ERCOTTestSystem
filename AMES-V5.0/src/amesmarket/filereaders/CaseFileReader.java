@@ -70,6 +70,7 @@ public class CaseFileReader {
     private static final String GEN_FUELTYPE_END = "#GenFuelTypeEnd";
     private static final String BUS_DATA_START = "#BusDataStart";
     private static final String BUS_DATA_END = "#BusDataEnd";
+    private static final String NUMBER_OF_BUSES = "NumberofBuses";
     private static final String LINE_DATA_START = "#LineDataStart";
     private static final String LINE_DATA_END = "#LineDataEnd";
     private static final String GEN_DATA_START = "#GenDataStart";
@@ -200,6 +201,8 @@ public class CaseFileReader {
                 parseRTM(testConf);
             } else if(currentLine.startsWith(MAX_DAY)) {
                 parseMaxDay(testConf);
+            } else if(currentLine.startsWith(NUMBER_OF_BUSES)) {
+                parseNBuses(testConf);
             } else if(currentLine.startsWith(RANDOM_SEED)) {
                 parseRandomSeed(testConf);
             } else if(currentLine.startsWith(CAP_MARGIN)) {
@@ -218,8 +221,8 @@ public class CaseFileReader {
                 parseHasNDG(testConf);
             } else if(currentLine.startsWith(BASE_V)) {
                 parseBASE_V(testConf);
-            } else if(currentLine.equals(BUS_DATA_START)) {
-                parseBusData(testConf);
+//            } else if(currentLine.equals(BUS_DATA_START)) {
+//                parseBusData(testConf);
             } else if(currentLine.equals(LINE_DATA_START)) {
                 parseLineData(testConf);
             } else if(currentLine.equals(GEN_DATA_START)) {
@@ -364,6 +367,19 @@ public class CaseFileReader {
         testConf.iMaxDay = Integer.parseInt(
                                splitValueFromKey(currentLine, MAX_DAY));
     }
+    //parseNBuses
+    private void parseNBuses(CaseFileData testConf) throws BadDataFileFormatException {
+        testConf.nodeData = new Object[1][2];
+       
+        testConf.iNodeData = Integer.parseInt(
+                               splitValueFromKey(currentLine, NUMBER_OF_BUSES));
+
+        testConf.nodeData[0][0] = testConf.iNodeData;
+        testConf.nodeData[0][1] = 0;
+
+    }
+    
+    
         // RTM
     private void parseRTM(CaseFileData testConf) throws BadDataFileFormatException {
         testConf.RTM = Integer.parseInt(

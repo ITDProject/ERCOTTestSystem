@@ -798,7 +798,7 @@ public class DataFileWriter {
         double shutdowncost = ga.getShutDownCost();
 
         //some rounding checks
-        if (powerT0 < capMin && ga.getCommitmentStatus(hour) > 0) { // Added  ga.getCommitmentStatus(hour) > 0 - Swathi
+        if (powerT0 < capMin && ga.getCommitmentStatus(hour-1) > 0) { // Added  ga.getCommitmentStatus(hour) > 0 - Swathi
             System.err.println("Warning: " + ga.getID() + " PowerT0 value of "
                     + powerT0 + " is less than capMin of " + capMin
                     + ". Adjusting to " + capMin
@@ -821,7 +821,7 @@ public class DataFileWriter {
                 ,
                  powerT0 //2
                 ,
-                 ga.getCommitmentStatus(hour) //3
+                 ga.getCommitmentStatus(hour-1) //3
                 ,
                  capMin //4
                 ,
@@ -951,7 +951,7 @@ public class DataFileWriter {
 
                 int[] commitmentVector = new int[TAU];
                 for (int k = 0; k < TAU; k++) {
-                    commitmentVector[k] = cd.commitmentDecisions[h];
+                    commitmentVector[k] = cd.commitmentDecisions[h-1];
                 }
                 //Boolean[] commitmentVector = gencoCommitments.get(g);
                 if (commitmentVector == null) { //yes, I'm being very cautious.
