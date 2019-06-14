@@ -57,10 +57,14 @@ import fncs.JNIfncs;
 import amesmarket.filereaders.CaseFileReader;
 import amesmarket.CaseFileData.GenData;
 import amesmarket.filereaders.BadDataFileFormatException;
+import amesmarket.filereaders.IZoneIndexProvider;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 
 
@@ -669,6 +673,7 @@ public class AMESFrame  extends JFrame{
    
             // Verify Data
             String strError=checkCaseData();
+                    System.out.println("Verified Input Data" + "\n");
             if(!strError.isEmpty()){
                     JOptionPane.showMessageDialog(this, strError, "Case Data Verify Message", JOptionPane.ERROR_MESSAGE); 
                     return;
@@ -5115,6 +5120,27 @@ public class CheckCalculationEndRunnable implements Runnable {
     if(RTM<=0 || RTM%1!=0)
          strMessage+="The RTMDuration parameter should be a positive integer\n";
     
+    Map<String, CaseFileData.ZonalData> ReadZoneData = this.testcaseConfig.getZonalData();  
+    ArrayList<Integer> TotalBuses = new ArrayList<>();    
+    for(String z:ReadZoneData.keySet()){
+        int[] Buses = ReadZoneData.get(z).getBuses();
+        for(int b:Buses){
+            TotalBuses.add(b);
+        }
+    }
+    Collections.sort(TotalBuses);
+    boolean BusNoRepeated = false;
+    for(int i=0; i<(TotalBuses.size()-1); i++){
+        if (Objects.equals(TotalBuses.get(i), TotalBuses.get(i+1))){
+            BusNoRepeated = true;
+            TotalBuses.remove(i);
+        }
+    }
+//    if (BusNoRepeated)
+//            strMessage+="One bus can't be in more than one Zone\n";
+    if (TotalBuses.size() < config1.iTotalNodeNumber || BusNoRepeated)
+        strMessage+="Each bus must be included in one (and only one) reserve zone.\n";
+            
     if(RTM<=0 || 60%RTM!=0)
          strMessage+="60/RTMDuration should be a positive integer\n";
        
