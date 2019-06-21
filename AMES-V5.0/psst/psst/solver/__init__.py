@@ -24,12 +24,15 @@ def solve_model(model, solver='glpk', solver_io=None, keepfiles=True, verbose=Tr
     with warnings.catch_warnings():
         warnings.simplefilter(PSST_WARNING)
         TempfileManager.tempdir = "C:\\Users\\swathi\\Dropbox\\AMESLatestVersion\\TESAgents\\PyomoTempFiles" 
+#        TempfileManager.tempdir = "/home/osboxes/grid/repository/ERCOTTestSystem/TESAgents/logfiles" 
+#        TempfileManager.tempdir = "." 
         #click.echo("print check path "+TempfileManager.tempdir)
         resultsPSST = solver.solve(model, suffixes=['dual'], tee=verbose, keepfiles=True, symbolic_solver_labels=symbolic_solver_labels)
-        #click.echo("solver msg 1 "+str(resultsPSST.solver))
-        #click.echo("solver msg 2 "+str(resultsPSST.solver.status))
-        #click.echo("solver msg 3 "+ str(resultsPSST.solver.termination_condition))
-        #click.echo("solver msg " + str(resultsPSST))
+        #click.echo("solver msg 1 " + str(resultsPSST.solver))
+        #click.echo("solver msg 2 " + str(resultsPSST.solver.status))
+        #click.echo("solver msg 3 " + str(resultsPSST.solver.termination_condition))
+        #click.echo("solver msg 4 " + str(resultsPSST))
 
     #click.echo("End")
     return model
+

@@ -6,6 +6,7 @@ import fncs
 import re
 import cmath
 
+#FileName = 'NetLoadScenarioDatabyClusterMethod2Size200.json'
 FileName = 'NetLoadScenarioDatabyClusterMethod2Size8.json'
 
 def NetLoadScenarioDataJsonFormat(filename):
