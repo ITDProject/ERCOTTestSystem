@@ -123,29 +123,37 @@ public class LSEAgent implements Drawable {
     }
 //method
 
-    public double[] submitLoadProfile(int day, int lse, int psLse) {
+    public double[] submitLoadProfile(int day, int lse, int psLse, boolean IsFNCS) {
 
         double[] temp = new double[24];
         // Receives load forecast from fncs_player
         //System.out.println("In submitloadprofile:");
         if (day > 1 && lse == (psLse - 1)) { // previously day > 2
-            String[] events = JNIfncs.get_events();
-            //System.out.println("DAM events.len: " + events.length);
-            for (int i = 0; i < events.length; ++i) {
-                //String value = JNIfncs.get_value(events[i]);
-                String[] values = JNIfncs.get_values(events[i]);
+            if (IsFNCS) {
+                String[] events = JNIfncs.get_events();
+                //System.out.println("DAM events.len: " + events.length);
+                for (int i = 0; i < events.length; ++i) {
+                    //String value = JNIfncs.get_value(events[i]);
+                    String[] values = JNIfncs.get_values(events[i]);
 
-                for (int j = 0; j < 24; j++) {
-                    if (events[i].equals("loadforecastDAM_h" + String.valueOf(j))) {
-                        System.out.println("receiving DAM loadforecast: " + values[0]);
-                        //System.out.println("i:"+i);
-                        temp[j] = Double.parseDouble(values[0]); // loadProfile[j] + Double.parseDouble(values[0]);
+                    for (int j = 0; j < 24; j++) {
+                        if (events[i].equals("loadforecastDAM_h" + String.valueOf(j))) {
+                            System.out.println("receiving DAM loadforecast: " + values[0]);
+                            //System.out.println("i:"+i);
+                            temp[j] = Double.parseDouble(values[0]); // loadProfile[j] + Double.parseDouble(values[0]);
+                        }
+                        //System.out.println("temp - loadforecast: " + temp[j]);
                     }
-                    //System.out.println("temp - loadforecast: " + temp[j]);
                 }
-            }
-            for (int i = 0; i < 24; i++) {
-                loadForecast[i] = temp[i]; //ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
+                for (int i = 0; i < 24; i++) {
+                    loadForecast[i] = temp[i]; //ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
+                }
+
+                // temparory assignment 
+                loadForecast = loadProfile;
+                
+            } else {
+                loadForecast = loadProfile;
             }
             return loadProfile; // loadForecast; // temp fixed to loadProfile
         } else {
@@ -180,41 +188,55 @@ public class LSEAgent implements Drawable {
     }
 
     // Rohit - Added to submit demand bid (price sensitive bid) for market operations
-    public double[][] submitDemandBid(int day, int lse, int psLse) {
+    public double[][] submitDemandBid(int day, int lse, int psLse, boolean IsFNCS) {
         double[][] reportDemandBid = new double[24][3];
         //double[][] temp = new double[24][3];
-        
-        if (day > 1 && lse == (psLse - 1)) { // previously day > 2
-            String[] events = JNIfncs.get_events();
-            //System.out.println("DAM events.len: " + events.length);
-            for (int i = 0; i < events.length; ++i) {
-                //String value = JNIfncs.get_value(events[i]);
-                String[] values = JNIfncs.get_values(events[i]);
 
-                for (int j = 0; j < 24; j++) {
-                    if (events[i].equals("loadforecastDAM_PS0_h" + String.valueOf(j))) {
-                        //System.out.println("receiving DAM loadforecast: " + values[0]);
-                        //System.out.println("i:"+i);
-                        reportDemandBid[j][0] = Double.parseDouble(values[0]);
+        if (day > 1 && lse == (psLse - 1)) { // previously day > 2
+            if (IsFNCS) {
+                String[] events = JNIfncs.get_events();
+                //System.out.println("DAM events.len: " + events.length);
+                for (int i = 0; i < events.length; ++i) {
+                    //String value = JNIfncs.get_value(events[i]);
+                    String[] values = JNIfncs.get_values(events[i]);
+
+                    for (int j = 0; j < 24; j++) {
+                        if (events[i].equals("loadforecastDAM_PS0_h" + String.valueOf(j))) {
+                            //System.out.println("receiving DAM loadforecast: " + values[0]);
+                            //System.out.println("i:"+i);
+                            reportDemandBid[j][0] = Double.parseDouble(values[0]);
+                        }
+                        if (events[i].equals("loadforecastDAM_PS1_h" + String.valueOf(j))) {
+                            //System.out.println("receiving DAM loadforecast: " + values[0]);
+                            //System.out.println("i:"+i);
+                            reportDemandBid[j][1] = Double.parseDouble(values[0]);
+                        }
+                        if (events[i].equals("loadforecastDAM_PS2_h" + String.valueOf(j))) {
+                            //System.out.println("receiving DAM loadforecast: " + values[0]);
+                            //System.out.println("i:"+i);
+                            reportDemandBid[j][2] = Double.parseDouble(values[0]);
+                        }
+                        //System.out.println("temp - loadforecast: " + temp[j]);
                     }
-                    if (events[i].equals("loadforecastDAM_PS1_h" + String.valueOf(j))) {
-                        //System.out.println("receiving DAM loadforecast: " + values[0]);
-                        //System.out.println("i:"+i);
-                        reportDemandBid[j][1] =  Double.parseDouble(values[0]);
+                }
+                // tmeparory assignment 
+                for (int h = 0; h < 24; h++) {
+                    for (int i = 0; i < 3; i++) {
+                        reportDemandBid[h][i] = priceSensitiveDemand[h][i];
                     }
-                    if (events[i].equals("loadforecastDAM_PS2_h" + String.valueOf(j))) {
-                        //System.out.println("receiving DAM loadforecast: " + values[0]);
-                        //System.out.println("i:"+i);
-                        reportDemandBid[j][2] =  Double.parseDouble(values[0]);
+                }
+            } else {
+
+                for (int h = 0; h < 24; h++) {
+                    for (int i = 0; i < 3; i++) {
+                        reportDemandBid[h][i] = priceSensitiveDemand[h][i];
                     }
-                    //System.out.println("temp - loadforecast: " + temp[j]);
                 }
             }
             System.out.println("check check check check ");
             //reportDemandBid = temp;
             return reportDemandBid;
-        }
-        else {
+        } else {
 
             for (int h = 0; h < 24; h++) {
                 for (int i = 0; i < 3; i++) {

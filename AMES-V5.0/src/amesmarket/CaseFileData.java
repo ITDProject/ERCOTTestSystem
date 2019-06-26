@@ -91,6 +91,7 @@ public class CaseFileData {
     public boolean bGenLearningDataSet = false;
 
     public long RandomSeed;
+    public boolean IsFNCS;
     public int RTM;
     public int iMaxDay;
     public double dThresholdProbability;
@@ -172,6 +173,7 @@ public class CaseFileData {
         NumberOfReserveZones = 1;
         hasStorage = 0;
         hasNDG = 0;
+        IsFNCS = false;
 
         lseDemandSource = LSE_DEMAND_TEST_CASE;
         loadCaseControlFile = "DATA/ControlFile.dat";

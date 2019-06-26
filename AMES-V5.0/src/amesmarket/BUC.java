@@ -418,7 +418,7 @@ public class BUC {
     }
 
     //Real time OPF
-    public void solveRTOPF(double[][] dc, double[] psd, int hour, int day) {
+    public void solveRTOPF(double[][] dc, double[] psd, int hour, int day, boolean IsFNCS) {
 
         FileReader caseFileReader;
         BufferedReader caseBufferReader;
@@ -509,8 +509,8 @@ public class BUC {
         int[] hourlyLoadHybridFlagByLSE = new int[J];
 
         dLoad = 0.0;
-
-        //receiving load forecast for realtimeLMP calculation
+        if(IsFNCS){
+                //receiving load forecast for realtimeLMP calculation
         String[] events = JNIfncs.get_events();
         //System.out.println("RTM events length: " + events.length);
         for (int i = 0; i < events.length; ++i) {
@@ -533,6 +533,7 @@ public class BUC {
                 //hourlyLoadProfileByLSE[j] = 200 + Double.parseDouble(values[0]);
                 //System.out.println("hourlyLoadProfileByLSE: " + hourlyLoadProfileByLSE[j]);
             }
+        }
         }
 
         //temporary - constant assignment to hourlyloadprofile

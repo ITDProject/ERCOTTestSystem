@@ -51,6 +51,7 @@ public class CaseFileReader {
     //TOKENS
     private static final String BASE_S = "BASE_S";
     private static final String BASE_V = "BASE_V";
+    private static final String IS_FNCS = "FNCSActive";
     private static final String RTM = "RTMDuration";
     private static final String MAX_DAY = "MaxDay";
     private static final String RANDOM_SEED = "RandomSeed";
@@ -215,6 +216,8 @@ public class CaseFileReader {
                 parseLoadCaseControlFile(testConf);
             } else if(currentLine.startsWith(THRESH_PROB)) {
                 parseThreshholdProbability(testConf);
+            } else if(currentLine.startsWith(IS_FNCS)) {
+                parseFNCSFlag(testConf);
             } else if(currentLine.startsWith(HAS_STORAGE)) {
                 parseHasStorage(testConf);
             } else if(currentLine.startsWith(HAS_NDG)) {
@@ -460,7 +463,11 @@ public class CaseFileReader {
         testConf.dThresholdProbability = Support.parseDouble(
                                              splitValueFromKey(currentLine, THRESH_PROB));
     }
-
+    
+    private void parseFNCSFlag(CaseFileData testConf) throws NumberFormatException, BadDataFileFormatException {
+        testConf.IsFNCS = Support.parseBoolean(
+                                             splitValueFromKey(currentLine, IS_FNCS));
+    }  
 
     /**
      * Parse the Has Storage field

@@ -59,11 +59,12 @@ public class AMESMarket extends SimModelImpl {
     public static final int INTERVAL_SIZE = 1; // represents interval size in minutes - M/INTERVAL_SIZE gives number of time slots in every interval
     //public static final int NUM_INTERVALS_PER_HOUR = 60/M; // Interval length
     //public static final int NUM_INTERVALS_PER_DAY = NUM_HOURS_PER_DAY * NUM_INTERVALS_PER_HOUR;
-    
+
+    public boolean IsFNCS;
     public int M;
     public int RTMFrequencyPerHour; //NUM_INTERVALS_PER_HOUR;
     public int RTMFrequencyPerDay; //NUM_INTERVALS_PER_DAY;
-    
+
     public double COOLING;
     public double EXPERIMENTATION;
     public double INIT_PROPENSITY;
@@ -102,7 +103,7 @@ public class AMESMarket extends SimModelImpl {
     private double[][] nodeData;
     private double[][] branchData;
     private double[][] genData;
-    private boolean[]  alertGenMarkers;
+    private boolean[] alertGenMarkers;
     private Map<String, SCUCInputData> extraGenCoParams;
     private Map<String, StorageInputData> StorageParams;
     private double[][] lseData;
@@ -158,7 +159,7 @@ public class AMESMarket extends SimModelImpl {
     private ArrayList<LSEAgent> lseAgentList;
     private ArrayList<NDGenAgent> NDGAgentList;
     private ArrayList<StorageAgent> StorageAgentList;
-    
+
 //  Learning variables
     private ActionDomain ad;
     int numLowerRIs;
@@ -194,15 +195,14 @@ public class AMESMarket extends SimModelImpl {
     private ArrayList<double[][]> productionCostsByDay, startupCostsByDay, shutdownCostsByDay;
 
     private ArrayList lastDayGenActions;
-    
+
     private CaseFileData testcaseConfig;
-    
-    
+
     private static Controller ModelController = null;
     private boolean bCalculationEnd = false;
 
     private final boolean deleteIntermediateFiles;
-    
+
     private long time_granted;
 
 // RePast required methods
@@ -218,7 +218,7 @@ public class AMESMarket extends SimModelImpl {
     // The first method SimModelImpl calls
     public void setup() {
         //System.out.println("Running setup");
-        System.out.println("setup method of AMESMarket.java is called");
+        System.out.println("\n setup method of AMESMarket.java is called");
         // Tear down any objects created over the course of the run to null.
         transGrid = null;
         iso = null;
@@ -231,7 +231,7 @@ public class AMESMarket extends SimModelImpl {
         setInitialStructuralParameters(init);
         setInitialLearningParameters();
         setInitialActionDomainParameters();
-        System.out.println("AMESMarket object parameters are set (some of them from INIT object). \n");
+        System.out.println(" AMESMarket object parameters are set (some of them from INIT object). \n");
     }
 
 //maybe this is related with input output method
@@ -245,7 +245,7 @@ public class AMESMarket extends SimModelImpl {
         setNumStorageAgents(init.getStorageParams().size());
         sethasStorage(init.gethasStorage());
         sethasNDG(init.gethasNDG());
-        
+
         setBaseS(init.getBaseS());
         setBaseV(init.getBaseV());
         //setReserveRequirements(init.getReserveRequirements());
@@ -260,7 +260,7 @@ public class AMESMarket extends SimModelImpl {
         setNDGData(init.getNDGData());
         setLSEPriceSensitiveData(init.getLSEDataPriceSensitiveDemand());
         setLSEHybridData(init.getLSEDataHybridDemand());
-        
+
     }
 
     private void setInitialLearningParameters() {
@@ -288,7 +288,7 @@ public class AMESMarket extends SimModelImpl {
     }
 
     public void begin() {
-        System.out.println("AMESMarket.java begin is called");
+        System.out.println("AMESMarket.java begin is called\n\n");
         buildModel();
         buildSchedule();
         Random.createUniform();  // Create random uniform
@@ -301,19 +301,18 @@ public class AMESMarket extends SimModelImpl {
         System.out.println("Simulation Start time: " + sysDate.toString() + "\n");
         System.out.println("Print the user-specified random seed: " + RANDOM_SEED + "\n");
 
-        System.out.println("Print structural parameters\n");
+        //System.out.println("Print structural parameters\n");
         //printStructuralParameters();
-
         setRngSeed(RANDOM_SEED);
-        
+
         min = 0; // AMES 3.1
         interval = 0;
         hour = 1;
         day = 1;
         isConverged = false;
         dayMax = DAY_MAX;
-        
-        RTMFrequencyPerHour = 60/M;
+
+        RTMFrequencyPerHour = 60 / M;
         RTMFrequencyPerDay = NUM_HOURS_PER_DAY * RTMFrequencyPerHour; // = 1440/M
 
         transGrid = new TransGrid(nodeData, branchData, gridXSize, gridYSize);
@@ -332,11 +331,10 @@ public class AMESMarket extends SimModelImpl {
         //System.out.println("Demand-Bid Price Floor:  " + strTemp + " ($/MWh) \n");
 
         //System.out.println("\nPrice Sensitive LSE: " + iPsLse + "\n");
-
         System.out.println("Print the Simulation Controls: \n");
         //System.out.println("Print the derived learning random seed for each GenAgent:" + "\n");
         //printLearningRandomSeeds();
-        System.out.println("M: "+ M);
+        //System.out.println("M: "+ M);
         System.out.println("Print the Stopping Rule:");
         if (bMaximumDay) {
             System.out.println("\t   (1) Maximum Day Check. The user-specified maximum day: " + DAY_MAX);
@@ -362,7 +360,6 @@ public class AMESMarket extends SimModelImpl {
         //System.out.println("Host Name : " + sHostName);
         //System.out.println("Database Name : " + sDatabaseName);
         //System.out.println("User Name : " + sUserName);
-
         //Bootstrap D1
         iso.computeCompetitiveEquilibriumResults();
     }
@@ -554,73 +551,69 @@ public class AMESMarket extends SimModelImpl {
                     alertGenMarkers[i],
                     i/*assume the order we create the agents in is the index order.*/
             );
-            
+
             //update the name to one in the case files.
             gen.setID(testcaseConfig.genData[i].name);
 
             final String gcName = gen.getID();
             SCUCInputData sid = extraGenCoParams.get(gcName);
-            if(sid != null) {
+            if (sid != null) {
                 gen.addExtraData(sid);
             } else {
                 System.err.println("Could not find the extra GenCo data for " + gcName);
             }
-            
-            if(testcaseConfig.hasFuelType(gcName)) {
+
+            if (testcaseConfig.hasFuelType(gcName)) {
                 gen.setFuelType(testcaseConfig.getFuelTypeForGen(gcName));
             }
 
-            if(testcaseConfig.hasNoLoadCost(gcName)) {
+            if (testcaseConfig.hasNoLoadCost(gcName)) {
                 gen.setNoLoadCost(testcaseConfig.getNoLoadCostForGen(gen.getID()));
             }
-            if(testcaseConfig.hasColdStartUpCost(gcName)) {
+            if (testcaseConfig.hasColdStartUpCost(gcName)) {
                 gen.setColdStartUpCost(testcaseConfig.getColdStartUpCostForGen(gen.getID()));
             }
-            if(testcaseConfig.hasHotStartUpCost(gcName)) {
+            if (testcaseConfig.hasHotStartUpCost(gcName)) {
                 gen.setHotStartUpCost(testcaseConfig.getHotStartUpCostForGen(gen.getID()));
             }
-            if(testcaseConfig.hasShutDownCost(gcName)) {
+            if (testcaseConfig.hasShutDownCost(gcName)) {
                 gen.setShutDownCost(testcaseConfig.getShutDownCostForGen(gen.getID()));
             }
 
             transGrid.addGenAgentAtNodeK(gen, (i + 1));
             genAgentList.add(gen);
         }
-        
+
         rebuildGenAgentNameCache();
     }
-    
+
     private void addStorageAgents() {
         //System.out.println("numStorageAgents : " + numStorageAgents + "\n");
         for (int j = 0; j < numStorageAgents; j++) {
-            String sName = Integer.toString(j+1);
+            String sName = Integer.toString(j + 1);
             StorageInputData sd = StorageParams.get(sName);
             StorageAgent se = new StorageAgent(sd);
             StorageAgentList.add(se);
         }
     }
-    
-    
 
-   /**
-     * Iterate over the list of genagents and build a map
-     * which associates agent names with the object representing
-     * the genagent.
+    /**
+     * Iterate over the list of genagents and build a map which associates agent
+     * names with the object representing the genagent.
      *
      * Should be called anytime a new agent is added to the list.
      *
-     * The objects stored in the map are aliases to the objects
-     * in {@link #genAgentList}.
+     * The objects stored in the map are aliases to the objects in
+     * {@link #genAgentList}.
      */
     private void rebuildGenAgentNameCache() {
         genAgentsByName.clear(); //dump the list, just in case.
 
-        for(GenAgent ga : genAgentList) {
+        for (GenAgent ga : genAgentList) {
             genAgentsByName.put(ga.getID(), ga);
         }
-    }    
-    
-    
+    }
+
     private void addLSEAgents() {
         for (int j = 0; j < numLSEAgents; j++) {
             LSEAgent lse = new LSEAgent(lseData[j], lsePriceSensitiveDemand[j], lseHybridDemand[j]);
@@ -636,7 +629,7 @@ public class AMESMarket extends SimModelImpl {
             NDGAgentList.add(ndg);
         }
     }
-            
+
     //custom function to get strings
     public static String getStrings(double[][] a, int index) {
         //String[][] output = new String[a.length][];
@@ -659,7 +652,7 @@ public class AMESMarket extends SimModelImpl {
         //System.out.println("\t*******************************************************************************\n\n");
 
         System.out.println("\n\n\t********* Wholesale power market is now running *********\n\n");
-        
+
         class WPMarket extends BasicAction {
 
             public void execute() {
@@ -674,61 +667,70 @@ public class AMESMarket extends SimModelImpl {
                 long time_next = 0;
                 //long t = hour_len / 2;
                 long t = (min_len * M) / 2;
-                int NIH = (int) hour_len/(min_len*M) ; // number of intervals in an hour
-                interval = (hour-1)*NIH + (int) min/M;
-                //System.out.println("Trail statement...");
-                if(min%min_len == 0){
-                System.out.println("Day: " + day + " Hour: " + hour + " Interval: " +interval+" Minute: " + min);
+                int NIH = (int) hour_len / (min_len * M); // number of intervals in an hour
+                interval = (hour - 1) * NIH + (int) min / M;
+                if (min % min_len == 0) {
+                    System.out.println("Day: " + day + " Hour: " + hour + " Interval: " + interval + " Minute: " + min);
                 }
-                
+
                 if (day > 1) {
-                    if(min%5 == 0)
-                    time_next = (day - 1) * (day_len) + (hour-1) * (hour_len) + min * (min_len) - t;
+                    if (min % M == 0) {
+                        time_next = (day - 1) * (day_len) + (hour - 1) * (hour_len) + min * (min_len) - t;
+                    }
                 }
-                
+
                 // Waits for half the hour_len for day>1
-                while (time_granted < time_next) {
-                    time_granted = JNIfncs.time_request(time_next);
+                if (IsFNCS) {
+                    while (time_granted < time_next) {
+                        time_granted = JNIfncs.time_request(time_next);
+                    }
                 }
                 //}
                 //System.out.println("time_granted: " + time_granted);
                 //Performs market operation after receiving events from FNCS (JNIfncs.get_events() is added to methods called in ISO)
-                iso.marketOperation(min, interval, hour, day);                  
+                iso.marketOperation(min, interval, hour, day, IsFNCS);
 
                 //requests time_request for every hour in order to publish LMPs hourly
                 if (day > 1) {
-                    if(min%5 == 0)
-                        time_next = (day - 1) * (day_len) + (hour-1) * (hour_len) +  min * (min_len) - 1;
+                    if (min % M == 0) {
+                        time_next = (day - 1) * (day_len) + (hour - 1) * (hour_len) + min * (min_len) - 1;
+                    }
                 } else {
-                    if(min%5 == 0){
-                        time_next = (day - 1) * (day_len) + (hour-1) * (hour_len) + min * min_len;
-					}
+                    if (min % M == 0) {
+                        time_next = (day - 1) * (day_len) + (hour - 1) * (hour_len) + min * min_len;
+                    }
                 }
 //                time_next = (day - 1) * (day_len) + (hour+1) * (hour_len) + min * min_len;
 
-				//System.out.println("time_next: " + time_next);
+                //System.out.println("time_next: " + time_next);
                 //if (hour != 0 && day > 1 || hour == 23) {
-                time_granted = JNIfncs.time_request(time_next);
-                while (time_granted < time_next) {
+                if (IsFNCS) {
                     time_granted = JNIfncs.time_request(time_next);
+                    while (time_granted < time_next) {
+                        time_granted = JNIfncs.time_request(time_next);
+                    }
                 }
                 //}
 
                 //System.out.println("time_granted: " + time_granted);
-                int NumNodes  = (int) nodeData[0][0];
+                int NumNodes = (int) nodeData[0][0];
                 if (hour == (16) && min == 0) { // earlier 17-1
-                    JNIfncs.publish("DailyLMP", getStrings(iso.getDailyLMP(), 2)); //node 3
-                    for(int iter = 0; iter < NumNodes; iter++){
-                    System.out.println("DAM LMP published values: " + getStrings(iso.getDailyLMP(), iter));
+                    if (IsFNCS) {
+                        JNIfncs.publish("DailyLMP", getStrings(iso.getDailyLMP(), 2)); //node 3
+                    }
+                    for (int iter = 0; iter < NumNodes; iter++) {
+                        System.out.println("DAM LMP published values: " + getStrings(iso.getDailyLMP(), iter));
                     }
                 }
 
                 //doubleiso.getDailyRealTimeLMP()
-                if (day > 1  && min%M == 0) {
+                if (day > 1 && min % M == 0) {
                     //for(int i=0; i<this.getNumNodes(); i++){
-                    JNIfncs.publish("RTLMP", String.valueOf(iso.getDailyRealTimeLMP()));
-                    for(int i=0; i<getNumNodes(); i++){
-                    System.out.println("RTM LMP published values for Node " + i +": " + String.valueOf(RTMLMPFormat.format(iso.getDailyRealTimeLMP()[interval][i])));
+                    if (IsFNCS) {
+                        JNIfncs.publish("RTLMP", String.valueOf(iso.getDailyRealTimeLMP()));
+                    }
+                    for (int i = 0; i < getNumNodes(); i++) {
+                        System.out.println("RTM LMP published values for Node " + i + ": " + String.valueOf(RTMLMPFormat.format(iso.getDailyRealTimeLMP()[interval][i])));
                     }
                     //}
                 }
@@ -837,9 +839,9 @@ public class AMESMarket extends SimModelImpl {
                     hour = 0;
                     day++;
                 }
-                */
-                min = min + 5;
-                if (min % min_len == 0){    // change it to 60 or rename it to someother name
+                 */
+                min = min + M;
+                if (min % min_len == 0) {    // change it to 60 or rename it to someother name
                     hour++;
                     min = 0;
                     if (hour == 25) {
@@ -852,7 +854,7 @@ public class AMESMarket extends SimModelImpl {
         }
 
         //isoRealTime=iso;
-        // System.out.println(hour);
+        System.out.println("Day Hour Interval Min: " + day + hour + interval + min);
         schedule.scheduleActionBeginning(0, new WPMarket());
     }
 
@@ -867,20 +869,20 @@ public class AMESMarket extends SimModelImpl {
         return genAgentList;
     }
 
-    public ArrayList<StorageAgent> getStorageAgentList(){   
+    public ArrayList<StorageAgent> getStorageAgentList() {
         return StorageAgentList;
     }
-    
+
     /**
      * Find a {@link GenAgent} by name.
+     *
      * @param name
      * @return the genagent named name or null, if the name is unknown.
      */
     public GenAgent getGenAgentByName(String name) {
         return genAgentsByName.get(name);
-    }    
-    
-    
+    }
+
     public ArrayList<LSEAgent> getLSEAgentList() {
         return lseAgentList;
     }
@@ -888,7 +890,6 @@ public class AMESMarket extends SimModelImpl {
     public ArrayList<NDGenAgent> getNDGenAgentList() {
         return NDGAgentList;
     }
-
 
     public TransGrid getTransGrid() {
         return transGrid;
@@ -962,11 +963,11 @@ public class AMESMarket extends SimModelImpl {
     public void setNumNDGenAgents(int nndg) {
         numNDGenAgents = nndg;
     }
-    
+
     public void setNumStorageAgents(int ns) {
         numStorageAgents = ns;
     }
-    
+
     public double[][] getNodeData() {
         return nodeData;
     }
@@ -977,24 +978,24 @@ public class AMESMarket extends SimModelImpl {
 
     public double getReserveDownSystemPercent() {
         return ReserveDownSystemPercent;
-    } 
-    
+    }
+
     public double getReserveUpSystemPercent() {
         return ReserveUpSystemPercent;
-    }   
-    
+    }
+
     public void setReserveDownSystemPercent(double rR) {
         ReserveDownSystemPercent = rR;
     }
-    
+
     public void setReserveUpSystemPercent(double rR) {
         ReserveUpSystemPercent = rR;
     }
-    
+
     public CaseFileData getTestCaseConfig() {
         return testcaseConfig;
     }
-    
+
     public double[][] getBranchData() {
         return branchData;
     }
@@ -1012,8 +1013,8 @@ public class AMESMarket extends SimModelImpl {
     }
 
     /**
-     * Get the list of flags marking each generator
-     * as an alert gen or not.
+     * Get the list of flags marking each generator as an alert gen or not.
+     *
      * @return
      */
     public boolean[] getAlertGenMarkers() {
@@ -1027,11 +1028,11 @@ public class AMESMarket extends SimModelImpl {
     public void setExtraGenData(Map<String, SCUCInputData> extraGenCoParams) {
         this.extraGenCoParams = extraGenCoParams;
     }
-    
+
     public void setStorageData(Map<String, StorageInputData> StorageParams) {
         this.StorageParams = StorageParams;
     }
-       
+
     public double[][] getLSEData() {
         return lseData;
     }
@@ -1042,8 +1043,8 @@ public class AMESMarket extends SimModelImpl {
 
     public void setNDGData(double[][] ndg) {
         NDGData = ndg;
-    }  
-    
+    }
+
     public double[][][] getLSEPriceSensitiveData() {
         return lsePriceSensitiveDemand;
     }
@@ -1075,23 +1076,23 @@ public class AMESMarket extends SimModelImpl {
     public void setBaseS(double bs) {
         baseS = bs;
     }
-    
-    public void sethasStorage(double s){
+
+    public void sethasStorage(double s) {
         hasStorage = s;
     }
-    
-    public void sethasNDG(double s){
+
+    public void sethasNDG(double s) {
         hasNDG = s;
     }
-    
-    public double gethasStorage(){
+
+    public double gethasStorage() {
         return hasStorage;
     }
-    
-    public double gethasNDG(){
+
+    public double gethasNDG() {
         return hasNDG;
     }
-    
+
     public double getBaseV() {
         return baseV;
     }
@@ -1122,71 +1123,73 @@ public class AMESMarket extends SimModelImpl {
 
     public void AMESMarketSetupFromGUI(double baseS, double baseV, double[][] nodeData, double[][] branchDataData, double[][] genData, double[][] lseData, double[][] NDGData, double[][][] lsePriceData, int[][] lseHybridData, boolean[] gencoAlertMarkers,
             Map<String, SCUCInputData> extraGenCoParams, Map<String, StorageInputData> StorageParams, double hasStorage, double hasNDG) {
-        System.out.println("AMESMarket object is being set-up");
+        System.out.println("\nAMESMarketSetupFromGUI method started\n");
         InitDataFromGUI(baseS, baseV, nodeData, branchDataData, genData, lseData, NDGData, lsePriceData, lseHybridData, gencoAlertMarkers,
                 extraGenCoParams, StorageParams, hasStorage, hasNDG);
 
-        System.out.println("INIT object parameters are set");
+        System.out.println(" INIT object parameters are set");
+
+        System.out.println(" new Controller()");
         ModelController = new Controller();
-        
-        //System.out.println("check 2");
+
+        System.out.println(" this.setController(ModelController)");
         this.setController(ModelController);
-        
-        System.out.println("AMESMarket.java setModel");
+
+        System.out.println(" ModelController.setModel(this);");
         ModelController.setModel(this);
-        
+
         //System.out.println("check 4");
         this.addSimEventListener(ModelController);
 
         //System.out.println("check 5");
         ModelController.setConsoleOut(false);
-        
-        //System.out.println("check 6");
+
+        // System.out.println("check 6");
         ModelController.setConsoleErr(false);
-        
-        //System.out.println("check 7");
+
+        System.out.println("AMESMarketSetupFromGUI method complete\n");
     }
 
     public void Setup() {
-        System.out.println("check a");
+        System.out.println("ModelController Setup Called?");
         ModelController.setup();
     }
 
     public void Start() {
-        System.out.println("\nAMESMarket.java Start: Simulation is started\n");
+        System.out.println("\nAMESMarket.java ModelController Start: Simulation is started\n");
         stopCode = -1;
         bCalculationEnd = false;
         ModelController.startSim();
     }
 
     public void Step() {
-        System.out.println("\nAMESMarket.java Step \n");
+        System.out.println("\nAMESMarket.java ModelController Step \n");
         ModelController.stepSim();
     }
 
     public void Stop() {
-        System.out.println("\nAMESMArket.java Stop: Simulation is stopped");
+        System.out.println("\nAMESMArket.java ModelController Stop: Simulation is stopped");
         ModelController.stopSim();
     }
 
     public void Pause() {
-        System.out.println("\nAMESMarket.java Pause: Simulation is paused\n");
+        System.out.println("\nAMESMarket.java ModelController Pause: Simulation is paused\n");
         ModelController.pauseSim();
     }
 
     public void Initialize() {
-        System.out.println("\nAMESMarket.java Initialize \n");
+        System.out.println("\nAMESMarket.java ModelController Initialize \n");
         ModelController.beginModel();
     }
 
     public void ViewSettings() {
-        System.out.println("\nAMESMarket.java ViewSettings \n");
+        System.out.println("\nAMESMarket.java ModelController ViewSettings \n");
         ModelController.showSettings();
     }
 
     public void InitDataFromGUI(double s, double v, double[][] nodeData, double[][] branchDataData, double[][] genData, double[][] lseData, double[][] NDGData, double[][][] lsePriceData, int[][] lseHybridData, boolean[] gencoAlertMarkers,
             Map<String, SCUCInputData> extraGenCoParams, Map<String, StorageInputData> storageParams, double hasStorage, double hasNDG) {
-        System.out.println("AMESMarket.java initializes INIT object..");
+        System.out.println(" AMESMarket.java initializes INIT object");
         init = new INIT();
 
         init.setBaseS(s);
@@ -1204,7 +1207,7 @@ public class AMESMarket extends SimModelImpl {
         init.setStorageParams(storageParams);
         init.sethasStorage(hasStorage);
         init.sethasNDG(hasNDG);
-        
+
     }
 
     public void InitLearningParameters(double[][] learningData) {
@@ -1218,7 +1221,8 @@ public class AMESMarket extends SimModelImpl {
         }
     }
 
-    public void InitSimulationParameters(int RTM, int iMax, double RDS, double RUS, boolean bMax, double dThreshold, boolean bThresh, double dEarningThreshold, boolean bEarningThresh, int iEarningStart, int iEarningLength, int iStart, int iLength, double dCheck, boolean bCheck, int iLearnStart, int iLearnLength, double dLearnCheck, boolean bLearnCheck, double dGCap, double dLseCap, long lRandom, int iPriceSensitiveLSE, String shostName, String sdatabaseName, String suserName, String spassword, CaseFileData cfd) {
+    public void InitSimulationParameters(boolean IsFNCSVal, int RTM, int iMax, double RDS, double RUS, boolean bMax, double dThreshold, boolean bThresh, double dEarningThreshold, boolean bEarningThresh, int iEarningStart, int iEarningLength, int iStart, int iLength, double dCheck, boolean bCheck, int iLearnStart, int iLearnLength, double dLearnCheck, boolean bLearnCheck, double dGCap, double dLseCap, long lRandom, int iPriceSensitiveLSE, String shostName, String sdatabaseName, String suserName, String spassword, CaseFileData cfd) {
+        IsFNCS = IsFNCSVal;
         DAY_MAX = iMax;
         M = RTM;
         bMaximumDay = bMax;
@@ -1495,20 +1499,24 @@ public class AMESMarket extends SimModelImpl {
         return LMPByDay;
     }
 
-   public void addActualStartupCostsByDay(double[][] costs) {
-        if(costs == null) throw new IllegalArgumentException();
+    public void addActualStartupCostsByDay(double[][] costs) {
+        if (costs == null) {
+            throw new IllegalArgumentException();
+        }
         double[][] costCopy = new double[costs.length][];
-        for(int i = 0; i<costs.length; i++) {
+        for (int i = 0; i < costs.length; i++) {
             costCopy[i] = Arrays.copyOf(costs[i], costs[i].length);
         }
 
         startupCostsByDay.add(costCopy);
     }
-    
+
     public void addActualProductionCostsByDay(double[][] costs) {
-        if(costs == null) throw new IllegalArgumentException();
+        if (costs == null) {
+            throw new IllegalArgumentException();
+        }
         double[][] costCopy = new double[costs.length][];
-        for(int i = 0; i<costs.length; i++) {
+        for (int i = 0; i < costs.length; i++) {
             costCopy[i] = Arrays.copyOf(costs[i], costs[i].length);
         }
 
@@ -1516,16 +1524,17 @@ public class AMESMarket extends SimModelImpl {
     }
 
     public void addActualShutdownCostsByDay(double[][] costs) {
-        if(costs == null) throw new IllegalArgumentException();
+        if (costs == null) {
+            throw new IllegalArgumentException();
+        }
         double[][] costCopy = new double[costs.length][];
-        for(int i = 0; i<costs.length; i++) {
+        for (int i = 0; i < costs.length; i++) {
             costCopy[i] = Arrays.copyOf(costs[i], costs[i].length);
         }
 
         shutdownCostsByDay.add(costCopy);
     }
-    
-    
+
     public void addRealTimeLMPByDay(double[][] object) {
         int iRow = object.length;
         int iCol = object[0].length;
@@ -1549,7 +1558,6 @@ public class AMESMarket extends SimModelImpl {
 //
 //        realTimeLMPByDay.add(newObject);
 //    }    
-    
     public ArrayList getRealTimeLMPByDay() {
         return realTimeLMPByDay;
     }
@@ -1613,8 +1621,7 @@ public class AMESMarket extends SimModelImpl {
     public boolean isDeleteIntermediateFiles() {
         return deleteIntermediateFiles;
     }
-   
-    
+
     public boolean IfCalculationEnd() {
         return bCalculationEnd;
     }
@@ -1647,19 +1654,18 @@ public class AMESMarket extends SimModelImpl {
         return time_granted;
     }
 
-    public ArrayList<double[][]> getActualStartupCostsByDay(){
+    public ArrayList<double[][]> getActualStartupCostsByDay() {
         return startupCostsByDay;
     }
-     
-    public ArrayList<double[][]> getActualShutdownCostsByDay(){
+
+    public ArrayList<double[][]> getActualShutdownCostsByDay() {
         return shutdownCostsByDay;
     }
-    
-    public ArrayList<double[][]> getActualProductionCostsByDay(){
+
+    public ArrayList<double[][]> getActualProductionCostsByDay() {
         return productionCostsByDay;
     }
 
- 
     //constructor
     public AMESMarket(boolean deleteIntermediateFiles) {
         genAgentSupplyOfferByDay = new ArrayList();

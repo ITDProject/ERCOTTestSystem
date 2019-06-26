@@ -196,7 +196,7 @@ public class DAMarket {
         ames.addLSEAgentSurplusWithTrueCost(lseSurplus);
     }
 
-    public void dayAheadOperation(int h, int d) {
+    public void dayAheadOperation(int h, int d, boolean IsFNCS) {
         //System.out.println("\n----------------------------------------------" +
         //                   "-----------------------");
         System.out.println("\nHour " + h + " Day " + d + ": Day-Ahead Market operation.");
@@ -246,14 +246,14 @@ public class DAMarket {
         for (int j = 0; j < numLSEAgents; j++) {
             LSEAgent lse = (LSEAgent) lseAgentList.get(j);
             //Rohit - Addl comment - receive fixed demand bid into loadProfile
-            loadProfile = lse.submitLoadProfile(d, j, ames.getPsLse());
+            loadProfile = lse.submitLoadProfile(d, j, ames.getPsLse(), IsFNCS);
             //System.out.println("DAM"+loadProfile);
             loadProfileByLSE[j] = loadProfile;  // Add each load profile from LSE_j to loadProfileByLSE in row j
 
             //Rohit - Addl comment - receive price sensitive demand bid into demandBid and then into demandBidbyLSE for each LSE
             demandBid = lse.submitTrueDemandBid();
             //Rohit - New method inside lse to submit demand bid
-            demandBid = lse.submitDemandBid(d, j, ames.getPsLse());
+            demandBid = lse.submitDemandBid(d, j, ames.getPsLse(), IsFNCS);
             demandBidByLSE[j] = demandBid;
 
             
@@ -270,7 +270,7 @@ public class DAMarket {
 //            NDGenAgent ndg = (NDGenAgent) NDGenAgentList.get(j);
 //            
 //            // Important: Assumption that all ND Gen and LSE are placed at every bus
-//            NDGProfile = ndg.submitDAMforecast(d, j);
+//            NDGProfile = ndg.submitDAMforecast(d, j, IsFNCS);
 //            for(int k = 0; k < loadProfileByLSE[j].length; k++){
 //            loadProfileByLSE[j][k] = loadProfileByLSE[j][k] - NDGProfile[k];  // Add each load profile from LSE_j to loadProfileByLSE in row j
 //            }

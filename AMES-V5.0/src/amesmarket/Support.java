@@ -621,5 +621,9 @@ public class Support {
             return Integer.parseInt(string);
     }
   
+    
+    public static boolean parseBoolean(String string) {
+            return string.equalsIgnoreCase("True");
+    }
   
 }

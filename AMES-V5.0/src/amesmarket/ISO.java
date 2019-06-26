@@ -137,11 +137,11 @@ public class ISO {
     }
 
     //newversion
-    public void marketOperation(int m, int interval, int h, int d) {
+    public void marketOperation(int m, int interval, int h, int d, boolean IsFNCS) {
         final int tomorrow = d + 1;
         //System.out.println("time_granted: "+ames.getTimeGranted());
         if (h == 2 && m == 0) { // h==1 previously h == 0
-            dam.dayAheadOperation(h, d);  // fncs.get_events() is called to receive DAM forecast (inside submitLoadProfile method of LSE)
+            dam.dayAheadOperation(h, d, IsFNCS);  // fncs.get_events() is called to receive DAM forecast (inside submitLoadProfile method of LSE)
 
             //newly added
             this.loadProfileByLSE = this.dam.getLoadProfileByLSE();
@@ -159,8 +159,8 @@ public class ISO {
                 rtm.realTimeOperation(h, d);
             }
             System.out.println("\n iso.RTMOperation is called at h:" + h + " interval: " + interval + " m: " + m +"\n");
-            // evaluateRealTimeBidsOffers(h, d); // fncs.get_events() is called to receive RTM forecast (ISO does it in BUC)
-            double[][] realtimeload = this.getRealTimeLoad(h-1, d); // fncs.get_events() is called to receive RTM forecast
+            // evaluateRealTimeBidsOffers(h, d, IsFNCS); // fncs.get_events() is called to receive RTM forecast (ISO does it in BUC)
+            double[][] realtimeload = this.getRealTimeLoad(h-1, d, IsFNCS); // fncs.get_events() is called to receive RTM forecast
             //System.out.println("realtime load: ");
             // Added additionally
             //this.rtm.realTimeOperation(h, d);
@@ -267,7 +267,7 @@ public class ISO {
         }
     }
 
-    private double[][] getRealTimeLoad(int h, int d) {
+    private double[][] getRealTimeLoad(int h, int d, boolean IsFNCS) {
 
         int ColSize = this.ames.M * this.ames.RTMFrequencyPerHour; // previous usage was this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR //TODO:Swathi - check
 
@@ -276,6 +276,7 @@ public class ISO {
         double[][] hourlyNDGProfileByBus = new double[L][ColSize];
 
         //receiving load forecast for realtimeLMP calculation
+        if(IsFNCS){
         String[] events = JNIfncs.get_events();
         //System.out.println("RTM events length: " + events.length);
         for (int i = 0; i < events.length; ++i) {
@@ -302,7 +303,20 @@ public class ISO {
 //                }
             }
         }
+        }
+        else{
 
+        //System.out.println("Num LSEs: " + J);
+        for (int j = 0; j < J; j++) {
+            //Hourly forecast is temparorily set uniformly into per minute forecast
+            for (int k = 0; k < (ColSize); k++) {
+                hourlyLoadProfileByLSE[j][k] = this.dam.getLoadProfileByLSE()[j][h]; //400; //temp[j];
+            }
+                //System.out.println("h: "+ h + " : " + hourlyLoadProfileByLSE[j][0]);
+        }
+        }
+        
+        // temparory assignment 
         //System.out.println("Num LSEs: " + J);
         for (int j = 0; j < J; j++) {
             //Hourly forecast is temparorily set uniformly into per minute forecast
@@ -491,9 +505,9 @@ public class ISO {
         return output;
     }
 
-//    public void evaluateRealTimeBidsOffers(int h, int d) {
+//    public void evaluateRealTimeBidsOffers(int h, int d, boolean IsFNCS) {
 //
-//        buc.solveRTOPF(supplyOfferRT, dailyPriceSensitiveDispatchRT[h], h, d);
+//        buc.solveRTOPF(supplyOfferRT, dailyPriceSensitiveDispatchRT[h], h, d, IsFNCS);
 //        dailyrealtimelmp = buc.getDailyRealTimeLMP();
 //        for (int i = 0; i < I; i++) {
 //            for (int j = 0; j < 4; j++) {

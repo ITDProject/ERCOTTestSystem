@@ -28,11 +28,11 @@ import uchicago.src.sim.gui.SimGraphics;
 import java.sql.*;
 
 /**
- * Example showing what NDGenData[i] contains NDGenData //ID	atBus	block	LP	block	LP
- * block	NDG	block	NDG 1	1	6	22	6	30	6	34	6	27
+ * Example showing what NDGenData[i] contains NDGenData //ID	atBus	block	LP
+ * block	LP block	NDG	block	NDG 1	1	6	22	6	30	6	34	6	27
  *
- * // block: NDGen block for the next how many hours // NDG: NDGen profile (fixed
- * demand)
+ * // block: NDGen block for the next how many hours // NDG: NDGen profile
+ * (fixed demand)
  */
 public class NDGenAgent {
 
@@ -60,11 +60,11 @@ public class NDGenAgent {
     private double[] NDGProfile;
     private double[] NDGForecast;
     private double[] committedDispatch;
-    
+
     private double[] dispatch;    // Real-Time hourly power dispatch quantity
     private double[] dayAheadLMP; // Day-Ahead hourly locational marginal price
     private double[] realTimeLMP; // Real-Time hourly locational marginal price
-    
+
     // Constructor
     public NDGenAgent(double[] NDGData) {
 
@@ -78,7 +78,7 @@ public class NDGenAgent {
         atBus = (int) NDGData[AT_NODE];
         NDGProfile = new double[HOURS_PER_DAY];
         NDGForecast = new double[HOURS_PER_DAY];
-        
+
         committedDispatch = new double[HOURS_PER_DAY];
 
         //System.out.println("LSE ID="+id); it is flagged off
@@ -89,31 +89,35 @@ public class NDGenAgent {
     }
 //method
 
-    public double[] submitDAMforecast(int day, int lse) {
+    public double[] submitDAMforecast(int day, int lse, boolean IsFNCS) {
 
         double[] temp = new double[24];
         // Receives NDG forecast from fncs_player
         //System.out.println("In submitDAMforecast:");
         if (day > 1) { // previously day > 2
-            String[] events = JNIfncs.get_events();
-            //System.out.println("DAM events.len: " + events.length);
-            for (int i = 0; i < events.length; ++i) {
-                //String value = JNIfncs.get_value(events[i]);
-                String[] values = JNIfncs.get_values(events[i]);
+            if (IsFNCS) {
+                String[] events = JNIfncs.get_events();
+                //System.out.println("DAM events.len: " + events.length);
+                for (int i = 0; i < events.length; ++i) {
+                    //String value = JNIfncs.get_value(events[i]);
+                    String[] values = JNIfncs.get_values(events[i]);
 
-                for (int j = 0; j < 24; j++) {
-                    if (events[i].equals("ndgenforecastDAM_h" + String.valueOf(j))) {
-                        System.out.println("receiving DAM NDGforecast: " + values[0]);
-                        //System.out.println("i:"+i);
-                        temp[j] = NDGProfile[j] + Double.parseDouble(values[0]);
+                    for (int j = 0; j < 24; j++) {
+                        if (events[i].equals("ndgenforecastDAM_h" + String.valueOf(j))) {
+                            System.out.println("receiving DAM NDGforecast: " + values[0]);
+                            //System.out.println("i:"+i);
+                            temp[j] = Double.parseDouble(values[0]);
+                        }
+                        //System.out.println("temp - NDGforecast: " + temp[j]);
                     }
-                    //System.out.println("temp - NDGforecast: " + temp[j]);
                 }
+                for (int i = 0; i < 24; i++) {
+                    NDGForecast[i] = temp[i];//ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
+                }
+                return NDGForecast;
+            } else {
+                return NDGProfile;
             }
-            for (int i = 0; i < 24; i++) {
-                NDGForecast[i] = temp[i];//ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
-            }
-            return NDGForecast;
         } else {
             return NDGProfile;
         }
