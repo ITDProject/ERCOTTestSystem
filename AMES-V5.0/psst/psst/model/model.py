@@ -73,7 +73,8 @@ def initialize_model(model,
 
     BigPenalty = config.pop('penalty', 1e6)
     #\Lambda
-    model.LoadMismatchPenalty = Param(within=NonNegativeReals, default=BigPenalty)
+    model.LoadPositiveMismatchPenalty = Param(within=NonNegativeReals, default=BigPenalty)
+    model.LoadNegativeMismatchPenalty = Param(within=NonNegativeReals, default=BigPenalty)
 
     # amount of power produced by each generator, at each time period.
     def power_bounds_rule(m, g, t):

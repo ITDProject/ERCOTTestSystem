@@ -73,11 +73,19 @@ def net_power_at_bus_rule(m, b, t, StorageFlag=False, NDGFlag=False):
 
 
 # give meaning to the positive and negative parts of the mismatch
-def posneg_rule(m, b, t):
-    return m.posLoadGenerateMismatch[b, t] - m.negLoadGenerateMismatch[b, t] == m.LoadGenerateMismatch[b, t]
+# def posneg_rule(m, b, t):
+    # return m.posLoadGenerateMismatch[b, t] - m.negLoadGenerateMismatch[b, t] == m.LoadGenerateMismatch[b, t]
 
-def global_posneg_rule(m, t):
-    return m.posGlobalLoadGenerateMismatch[t] - m.negGlobalLoadGenerateMismatch[t] == m.GlobalLoadGenerateMismatch[t]
+#(36)
+def pos_rule(m, b, t):
+    return m.posLoadGenerateMismatch[b, t] >= m.LoadGenerateMismatch[b, t]
+
+#(37)
+def neg_rule(m, b, t):
+    return m.negLoadGenerateMismatch[b, t] >= - m.LoadGenerateMismatch[b, t]
+
+# def global_posneg_rule(m, t):
+    # return m.posGlobalLoadGenerateMismatch[t] - m.negGlobalLoadGenerateMismatch[t] == m.GlobalLoadGenerateMismatch[t]
 
 # def enforce_reserve_requirements_rule(m, t, StorageFlag=False,
                                         # NDGFlag=False,
@@ -371,9 +379,9 @@ def commitment_in_stage_st_cost_rule(m, st):
     return m.CommitmentStageCost[st] == (sum(m.StartupCost[g,t] + m.ShutdownCost[g,t] for g in m.Generators for t in m.CommitmentTimeInStage[st]) + sum(sum(m.UnitOn[g,t] for t in m.CommitmentTimeInStage[st]) * m.MinimumProductionCost[g] * m.TimePeriodLength for g in m.Generators))
 
 def generation_in_stage_st_cost_rule(m, st):
-    return m.GenerationStageCost[st] == sum(m.ProductionCost[g, t] for g in m.Generators for t in m.GenerationTimeInStage[st]) + m.LoadMismatchPenalty * \
-    (sum(m.posLoadGenerateMismatch[b, t] + m.negLoadGenerateMismatch[b, t] for b in m.Buses for t in m.GenerationTimeInStage[st]) + \
-                sum(m.posGlobalLoadGenerateMismatch[t] + m.negGlobalLoadGenerateMismatch[t] for t in m.GenerationTimeInStage[st]))
+    return m.GenerationStageCost[st] == sum(m.ProductionCost[g, t] for g in m.Generators for t in m.GenerationTimeInStage[st]) + m.LoadPositiveMismatchPenalty * \
+    (sum(m.posLoadGenerateMismatch[b, t] for b in m.Buses for t in m.GenerationTimeInStage[st])) + m.LoadNegativeMismatchPenalty * \
+    (sum(m.negLoadGenerateMismatch[b, t] for b in m.Buses for t in m.GenerationTimeInStage[st]))
 
 def StageCost_rule(m, st):
     return m.StageCost[st] == m.GenerationStageCost[st] + m.CommitmentStageCost[st]
@@ -409,8 +417,10 @@ def constraint_total_demand(model):
 def constraint_load_generation_mismatch(model):
     model.PosLoadGenerateMismatchTolerance = Constraint(model.Buses, rule=pos_load_generate_mismatch_tolerance_rule)
     model.NegLoadGenerateMismatchTolerance = Constraint(model.Buses, rule=neg_load_generate_mismatch_tolerance_rule)
-    model.Defineposneg_Mismatch = Constraint(model.Buses, model.TimePeriods, rule = posneg_rule)
-    model.Global_Defineposneg_Mismatch = Constraint(model.TimePeriods, rule = global_posneg_rule)
+    model.DefinePosMismatch = Constraint(model.Buses, model.TimePeriods, rule = pos_rule)
+    model.DefineNegMismatch = Constraint(model.Buses, model.TimePeriods, rule = neg_rule)
+    #model.Defineposneg_Mismatch = Constraint(model.Buses, model.TimePeriods, rule = posneg_rule)
+    #model.Global_Defineposneg_Mismatch = Constraint(model.TimePeriods, rule = global_posneg_rule)
 
 
 def constraint_power_balance(model, StorageFlag=False, NDGFlag=False):
