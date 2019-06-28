@@ -116,7 +116,7 @@ public class RTMarket {
     public void evaluateRealTimeBidsOffers(
             List<CommitmentDecision> genCoCommitments,
             //double[][] supplyOfferRT, double[] dailyPriceSensitiveDispatchRT,
-            double[][] rtDemand, int m, int interval,
+            double[][] rtDemand, double[][] rtNDG, int m, int interval,
             int h, int d) {
 
         DataFileWriter dfw = new DataFileWriter();
@@ -134,7 +134,7 @@ public class RTMarket {
         try {
             // dfw.writeScenDatFile(rtRefModelFile, ames, d, rtDemand, ames.NUM_HOURS_PER_DAY);     // Initial usage
             //dfw.writeScedScenDatFile(rtRefModelFile, ames, m, h, d, rtDemand, ames.M);   //Rohit's modification
-            dfw.writeScedScenDatFile(rtRefModelFile, ames, m, interval, h, d, rtDemand, ames.M, numIntervalsInSim);  // latest modification 
+            dfw.writeScedScenDatFile(rtRefModelFile, ames, m, interval, h, d, rtDemand, rtNDG, ames.M, numIntervalsInSim);  // latest modification 
         } catch (AMESMarketException ex) {
             Logger.getLogger(RTMarket.class.getName()).log(Level.SEVERE, null, ex);
         }

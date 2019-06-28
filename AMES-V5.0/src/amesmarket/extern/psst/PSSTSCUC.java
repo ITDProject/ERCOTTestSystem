@@ -115,26 +115,6 @@ public class PSSTSCUC implements SCUC {
 
         String strTemp;
 
-//        //Write out the configuration for the pyomo model.
-//        double[][] loadProfileLSE = this.iso.getLoadProfileByLSE();
-//        // double[][] nextDayLoadProfileLSE;
-//        double[][] loadProfileLSEALL = null;
-//
-//        /*
-//		if(day<this.ames.DAY_MAX){
-//			nextDayLoadProfileLSE = this.iso.getNextDayLoadProfileByLSE();
-//			loadProfileLSEALL = new double[loadProfileLSE.length][loadProfileLSE[0].length + nextDayLoadProfileLSE[0].length];
-//			for (int i=0; i < loadProfileLSE.length; i++) {
-//				System.arraycopy(loadProfileLSE[i], 0, loadProfileLSEALL[i], 0, loadProfileLSE[i].length);
-//				System.arraycopy(nextDayLoadProfileLSE[i], 0, loadProfileLSEALL[i], loadProfileLSE[i].length, nextDayLoadProfileLSE[i].length);
-//			}
-//		} else {
-//         */ loadProfileLSEALL = new double[loadProfileLSE.length][loadProfileLSE[0].length + loadProfileLSE[0].length];
-//
-//        for (int i = 0; i < loadProfileLSE.length; i++) {
-//            System.arraycopy(loadProfileLSE[i], 0, loadProfileLSEALL[i], 0, loadProfileLSE[i].length);
-//        }
-//        //}
         //Write out the configuration for the pyomo model.
         double[][] loadProfileLSE = this.iso.getLoadProfileByLSE();
         double[][] nextDayLoadProfileLSE;
@@ -143,7 +123,7 @@ public class PSSTSCUC implements SCUC {
         //System.out.println(" day: " + day + " DAY_MAX: " + this.ames.DAY_MAX);
         if (day < this.ames.DAY_MAX) {
             nextDayLoadProfileLSE = this.iso.getLoadProfileByLSE(); // TODO:Swathi - replace it with - this.iso.getNextDayLoadProfileByLSE();
-          
+
             loadProfileLSEALL = new double[loadProfileLSE.length][loadProfileLSE[0].length + nextDayLoadProfileLSE[0].length];
             for (int i = 0; i < loadProfileLSE.length; i++) {
                 System.arraycopy(loadProfileLSE[i], 0, loadProfileLSEALL[i], 0, loadProfileLSE[i].length);
@@ -154,18 +134,37 @@ public class PSSTSCUC implements SCUC {
             for (int i = 0; i < loadProfileLSE.length; i++) {
                 System.arraycopy(loadProfileLSE[i], 0, loadProfileLSEALL[i], 0, loadProfileLSE[i].length);
             }
-            
-        }
 
-        DataFileWriter dfw = new DataFileWriter();
+        }
 //        for (int i = 0; i < ames.getNumLSEAgents(); i++) {
 //            for (int j = 0; j < loadProfileLSEALL[0].length; j++) {
 //                System.out.print(" - " + loadProfileLSEALL[i][j]);
 //            }
 //            System.out.println("");
 //        }
-        dfw.writeScenDatFile(this.referenceFile, this.ames, day, loadProfileLSEALL, this.ames.NUM_HOURS_PER_DAY_UC);
-        //dfw.writeScenDatFile(this.referenceFile, this.ames, day, loadProfileLSEALL, this.ames.NUM_HOURS_PER_DAY); //Rohit's version
+
+        double[][] GenProfileNDG = this.iso.getGenProfileByNDG();
+        double[][] nextDayGenProfileNDG;
+        double[][] GenProfileNDGAll = null;
+
+        if (day < this.ames.DAY_MAX) {
+            nextDayGenProfileNDG = this.iso.getGenProfileByNDG(); // TODO:Swathi - replace it with - this.iso.getNextDayGenProfileByNDG();
+
+            GenProfileNDGAll = new double[GenProfileNDG.length][GenProfileNDG[0].length + nextDayGenProfileNDG[0].length];
+            for (int i = 0; i < GenProfileNDG.length; i++) {
+                System.arraycopy(GenProfileNDG[i], 0, GenProfileNDGAll[i], 0, GenProfileNDG[i].length);
+                System.arraycopy(nextDayGenProfileNDG[i], 0, GenProfileNDGAll[i], GenProfileNDG[i].length, nextDayGenProfileNDG[i].length);
+            }
+        } else {
+            GenProfileNDGAll = new double[GenProfileNDG.length][GenProfileNDG[0].length + GenProfileNDG[0].length];
+            for (int i = 0; i < GenProfileNDG.length; i++) {
+                System.arraycopy(GenProfileNDG[i], 0, GenProfileNDGAll[i], 0, GenProfileNDG[i].length);
+            }
+        }
+
+        DataFileWriter dfw = new DataFileWriter();
+        dfw.writeScucScenDatFile(this.referenceFile, this.ames, day, loadProfileLSEALL, GenProfileNDGAll, this.ames.NUM_HOURS_PER_DAY_UC);
+        //dfw.writeScucScenDatFile(this.referenceFile, this.ames, day, loadProfileLSEALL, this.ames.NUM_HOURS_PER_DAY); //Rohit's version
 
         /*
 		LoadCaseControl loadCaseControl = this.ames.getLoadScenarioProvider().getLoadCaseControl();
@@ -214,8 +213,8 @@ public class PSSTSCUC implements SCUC {
 
 			File fileObj = new File("SCUCresources/ScenarioData/Scen" + (i + 1)
 					+ ".dat");
-			//dfw.writeScenDatFile(fileObj, this.ames, day, scenarioLoadProfileLSEALL, this.ames.NUM_HOURS_PER_DAY_UC);
-                        dfw.writeScenDatFile(fileObj, this.ames, day, scenarioLoadProfileLSEALL, this.ames.NUM_HOURS_PER_DAY); // changed in ames 5.0
+			//dfw.writeScucScenDatFile(fileObj, this.ames, day, scenarioLoadProfileLSEALL, this.ames.NUM_HOURS_PER_DAY_UC);
+                        dfw.writeScucScenDatFile(fileObj, this.ames, day, scenarioLoadProfileLSEALL, this.ames.NUM_HOURS_PER_DAY); // changed in ames 5.0
 		}
          */
         this.syscall(this.PSSTExt);
@@ -244,7 +243,7 @@ public class PSSTSCUC implements SCUC {
         this.GenDAMCommitmentStatusNextDay = new int[this.numHours][this.numGenAgents];
         this.GenDAMSchedule = new double[this.numHours][this.numGenAgents];
         for (int j = 0; j < this.numGenAgents; j++) {
-            System.out.print("GenCo " + (j+1) + " ");
+            System.out.print("GenCo " + (j + 1) + " ");
             int[] schedule = new int[this.numHours];
             //int[][] schedule = new int[this.numHours][this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M];
             int i = 0;
@@ -272,12 +271,12 @@ public class PSSTSCUC implements SCUC {
 //				for (int m = 0; m < values.length; m++)
 //                                    System.out.print(" m: "+ m + " "+ values[m]);
 //                                System.out.println("");
-                System.out.print( " : "+ Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2)));
+                System.out.print(" : " + Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2)));
                 schedule[i] = Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2));
 //                for (int k = 0; k < (this.ames.NUM_INTERVALS_PER_HOUR * this.ames.M); k++) {
 //                    schedule[i][k] = Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2));
 //                }
-                
+
                 //System.out.println("Double.parseDouble(values[1]): "+ Double.parseDouble(values[2]));
                 GenDAMSchedule[i][j] = Double.parseDouble(values[2]) * ames.getBaseS();
                 GenDAMCommitmentStatusNextDay[i][j] = Integer.parseInt(values[1]);

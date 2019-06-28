@@ -143,10 +143,11 @@ public class DataFileWriter {
      * @param ames
      * @param day
      * @param LoadProfileLSE
+     * @param GenProfileNDG
      * @param numIntervalsInSim
      * @throws AMESMarketException
      */
-    public void writeScenDatFile(File fileObj, AMESMarket ames, int day, double[][] LoadProfileLSE, int numIntervalsInSim) throws AMESMarketException {
+    public void writeScucScenDatFile(File fileObj, AMESMarket ames, int day, double[][] LoadProfileLSE, double[][] GenProfileNDG, int numIntervalsInSim) throws AMESMarketException {
         //set up all the elements we need.
         final int numHoursPerDay = ames.NUM_HOURS_PER_DAY;
 //        final int numIntervalsInSim = ames.NUM_HOURS_PER_DAY_UC;
@@ -173,7 +174,7 @@ public class DataFileWriter {
         ReserveUpSystemPercent = ames.getReserveUpSystemPercent();
         branchIndex = ames.getTransGrid().getBranchIndex();
         hasStorage = ames.gethasStorage();
-        hasNDG = ames.gethasNDG();
+        hasNDG = 0; //ames.gethasNDG();
 
         //Now that we have all the parameters. Write it out.
         try {
@@ -294,23 +295,23 @@ public class DataFileWriter {
 
             refBufferWriter.write("param NDGFlag := "
                     + hasNDG + " ;\n\n");
-            
+
             refBufferWriter.write("param ReserveDownSystemPercent := "
                     + ReserveDownSystemPercent + " ;\n\n");
 
             refBufferWriter.write("param ReserveUpSystemPercent := "
                     + ReserveUpSystemPercent + " ;\n\n");
-            
+
             refBufferWriter.write("param NumberOfZones := "
                     + ames.getTestCaseConfig().NumberOfReserveZones + " ;\n\n");
-            
+
             refBufferWriter.write("set Zones := ");
 
             for (int i = 0; i < ames.getTestCaseConfig().NumberOfReserveZones; i++) {
                 refBufferWriter.write("Zone" + (i + 1) + " ");
             }
             refBufferWriter.write(";\n\n");
-            
+
             refBufferWriter
                     .write("param: Buses ReserveDownZonalPercent ReserveUpZonalPercent :=\n");
 
@@ -318,15 +319,15 @@ public class DataFileWriter {
                 CaseFileData.ZonalData ZoneData = ames.getTestCaseConfig().getZonalData().get(zName);
                 int[] buses = ZoneData.getBuses();
                 String stemp = "";
-                for (int i=0; i<buses.length; i++){
+                for (int i = 0; i < buses.length; i++) {
                     stemp = stemp + "Bus" + buses[i] + ",";
                 }
-                refBufferWriter.write(zName + " " + stemp + " "+ ZoneData.getReserveDownZonalPercent() + " "+ ZoneData.getReserveUpZonalPercent());
+                refBufferWriter.write(zName + " " + stemp + " " + ZoneData.getReserveDownZonalPercent() + " " + ZoneData.getReserveUpZonalPercent());
                 refBufferWriter.write("\n");
             }
-            
+
             refBufferWriter.write(";\n\n");
-            
+
 //            refBufferWriter.write("param: ReserveDownSystemPercent := \n");
 //
 //            for (int h = 0; h < numIntervalsInSim; h++) {
@@ -342,42 +343,75 @@ public class DataFileWriter {
 //            }
 //
 //            refBufferWriter.write("; \n");
-            
             refBufferWriter.write("param: NetDemand :=\n");
 
             System.out.println("LoadProfileLSE length: " + LoadProfileLSE[0].length);
-            for (int i = 0; i < numLSEAgents; i++) {
-                LSEAgent lse = ames.getLSEAgentList().get(i);
-                int lseNode = lse.getAtNode();
-
-                for (int h = 0; h < numIntervalsInSim; h++) {
-                    //System.out.print(" h: "+ h + " LoadProfileLSE[i][h]: " + LoadProfileLSE[i][h]);
-                    refBufferWriter.write("Bus" + lseNode + " " + (h + 1) + " "
-                            + LoadProfileLSE[i][h] / baseS + "\n");
+            double[][] NetDemand = new double[numNodes][numIntervalsInSim];
+            for (int n = 0; n < numNodes; n++) {
+                for (int i = 0; i < numLSEAgents; i++) {
+                    LSEAgent lse = ames.getLSEAgentList().get(i);
+                    int lseNode = lse.getAtNode();
+                    if ((n+1) == lseNode) {
+                        for (int h = 0; h < numIntervalsInSim; h++) {
+                            NetDemand[n][h] = NetDemand[n][h] + LoadProfileLSE[i][h];
+                        }
+                    }
+                }
+                
+                for (int i = 0; i < numNDGAgents; i++) {
+                    NDGenAgent ndg = ames.getNDGenAgentList().get(i);
+                    int ndgNode = ndg.getAtNode();
+                    if ((n+1) == ndgNode) {
+                        for (int h = 0; h < numIntervalsInSim; h++) {
+                            NetDemand[n][h] = NetDemand[n][h] - GenProfileNDG[i][h];
+                        }
+                    }
                 }
 
+                for (int h = 0; h < numIntervalsInSim; h++) {
+                    refBufferWriter.write("Bus" + (n+1) + " " + (h + 1) + " "
+                            + NetDemand[n][h] / baseS + "\n");
+                }
                 refBufferWriter.write("\n");
             }
-
+            
             refBufferWriter.write("; \n\n");
-
-            // TODO:Swathi - NDG data needs to be written by toggling the following
-//            refBufferWriter.write("param: NDG :=\n");
+            
+//            refBufferWriter.write("param: Demand :=\n");
 //
-//            for (int i = 0; i < numNDGAgents; i++) {
-//                NDGenAgent ndg = ames.getNDGenAgentList().get(i);
-//                int ndgNode = ndg.getAtNode();
+//            for (int i = 0; i < numLSEAgents; i++) {
+//                LSEAgent lse = ames.getLSEAgentList().get(i);
+//                int lseNode = lse.getAtNode();
 //
 //                for (int h = 0; h < numIntervalsInSim; h++) {
-//                    refBufferWriter.write("Bus" + ndgNode + " " + (h + 1) + " "
-//                            + ndg.getNDGProfile()[h] / baseS + "\n");
+//                    //System.out.print(" h: "+ h + " LoadProfileLSE[i][h]: " + LoadProfileLSE[i][h]);
+//                    refBufferWriter.write("Bus" + lseNode + " " + (h + 1) + " "
+//                            + LoadProfileLSE[i][h] / baseS + "\n");
 //                }
 //
 //                refBufferWriter.write("\n");
 //            }
 //
-//            refBufferWriter.write("; \n");
-
+//            refBufferWriter.write("; \n\n");
+//
+//            if (hasNDG > 0) {
+//                refBufferWriter.write("param: NDG :=\n");
+//
+//                for (int i = 0; i < numNDGAgents; i++) {
+//                    NDGenAgent ndg = ames.getNDGenAgentList().get(i);
+//                    int ndgNode = ndg.getAtNode();
+//
+//                    for (int h = 0; h < numIntervalsInSim; h++) {
+//                        refBufferWriter.write("Bus" + ndgNode + " " + (h + 1) + " "
+//                                + GenProfileNDG[i][h] / baseS + "\n");
+//                    }
+//
+//                    refBufferWriter.write("\n");
+//                }
+//
+//                refBufferWriter.write("; \n");
+//
+//            }
 
             refBufferWriter
                     .write("param: ProductionCostA0 ProductionCostA1 ProductionCostA2 :=\n");
@@ -412,9 +446,10 @@ public class DataFileWriter {
      * @param day
      * @param LoadProfileLSE
      * @param numIntervalsInSim
+     * @param GenProfileNDG
      * @throws AMESMarketException
      */
-    public void writeScedScenDatFile(File fileObj, AMESMarket ames, int min, int interval, int hour, int day, double[][] LoadProfileLSE, int IntervalSize, int numIntervalsInSim) throws AMESMarketException {
+    public void writeScedScenDatFile(File fileObj, AMESMarket ames, int min, int interval, int hour, int day, double[][] LoadProfileLSE, double[][] GenProfileNDG, int IntervalSize, int numIntervalsInSim) throws AMESMarketException {
         //set up all the elements we need.
         // Important: Resolve the minimum up time and minimum down time values of the generators
 
@@ -443,7 +478,7 @@ public class DataFileWriter {
         ReserveUpSystemPercent = ames.getReserveUpSystemPercent();
         branchIndex = ames.getTransGrid().getBranchIndex();
         hasStorage = ames.gethasStorage();
-        hasNDG = ames.gethasNDG();
+        hasNDG = 0; //ames.gethasNDG();
 
         //Now that we have all the parameters. Write it out.
         try {
@@ -535,7 +570,7 @@ public class DataFileWriter {
 
                 refBufferWriter.write(" ;\n");
             }
-            System.out.println("numIntervalsInSim: "+numIntervalsInSim);
+            System.out.println("numIntervalsInSim: " + numIntervalsInSim);
             refBufferWriter.write("\nparam NumTimePeriods := " + numIntervalsInSim
                     + " ;\n\n");
 
@@ -567,24 +602,23 @@ public class DataFileWriter {
 
             refBufferWriter.write("param NDGFlag := "
                     + hasNDG + " ;\n\n");
-            
+
             refBufferWriter.write("param ReserveDownSystemPercent := "
                     + ReserveDownSystemPercent + " ;\n\n");
 
             refBufferWriter.write("param ReserveUpSystemPercent := "
                     + ReserveUpSystemPercent + " ;\n\n");
-            
-            
+
             refBufferWriter.write("param NumberOfZones := "
                     + ames.getTestCaseConfig().NumberOfReserveZones + " ;\n\n");
-            
+
             refBufferWriter.write("set Zones := ");
 
             for (int i = 0; i < ames.getTestCaseConfig().NumberOfReserveZones; i++) {
                 refBufferWriter.write("Zone" + (i + 1) + " ");
             }
             refBufferWriter.write(";\n\n");
-            
+
             refBufferWriter
                     .write("param: Buses ReserveDownZonalPercent ReserveUpZonalPercent :=\n");
 
@@ -592,15 +626,15 @@ public class DataFileWriter {
                 CaseFileData.ZonalData ZoneData = ames.getTestCaseConfig().getZonalData().get(zName);
                 int[] buses = ZoneData.getBuses();
                 String stemp = "";
-                for (int i=0; i<buses.length; i++){
+                for (int i = 0; i < buses.length; i++) {
                     stemp = stemp + "Bus" + buses[i] + ",";
                 }
-                refBufferWriter.write(zName + " " + stemp + " "+ ZoneData.getReserveDownZonalPercent() + " "+ ZoneData.getReserveUpZonalPercent());
+                refBufferWriter.write(zName + " " + stemp + " " + ZoneData.getReserveDownZonalPercent() + " " + ZoneData.getReserveUpZonalPercent());
                 refBufferWriter.write("\n");
             }
-            
+
             refBufferWriter.write(";\n\n");
-            
+
 //            // Should update reserve requirements by minute
 //            refBufferWriter.write("param: ReserveDownSystemPercent := \n");
 //
@@ -615,41 +649,73 @@ public class DataFileWriter {
 //            }
 //
 //            refBufferWriter.write("; \n");
-            
             refBufferWriter.write("param: NetDemand :=\n");
 
-            for (int i = 0; i < numLSEAgents; i++) {
-                LSEAgent lse = ames.getLSEAgentList().get(i);
-                int lseNode = lse.getAtNode();
-
-                for (int h = 0; h < numIntervalsInSim; h++) {
-                    //System.out.println("min+h: "+ (min+h));
-                    refBufferWriter.write("Bus" + lseNode + " " + (min + h + 1) + " "
-                            + LoadProfileLSE[i][min + h] / baseS + "\n");
+            double[][] NetDemand = new double[numNodes][numIntervalsInSim];
+            for (int n = 0; n < numNodes; n++) {
+                for (int i = 0; i < numLSEAgents; i++) {
+                    LSEAgent lse = ames.getLSEAgentList().get(i);
+                    int lseNode = lse.getAtNode();
+                    if ((n+1) == lseNode) {
+                        for (int h = 0; h < numIntervalsInSim; h++) {
+                            NetDemand[n][h] = NetDemand[n][h] + LoadProfileLSE[i][min+h];
+                        }
+                    }
+                }
+                
+                for (int i = 0; i < numNDGAgents; i++) {
+                    NDGenAgent ndg = ames.getNDGenAgentList().get(i);
+                    int ndgNode = ndg.getAtNode();
+                    if ((n+1) == ndgNode) {
+                        for (int h = 0; h < numIntervalsInSim; h++) {
+                            NetDemand[n][h] = NetDemand[n][h] - GenProfileNDG[i][min+h];
+                        }
+                    }
                 }
 
+                for (int h = 0; h < numIntervalsInSim; h++) {
+                    refBufferWriter.write("Bus" + (n+1) + " " + (min+h + 1) + " "
+                            + NetDemand[n][h] / baseS + "\n");
+                }
                 refBufferWriter.write("\n");
             }
-
-            refBufferWriter.write("; \n");
-
-//            refBufferWriter.write("param: NDG :=\n");
+            
+            refBufferWriter.write("; \n\n");
+            
+//            refBufferWriter.write("param: Demand :=\n");
 //
-//            for (int i = 0; i < numNDGAgents; i++) {
-//                NDGenAgent ndg = ames.getNDGenAgentList().get(i);
-//                int ndgNode = ndg.getAtNode();
+//            for (int i = 0; i < numLSEAgents; i++) {
+//                LSEAgent lse = ames.getLSEAgentList().get(i);
+//                int lseNode = lse.getAtNode();
 //
 //                for (int h = 0; h < numIntervalsInSim; h++) {
-//                    refBufferWriter.write("Bus" + ndgNode + " " + (h + 1) + " "
-//                            + ndg.getNDGProfile()[h] / baseS + "\n");
+//                    //System.out.println("min+h: "+ (min+h));
+//                    refBufferWriter.write("Bus" + lseNode + " " + (min + h + 1) + " "
+//                            + LoadProfileLSE[i][min + h] / baseS + "\n");
 //                }
 //
 //                refBufferWriter.write("\n");
 //            }
 //
 //            refBufferWriter.write("; \n");
-
-
+//            if (hasNDG > 0) {
+//                refBufferWriter.write("param: NDG :=\n");
+//
+//                for (int i = 0; i < numNDGAgents; i++) {
+//                    NDGenAgent ndg = ames.getNDGenAgentList().get(i);
+//                    int ndgNode = ndg.getAtNode();
+//
+//                    for (int h = 0; h < numIntervalsInSim; h++) {
+//                        refBufferWriter.write("Bus" + ndgNode + " " + (min + h + 1) + " "
+//                                + GenProfileNDG[i][min + h] / baseS + "\n");
+//                    }
+//
+//                    refBufferWriter.write("\n");
+//                }
+//
+//                refBufferWriter.write("; \n");
+//
+//            }
 
             refBufferWriter
                     .write("param: ProductionCostA0 ProductionCostA1 ProductionCostA2 :=\n");
@@ -718,7 +784,7 @@ public class DataFileWriter {
 
         //some rounding checks
         if (powerT0 < capMin && ga.getUnitOnStateT0NextDay() > 0) { // Added ga.getUnitOnStateT0NextDay() > 0 - Swathi
-            System.err.println("Warning: " + ga.getID() + " PowerT0 value of "
+            System.err.println("SCUC Warning: " + ga.getID() + " PowerT0 value of "
                     + powerT0 + " is less than capMin of " + capMin
                     + ". Adjusting to " + capMin
             );
@@ -798,8 +864,8 @@ public class DataFileWriter {
         double shutdowncost = ga.getShutDownCost();
 
         //some rounding checks
-        if (powerT0 < capMin && ga.getCommitmentStatus(hour-1) > 0) { // Added  ga.getCommitmentStatus(hour) > 0 - Swathi
-            System.err.println("Warning: " + ga.getID() + " PowerT0 value of "
+        if (powerT0 < capMin && ga.getCommitmentStatus(hour - 1) > 0) { // Added  ga.getCommitmentStatus(hour) > 0 - Swathi
+            System.err.println("SCED Warning: " + ga.getID() + " PowerT0 value of "
                     + powerT0 + " is less than capMin of " + capMin
                     + ". Adjusting to " + capMin
             );
@@ -821,7 +887,7 @@ public class DataFileWriter {
                 ,
                  powerT0 //2
                 ,
-                 ga.getCommitmentStatus(hour-1) //3
+                 ga.getCommitmentStatus(hour - 1) //3
                 ,
                  capMin //4
                 ,
@@ -951,7 +1017,7 @@ public class DataFileWriter {
 
                 int[] commitmentVector = new int[TAU];
                 for (int k = 0; k < TAU; k++) {
-                    commitmentVector[k] = cd.commitmentDecisions[h-1];
+                    commitmentVector[k] = cd.commitmentDecisions[h - 1];
                 }
                 //Boolean[] commitmentVector = gencoCommitments.get(g);
                 if (commitmentVector == null) { //yes, I'm being very cautious.

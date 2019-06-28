@@ -856,9 +856,10 @@ public class CaseFileReader {
         final ArrayList<String> NDGDataList = collectLines(NDG_DATA_END);
 //        final IZoneIndexProvider zip = testConf.getZoneNames();
 
-        System.out.println("NDGDataList: " + NDGDataList.toString());
+        // System.out.println("NDGDataList: " + NDGDataList.toString());
         
         int iNDGNumber = NDGDataList.size() / 3;
+        System.out.println("iNDGNumber: " + iNDGNumber);
         testConf.NDGSec1Data = new Object[iNDGNumber][11];
         testConf.NDGSec2Data = new Object[iNDGNumber][11];
         testConf.NDGSec3Data = new Object[iNDGNumber][11];

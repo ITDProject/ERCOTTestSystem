@@ -151,7 +151,7 @@ public class LSEAgent implements Drawable {
 
                 // temparory assignment 
                 loadForecast = loadProfile;
-                
+
             } else {
                 loadForecast = loadProfile;
             }

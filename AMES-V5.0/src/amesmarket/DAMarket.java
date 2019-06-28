@@ -41,6 +41,7 @@ public class DAMarket {
     private double[] trueSupplyOffer;
     private double[][] trueDemandBid;
     private double[][] supplyOfferByGen, supplyOffertemp;
+    private double[][] GenProfileByNDG;
     private double[][] loadProfileByLSE;
     private double[][][] demandBidByLSE;
     private int[][] demandHybridByLSE;
@@ -73,7 +74,8 @@ public class DAMarket {
         supplyOffertemp = new double[numGenAgents][numSupplyOfferParams];
         demandBidByLSE = new double[numLSEAgents][24][3];
         trueDemandBidByLSE = new double[numLSEAgents][24][3];
-        loadProfileByLSE = new double[numLSEAgents][numHoursPerDay];
+        GenProfileByNDG = new double[numLSEAgents][numHoursPerDay];
+        loadProfileByLSE = new double[numNDGenAgents][numHoursPerDay];
         demandHybridByLSE = new int[numLSEAgents][numHoursPerDay];
         trueSupplyOfferByGen = new double[numGenAgents][numSupplyOfferParams];
         choiceProbability = new double[numGenAgents];
@@ -265,16 +267,14 @@ public class DAMarket {
             strTemp += String.format("\t%1$15s", lseName);
         }
 
-        // NL is claculated at an early stage. The following is not required to be done. Check - Swathi
-//        for (int j = 0; j < numNDGenAgents; j++) {
-//            NDGenAgent ndg = (NDGenAgent) NDGenAgentList.get(j);
-//            
-//            // Important: Assumption that all ND Gen and LSE are placed at every bus
-//            NDGProfile = ndg.submitDAMforecast(d, j, IsFNCS);
-//            for(int k = 0; k < loadProfileByLSE[j].length; k++){
-//            loadProfileByLSE[j][k] = loadProfileByLSE[j][k] - NDGProfile[k];  // Add each load profile from LSE_j to loadProfileByLSE in row j
-//            }
-//        }
+        System.out.println("numNDGenAgents:"+numNDGenAgents);
+        for (int j = 0; j < numNDGenAgents; j++) {
+            
+            NDGenAgent ndg = (NDGenAgent) NDGenAgentList.get(j);
+            NDGProfile = ndg.submitDAMForecast(d, j, IsFNCS);
+            GenProfileByNDG[j] = NDGProfile;
+            
+        }
         
         /* Temperory remove output -----------    
       System.out.println("Demand Bids Reported by LSEs - Fixed Loads");
@@ -460,6 +460,10 @@ public class DAMarket {
         return supplyOfferByGen;
     }
 
+    public double[][] getGenProfileByNDG() {
+        return GenProfileByNDG;
+    }
+    
     public double[][] getLoadProfileByLSE() {
         return loadProfileByLSE;
     }

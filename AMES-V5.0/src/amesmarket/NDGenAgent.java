@@ -81,15 +81,14 @@ public class NDGenAgent {
 
         committedDispatch = new double[HOURS_PER_DAY];
 
-        //System.out.println("LSE ID="+id); it is flagged off
         for (int h = 2; h < NDGData.length; h++) {
             NDGProfile[h - 2] = NDGData[h];
-            //System.out.println("h="+(h-2)+"\tloadProfile="+loadProfile[h-2]+"\tFlag="+hybridFlag[h-2]);
+            //System.out.println("h="+(h-2)+"\tNDGProfile="+NDGProfile[h-2]);
         }
     }
 //method
 
-    public double[] submitDAMforecast(int day, int lse, boolean IsFNCS) {
+    public double[] submitDAMForecast(int day, int lse, boolean IsFNCS) {
 
         double[] temp = new double[24];
         // Receives NDG forecast from fncs_player
@@ -111,14 +110,20 @@ public class NDGenAgent {
                         //System.out.println("temp - NDGforecast: " + temp[j]);
                     }
                 }
-                for (int i = 0; i < 24; i++) {
-                    NDGForecast[i] = temp[i];//ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
-                }
+                System.arraycopy(temp, 0, NDGForecast, 0, 24); //ToDo- Double.parseDouble(rs.getString("LSE"+Integer.toString(psLse)));
+                
+                //Temp assignment 
+                NDGForecast = NDGProfile;
+                
                 return NDGForecast;
             } else {
                 return NDGProfile;
             }
         } else {
+//            System.out.println("NDGProfile:");
+//            for(int i=0; i<NDGProfile.length;i++)
+//                System.out.print(": "+NDGProfile[i]);
+//            System.out.println("");
             return NDGProfile;
         }
     }
