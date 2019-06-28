@@ -4,6 +4,7 @@ BASE_S	100
 BASE_V	345
 
 // Simulation Parameters
+FNCSActive false
 MaxDay	2
 RTMDuration 12
 RandomSeed	695672061
@@ -11,21 +12,17 @@ ThresholdProbability     0.999
 
 ReserveDownSystemPercent 0.2
 ReserveUpSystemPercent 0.3
-//Reserve_Requirement 800
 
-#BusDataStart
-//      NB	  PenaltyWeight
-         8	         0.0500
-#BusDataEnd
-
+// Bus Data
+NumberofBuses       8
 
 NumberOfReserveZones     3
 
 #ZoneDataStart
 //  ZoneName    Buses    ReserveDownZonalPercent    ReserveUpZonalPercent
-Zone1    1,2,3    0.1   0.15
-Zone2    4,5,6    0.2   0.25
-Zone3    7,8      0.3   0.35
+Zone1    4,3,7    0.1   0.15
+Zone2    1,5,6    0.2   0.25
+Zone3    2,8      0.3   0.35
 #ZoneDataEnd
 
 #LineDataStart
