@@ -187,6 +187,24 @@ def read_model(model_data):
             #click.echo('BusSplit'+ str(BusSplit))
             zonalBusData[z] = BusSplit
 
+    NDGData = {}
+
+    # READ = False
+    # for l in data.splitlines():
+        # if l.strip() == ';':
+            # READ = False
+        # if l.startswith('param: NDG'):
+            # READ = True
+            # continue
+        # if READ is True:
+            # b, t, v = l.split()
+            # NDGData[t, b] = float(v.replace(',', '.'))
+            # click.echo('NDGData[t, b]:'+ str(NDGData[t, b])+str(float(v.replace(',', '.'))))
+            # #c.load.loc[t, b] = float(v.replace(',', '.'))
+            # #c.gen.loc[g, 'PMAX'] = float(max_g.replace(',', '.'))  # Handle europe number format TODO: use better fix!
+            # #z, Buses, RDZP, RUZP = l.split(" ")
+            # #ReserveDownZonalPercent[z] = float(RDZP)
+
     #click.echo("print zonalData: " + str(zonalData))
     #click.echo("print ReserveDownZonalPercent: " + str(ReserveDownZonalPercent))
     #click.echo("print ReserveUpZonalPercent: " + str(ReserveUpZonalPercent))
@@ -341,4 +359,4 @@ def read_model(model_data):
     #click.echo("printing c.gencost.loc: " + str(c.gencost.loc))
     #click.echo("printing c.gencost: " + str(c.gencost))
     #click.echo("printing c: " + str(c))
-    return c, zonalData, zonalBusData, ReserveDownZonalPercent, ReserveUpZonalPercent
+    return c, zonalData, zonalBusData, ReserveDownZonalPercent, ReserveUpZonalPercent, NDGData

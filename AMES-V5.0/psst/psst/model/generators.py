@@ -10,12 +10,12 @@ def initialize_generators(model,
     model.GeneratorsAtBus = Set(model.Buses, initialize=generator_at_bus)
 
 
-def initialize_non_dispatchable_generators(model,
-                                        non_dispatchable_generator_names=None,
-                                        non_dispatchable_generator_at_bus=None):
+# def initialize_non_dispatchable_generators(model,
+                                        # non_dispatchable_generator_names=None,
+                                        # non_dispatchable_generator_at_bus=None):
 
-    model.NonDispatchableGenerators = Set(initialize=non_dispatchable_generator_names)
-    model.NonDispatchableGeneratorsAtBus = Set(model.Buses, initialize=non_dispatchable_generator_at_bus)
+    # model.NonDispatchableGenerators = Set(initialize=non_dispatchable_generator_names)
+    # model.NonDispatchableGeneratorsAtBus = Set(model.Buses, initialize=non_dispatchable_generator_at_bus)
 
 def generation_maximum_power_init(model):
     for g, t in model.EnforceMaximumPower:
@@ -55,19 +55,19 @@ def maximum_minimum_power_output_generators(model, minimum_power_output=None, ma
     model.MaximumPowerOutput = Param(model.Generators, initialize=maximum_power_output, within=NonNegativeReals, default=0.0)
 
 
-def maximum_minimim_power_output_non_dispatchable_generators(model, minimum_power_output=None, maximum_power_output=None):
+# def maximum_minimim_power_output_non_dispatchable_generators(model, minimum_power_output=None, maximum_power_output=None):
 
-    model.MinimumNonDispatchablePowerOutput = Param(model.NonDispatchableGenerators,
-                                            model.TimePeriods,
-                                            within=NonNegativeReals,
-                                            default=0.0,
-                                            mutable=True)
+    # model.MinimumNonDispatchablePowerOutput = Param(model.NonDispatchableGenerators,
+                                            # model.TimePeriods,
+                                            # within=NonNegativeReals,
+                                            # default=0.0,
+                                            # mutable=True)
 
-    model.MaximumNonDispatchablePowerOutput = Param(model.NonDispatchableGenerators,
-                                            model.TimePeriods,
-                                            within=NonNegativeReals,
-                                            default=0.0,
-                                            mutable=True)
+    # model.MaximumNonDispatchablePowerOutput = Param(model.NonDispatchableGenerators,
+                                            # model.TimePeriods,
+                                            # within=NonNegativeReals,
+                                            # default=0.0,
+                                            # mutable=True)
 
 
 def ramp_up_ramp_down_limits(model, ramp_up_limits=None, ramp_down_limits=None):

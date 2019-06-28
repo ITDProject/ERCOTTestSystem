@@ -15,6 +15,8 @@ from .generators import (initialize_generators, initial_state, maximum_minimum_p
                         forced_outage,
                         generator_bus_contribution_factor)
 
+from .NDG import (initialize_NDG)
+
 from .reserves import initialize_global_reserves, initialize_regulating_reserves, initialize_zonal_reserves
 from .demand import (initialize_demand)
 
@@ -42,6 +44,7 @@ def build_model(case,
                 zonalBusData=None,
                 ReserveDownZonalPercent=None,
                 ReserveUpZonalPercent=None,
+                NDGData=None,
                 previous_unit_commitment_df=None,
                 base_MVA=None,
                 base_KV=1,
@@ -79,7 +82,7 @@ def build_model(case,
     #click.echo("ReserveDownSystemPercent: "+ str(ReserveDownSystemPercent))
     #click.echo("ReserveUpSystemPercent: "+ str(ReserveUpSystemPercent))
     #click.echo("generator_df: "+ str(generator_df))
-    #click.echo("load_df: "+ str(load_df))
+    click.echo("load_df: "+ str(load_df))
 
     branch_df.index = branch_df.index.astype(object)
     generator_df.index = generator_df.index.astype(object)
@@ -134,6 +137,19 @@ def build_model(case,
     initialize_generators(model,
                         generator_names=generator_df.index,
                         generator_at_bus=generator_at_bus)
+
+    # Build non dispatchable generator data
+
+    # load_dict = dict()
+    # columns = load_df.columns
+    # for i, t in load_df.iterrows():
+        # for col in columns:
+            # load_dict[(col, i)] = t[col]
+    # #click.echo('load_dict, load_df ' +str(load_dict) + str(load_df))
+    # non_dispatchable_generator_at_bus = {b: list() for b in NDGData['GEN_BUS'].unique()}
+
+    initialize_NDG(model, NDG_names=None, NDG_at_bus=None, NDGdemand=None)
+
     fuel_cost(model)
 
     maximum_minimum_power_output_generators(model,

@@ -61,7 +61,10 @@ def net_power_at_bus_rule(m, b, t, StorageFlag=False, NDGFlag=False):
            - sum(m.PowerInputStorage[s, t] for s in m.StorageAtBus[b])
 
     if NDGFlag is True:
-        constraint = constraint + sum(m.NondispatchablePowerUsed[g, t] for g in m.NondispatchableGeneratorsAtBus[b])
+        constraint = constraint + sum(m.NondispatchablePower[g, t] for g in m.NondispatchableGeneratorsAtBus[b])
+
+    # if NDGFlag is True:
+        # constraint = constraint + sum(m.NondispatchablePowerUsed[g, t] for g in m.NondispatchableGeneratorsAtBus[b])
 
     constraint = constraint + m.LoadGenerateMismatch[b,t]
 
