@@ -1,0 +1,93 @@
+// FILENAME 3BusTestCase.dat
+
+// UNIT	SI
+BASE_S	100
+BASE_V	10
+
+// Simulation Parameters
+FNCSActive false
+MaxDay	2
+RTMDuration 12
+RandomSeed	695672061
+ThresholdProbability     0.999
+
+ReserveDownSystemPercent 0.2
+ReserveUpSystemPercent 0.3
+
+// Bus Data
+NumberofBuses       3
+
+NumberOfReserveZones     2
+
+#ZoneDataStart
+//  ZoneName    Buses    ReserveDownZonalPercent    ReserveUpZonalPercent
+Zone1    2    0.1   0.15
+Zone2    3,1    0.2   0.25
+#ZoneDataEnd
+
+
+#LineDataStart
+//    Name	      From	        To	         MaxCap	      Reactance
+   Branch1	         1	         2	     10000.0000	         0.1000
+   Branch2	         2	         3	     10000.0000	         0.1000
+   Branch3	         1	         3	     10000.0000	         0.1000
+#LineDataEnd
+
+#GenDataStart
+//    Name	        ID	     atBus	          FCost	              a	              b	           capL	           capU	      InitMoney
+    GenCo1	         1	         1	         0.0000	        10.0000	         0.0010	         0.0000	      1000.0000	   1000000.0000
+    GenCo2	         2	         2	         0.0000	        15.0000	         0.0010	         0.0000	      2000.0000	   1000000.0000
+#GenDataEnd
+
+#GenCostStart
+//  Name    NoLoadCost    ColdStartUpCost    HotStartUpCost    ShutDownCostCoefficient
+    GenCo1  0.0000    0           0           0
+    GenCo2  1000.0000    0           0           0
+#GenCostEnd
+
+#ScucInputDataStart
+//  Name    PowerT0 UnitOnT0State    MinUpTime   MinDownTime NominalRampUp   NominalRampDown StartupRampLim ShutdownRampLim  Schedule    Schedule2
+    GenCo1  0.0000    -1           0           0           0             0             0             0             1           1
+    GenCo2  0.0000    -1           0           0           0             0             0             0             1           1
+#ScucInputDataEnd
+
+#LSEDataFixedDemandStart
+//    Name	        ID	     atBus	           H-00	           H-01	           H-02	           H-03	           H-04	           H-05	           H-06	           H-07
+      LSE1	         1	         1	     400	      400	      700	      500	      100	      100	      100	     100
+      LSE2	         2	         3	     400	      400	      700	      500	      100	      100	      100	     100
+//    Name	        ID	     atBus	           H-08	           H-09	           H-10	           H-11	           H-12	           H-13	           H-14	           H-15
+      LSE1	         1	         1	     100	      100	      100	      100	      100	      100	      100	     100
+      LSE2	         2	         3	     100	      100	      100	      100	      100	      100	      100	     100
+//    Name	        ID	     atBus	           H-16	           H-17	           H-18	           H-19	           H-20	           H-21	           H-22	           H-23
+      LSE1	         1	         1	     100	      100	      100	      100	      100	      100	      100	     100
+      LSE2	         2	         3	     100	      100	      100	      100	      100	      100	      100	     100
+#LSEDataFixedDemandEnd
+
+//Reward Selection Flag: 0-> profits; 1-> net earnings
+#GenLearningDataStart
+//    Name	 InitPropensity	        Cooling	        Recency	Experimentation	             M1	             M2	             M3	   RI_MAX_Lower	   RI_MAX_Upper	       RI_MIN_C	     SlopeStart	RewardSelection
+    GenCo1	      6000.0000	      1000.0000	         0.0400	         0.9600	         1.0000	         1.0000	         1.0000	         0.7500	         0.7500	         1.0000	         0.0010	         1.0000
+    GenCo2	      6000.0000	      1000.0000	         0.0400	         0.9600	         1.0000	         1.0000	         1.0000	         0.7500	         0.7500	         1.0000	         0.0010	         1.0000
+#GenLearningDataEnd
+
+NDGFlag 0
+
+#NDGDataStart
+//    Name	        ID	     atBus	           H-00	           H-01	           H-02	           H-03	           H-04	           H-05	           H-06	           H-07
+      NDG2	         2	         2	         50	         50	         50	         50	         50	         50	         50	         50
+      NDG3	         3	         3	         50	         50	         50	         50	         50	         50	         50	         50
+//    Name	        ID	     atBus	           H-08	           H-09	           H-10	           H-11	           H-12	           H-13	           H-14	           H-15
+      NDG2	         2	         2	         50	         50	         50	         50	         50	         50	         50	         50
+      NDG3	         3	         3	         50	         50	         50	         50	         50	         50	         50	         50
+//    Name	        ID	     atBus	           H-16	           H-17	           H-18	           H-19	           H-20	           H-21	           H-22	           H-23
+      NDG2	         2	         2	         50	         50	         50	         50	         50	         50	         50	         50
+      NDG3	         3	         3	         50	         50	         50	         50	         50	         50	         50	         50
+#NDGDataEnd
+
+
+StorageFlag 0
+
+#StorageInputDataStart
+//  Name  ID  atBus  EndPointSoc  MaxEnergy NomRampDownInput  NomRampUpInput NomRampDownOutput NomRampUpOutput  MaxPowInput  MinPowInput  MaxPowOutput  MinPowOutput  MinimumSoc  EfficiencyEnergy
+     SU1   1     1           0           0           0              0               0                0             0           0             0             0             0             0
+#StorageInputDataEnd
