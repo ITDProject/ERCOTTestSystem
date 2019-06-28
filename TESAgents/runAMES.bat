@@ -1,6 +1,6 @@
 set fncslibdir=C:\tesp\src\java
-set ITDdir=C:\Users\swathi\Dropbox\AMESTrailVersion
-set AmesVersion=AMES-V5.0
+set ITDdir=C:\Users\swathi\Dropbox\AMESLatestVersion
+set AmesVersion=AMES-V5.1
 rem AMES-V5.0 AMES-v3.2
 set amesdir=%ITDdir%\%AmesVersion%\
 set apidir=%ITDdir%\TESAgents
