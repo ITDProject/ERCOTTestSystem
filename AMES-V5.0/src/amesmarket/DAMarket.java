@@ -271,7 +271,7 @@ public class DAMarket {
         for (int j = 0; j < numNDGenAgents; j++) {
             
             NDGenAgent ndg = (NDGenAgent) NDGenAgentList.get(j);
-            NDGProfile = ndg.submitDAMForecast(d, j, IsFNCS);
+            NDGProfile = ndg.submitDAMNDGForecast(d, j, IsFNCS);
             GenProfileByNDG[j] = NDGProfile;
             
         }

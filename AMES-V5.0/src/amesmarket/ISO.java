@@ -162,8 +162,8 @@ public class ISO {
             }
             System.out.println("\n iso.RTMOperation is called at h:" + h + " interval: " + interval + " m: " + m + "\n");
             // evaluateRealTimeBidsOffers(h, d, IsFNCS); // fncs.get_events() is called to receive RTM forecast (ISO does it in BUC)
-            double[][] realtimeload = this.getRealTimeLoad(h - 1, d, IsFNCS); // fncs.get_events() is called to receive RTM forecast
-            double[][] realtimeNDG = this.getRealTimeNDG(h - 1, d, IsFNCS);
+            double[][] realtimeload = this.getRealTimeLoadForecast(h - 1, d, IsFNCS); // fncs.get_events() is called to receive RTM forecast
+            double[][] realtimeNDG = this.getRealTimeNDGForecast(h - 1, d, IsFNCS);
             //System.out.println("realtime load: ");
             // Added additionally
             //this.rtm.realTimeOperation(h, d);
@@ -270,7 +270,7 @@ public class ISO {
         }
     }
 
-    private double[][] getRealTimeLoad(int h, int d, boolean IsFNCS) {
+    private double[][] getRealTimeLoadForecast(int h, int d, boolean IsFNCS) {
 
         int ColSize = this.ames.M * this.ames.RTMFrequencyPerHour; // previous usage was this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR //TODO:Swathi - check
 
@@ -319,7 +319,7 @@ public class ISO {
         return hourlyLoadProfileByLSE;
     }
 
-    private double[][] getRealTimeNDG(int h, int d, boolean IsFNCS) {
+    private double[][] getRealTimeNDGForecast(int h, int d, boolean IsFNCS) {
 
         int ColSize = this.ames.M * this.ames.RTMFrequencyPerHour; // previous usage was this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR //TODO:Swathi - check
 

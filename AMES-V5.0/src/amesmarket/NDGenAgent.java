@@ -88,7 +88,7 @@ public class NDGenAgent {
     }
 //method
 
-    public double[] submitDAMForecast(int day, int lse, boolean IsFNCS) {
+    public double[] submitDAMNDGForecast(int day, int lse, boolean IsFNCS) {
 
         double[] temp = new double[24];
         // Receives NDG forecast from fncs_player
