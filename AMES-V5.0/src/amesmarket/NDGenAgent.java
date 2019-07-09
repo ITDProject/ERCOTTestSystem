@@ -103,7 +103,7 @@ public class NDGenAgent {
 
                     for (int j = 0; j < 24; j++) {
                         if (events[i].equals("ndgenforecastDAM_h" + String.valueOf(j))) {
-                            System.out.println("receiving DAM NDGforecast: " + values[0]);
+                            System.out.println("receiving DAM NDGForecast: " + values[0]);
                             //System.out.println("i:"+i);
                             temp[j] = Double.parseDouble(values[0]);
                         }

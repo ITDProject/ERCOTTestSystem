@@ -141,8 +141,8 @@ public class ISO {
     public void marketOperation(int m, int interval, int h, int d, boolean IsFNCS) {
         final int tomorrow = d + 1;
         //System.out.println("time_granted: "+ames.getTimeGranted());
-        if (h == 2 && m == 0) { // h==1 previously h == 0
-            dam.dayAheadOperation(h, d, IsFNCS);  // fncs.get_events() is called to receive DAM forecast (inside submitLoadProfile method of LSE)
+        if (h == 6 && m == 0) { 
+            dam.dayAheadOperation(h, d, IsFNCS);  // fncs.get_events() is called to receive DAM forecast (inside submitDAMLoadForecast method of LSE)
 
             //newly added
             this.loadProfileByLSE = this.dam.getLoadProfileByLSE();
@@ -186,7 +186,7 @@ public class ISO {
             this.dailyrealtimelmp = this.rtm.getRtLMPs(); // check and validate
         }
 
-        if (h == 12 && m == 0) { // change it to h == 12 
+        if (h == 10 && m == 0) {  
             System.out.println("iso.dayAheadOperation is called at h:" + h);
             //evaluateBidsOffers(h, d); //uncommented to add scuc formulation
             System.out.println("SCUC for DAY " + tomorrow + " executing");
@@ -210,7 +210,7 @@ public class ISO {
             //ames.addHasSolutionByDay(buc.getHasSolution()); // TODO:Swathi 
 
         }
-        if (h == 16 && m == 0) {
+        if (h == 13 && m == 0) {
             if (d == 321) {
                 int stop = 1;
             }

@@ -248,7 +248,7 @@ public class DAMarket {
         for (int j = 0; j < numLSEAgents; j++) {
             LSEAgent lse = (LSEAgent) lseAgentList.get(j);
             //Rohit - Addl comment - receive fixed demand bid into loadProfile
-            loadProfile = lse.submitLoadProfile(d, j, ames.getPsLse(), IsFNCS);
+            loadProfile = lse.submitDAMLoadForecast(d, j, ames.getPsLse(), IsFNCS);
             //System.out.println("DAM"+loadProfile);
             loadProfileByLSE[j] = loadProfile;  // Add each load profile from LSE_j to loadProfileByLSE in row j
 

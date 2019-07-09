@@ -49,15 +49,15 @@ public class PSSTConfig {
 
 	/**
 	 *
-	 * @param pyomoSolPrint
 	 * @param referenceModel
 	 * @param referenceFile
+         * @param python_Input
 	 * @return
 	 */
-	public static PSSTConfig createDeterministicPSST(File referenceModel, File referenceFile) {
+	public static PSSTConfig createDeterministicPSST(File referenceModel, File referenceFile, File python_Input) {
 		return new PSSTConfig("psst", "scuc",
 				"--data", referenceFile.getAbsolutePath(),
-				"--output", "xfertoames.dat");
+				"--output", python_Input.getAbsolutePath());
 	}
 
 	/**
@@ -100,8 +100,8 @@ public class PSSTConfig {
 	 */
 	public String pythonPath() {
 		//TODO: Enable setting this path via a system property or from the constructor
-		//create file to the SCUCresources folder to make it easy to get the full path.
-		java.io.File scucres = new java.io.File("SCUCresources");
+		//create file to the DataFiles folder to make it easy to get the full path. // earlier SCUCResources directory was there
+		java.io.File scucres = new java.io.File("DataFiles");
 		if(!scucres.exists()) {
 			System.err.println(scucres.getAbsolutePath() + " does not exist. SCUC may fail.");
 		}

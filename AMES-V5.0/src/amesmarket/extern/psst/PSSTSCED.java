@@ -31,7 +31,7 @@ import amesmarket.filereaders.BadDataFileFormatException;
 public class PSSTSCED implements SCED {
 
 	//TODO-XX : Make this client configurable
-	private final File scedResourcesDir = new File("SCUCresources");
+	private final File scedResourcesDir = new File("DataFiles"); // SCUCResources
 	private final File scedScript = new File("SCED.py");
 	private final File ucVectorFile;
 	private final File refModelFile;

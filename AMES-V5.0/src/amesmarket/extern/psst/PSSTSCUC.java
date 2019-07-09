@@ -49,8 +49,7 @@ public class PSSTSCUC implements SCUC {
     private int[][] GenDAMCommitmentStatusNextDay;
     private final int numGenAgents, numLSEAgents, numHours, numIntervals; // numGenAgents;
 
-    private final File python_Input, DAMLMPDataFile, referenceFile, pyomoSolPrint, runefSolPrint, referenceModelDir,
-            scenarioModelDir;
+    private final File GenCoScheduleDataFile, DAMLMPDataFile, referenceFile, referenceModelDir, scenarioModelDir; // pyomoSolPrint, runefSolPrint, 
 
     //TODO-X: make pyomo/cplex user settable, somewhere.
     //Probably an option in the TestCase file.
@@ -77,14 +76,14 @@ public class PSSTSCUC implements SCUC {
         this.GenDAMCommitmentStatusNextDay = new int[this.numHours][this.numGenAgents];
         this.GenDAMCommitmentStatusPresentDay = new int[this.numHours][this.numGenAgents];
         //genSchedule=new int[numGenAgents][numHoursPerDay];
-        this.python_Input = new File("xfertoames.dat");
-        this.referenceModelDir = new File("SCUCresources/Models");
-        this.scenarioModelDir = new File("SCUCresources/ScenarioData");
-        this.referenceFile = new File(this.scenarioModelDir, "ReferenceModel.dat");
-        this.pyomoSolPrint = new File("SCUCresources/pyomosolprint.py");
-        this.runefSolPrint = new File("SCUCresources/runefsolprint.py");
+        this.scenarioModelDir = new File("DataFiles/AMEStoPSST");
+        this.referenceFile = new File(this.scenarioModelDir, "SCUCReferenceModel.dat");
+        this.GenCoScheduleDataFile = new File("DataFiles/PSSTtoAMES/GenCoSchedule.dat");
+        this.DAMLMPDataFile = new File("DataFiles/PSSTtoAMES/DAMLMP.dat");
+        this.referenceModelDir = new File("DataFiles/Models");
+        //this.pyomoSolPrint = new File("SCUCresources/pyomosolprint.py");
+        //this.runefSolPrint = new File("SCUCresources/runefsolprint.py");
         //referenceModel=new File("SCUCresources/Models/ReferenceModel.py");
-        this.DAMLMPDataFile = new File("DAMLMP.dat");
 
         //switch(scucType) {
         //case SCUC_STOC :
@@ -95,7 +94,7 @@ public class PSSTSCUC implements SCUC {
         //case SCUC_DETERM :
         //System.out.print("Running Deterministic SCUC with external call to PSST ");
         this.PSSTExt = PSSTConfig.createDeterministicPSST(new File(this.referenceModelDir, "ReferenceModel.py"),
-                this.referenceFile);
+                this.referenceFile, this.GenCoScheduleDataFile);
         //	break;
         //default :
         //	throw new IllegalArgumentException("Unknown SCUC type");
@@ -220,13 +219,13 @@ public class PSSTSCUC implements SCUC {
         this.syscall(this.PSSTExt);
 
         //Read the data file back in to get the GenCo commitments.
-        if (!this.python_Input.exists()) {
+        if (!this.GenCoScheduleDataFile.exists()) {
             throw new BadDataFileFormatException(new FileNotFoundException(
-                    this.python_Input.getPath()));
+                    this.GenCoScheduleDataFile.getPath()));
         }
 
-        System.out.println("Reading GenCo schedule from " + this.python_Input.getPath());
-        java.util.Scanner raf = new Scanner(this.python_Input);
+        System.out.println("Reading GenCo schedule from " + this.GenCoScheduleDataFile.getPath());
+        java.util.Scanner raf = new Scanner(this.GenCoScheduleDataFile);
 
         //Read the results from the external scuc back in.
         //AMESMarket.LOGGER.log(Level.FINER, "Reading GenCo schedule.");
@@ -438,7 +437,7 @@ public class PSSTSCUC implements SCUC {
 
     private void cleanup() {
         if (this.deleteFiles) {
-            Support.deleteFiles(Arrays.asList(this.python_Input));
+            Support.deleteFiles(Arrays.asList(this.GenCoScheduleDataFile));
         }
     }
 }

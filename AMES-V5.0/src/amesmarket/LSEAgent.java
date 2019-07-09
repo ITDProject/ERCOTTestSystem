@@ -123,11 +123,11 @@ public class LSEAgent implements Drawable {
     }
 //method
 
-    public double[] submitLoadProfile(int day, int lse, int psLse, boolean IsFNCS) {
+    public double[] submitDAMLoadForecast(int day, int lse, int psLse, boolean IsFNCS) {
 
         double[] temp = new double[24];
         // Receives load forecast from fncs_player
-        //System.out.println("In submitloadprofile:");
+        //System.out.println("In submitDAMLoadForecast:");
         if (day > 1 && lse == (psLse - 1)) { // previously day > 2
             if (IsFNCS) {
                 String[] events = JNIfncs.get_events();
