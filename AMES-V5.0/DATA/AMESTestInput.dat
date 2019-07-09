@@ -4,7 +4,7 @@ BASE_S	100
 BASE_V	345
 
 // Simulation Parameters
-FNCSActive false
+FNCSActive True
 MaxDay	2
 RTMDuration 12
 RandomSeed	695672061
