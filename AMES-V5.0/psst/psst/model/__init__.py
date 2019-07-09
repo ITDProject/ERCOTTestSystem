@@ -82,7 +82,7 @@ def build_model(case,
     #click.echo("ReserveDownSystemPercent: "+ str(ReserveDownSystemPercent))
     #click.echo("ReserveUpSystemPercent: "+ str(ReserveUpSystemPercent))
     #click.echo("generator_df: "+ str(generator_df))
-    click.echo("load_df: "+ str(load_df))
+    #click.echo("load_df: "+ str(load_df))
 
     branch_df.index = branch_df.index.astype(object)
     generator_df.index = generator_df.index.astype(object)

@@ -71,6 +71,14 @@ class PSSTResults(object):
     def lmp(self):
         return self._get('PowerBalance', self._model, dual=True)
 
+    @property
+    def reserve_zonal_down_dual(self):
+        return self._get('EnforceZonalReserveDownRequirements', self._model, dual=True)
+
+    @property
+    def reserve_zonal_up_dual(self):
+        return self._get('EnforceZonalReserveUpRequirements', self._model, dual=True)
+
     @staticmethod
     def _get(attribute, model, set1=None, set2=None, dual=False):
         _dict = dict()

@@ -25,7 +25,7 @@ def cli():
 
 @cli.command()
 @click.option('--data', default=None, type=click.Path(), help='Path to model data')
-@click.option('--output', default='./xfertoames.dat', type=click.Path(), help='Path to output file')
+@click.option('--output', default=None, type=click.Path(), help='Path to output file')
 @click.option('--solver', default=SOLVER, help='Solver')
 def scuc(data, output, solver):
     click.echo("Running SCUC using PSST TrailVersion")
@@ -45,7 +45,7 @@ def scuc(data, output, solver):
     click.echo("Model results ")
     click.echo(" : "+ str(model.results.lmp))
     
-    uc = "temp.dat"
+    uc = "./DataFiles/SCUCResultsUC.dat"
     with open(uc, 'w') as outfile:
         instance = model._model
         results = {}
@@ -69,8 +69,12 @@ def scuc(data, output, solver):
     click.echo("Model is solved by "+solver)
     click.echo("Model results ")
     click.echo(" : "+ str(round(model.results.lmp,4)))
-    with open('./DAMLMP.dat', 'w') as outfile:
-        outfile.write("DAMLMP\n")        			
+    # click.echo("Reserve Down Duals ")
+    # click.echo(" : "+ str(round(model.results.reserve_zonal_down_dual,4)))
+    # click.echo("Reserve Up Duals ")
+    # click.echo(" : "+ str(round(model.results.reserve_zonal_up_dual,4)))
+    with open('./DataFiles/PSSTToAMES/DAMLMP.dat', 'w') as outfile:
+        outfile.write("DAMLMP\n")
         for h, r in model.results.lmp.iterrows():
             bn = 1
             for _, lmp in r.iteritems():
@@ -94,7 +98,7 @@ def scuc(data, output, solver):
             for t in sorted(instance.TimePeriods):
                 outfile.write("% 1d %6.2f %6.2f %6.2f\n" % (int(results[(g, t)].value + 0.5), resultsPowerGen[(g, t)].value, 0.0, 0.0)) # not sure why DK added 0.0, 0.0
 
-    with open('./Results.dat', 'w') as outfile:
+    with open('./DataFiles/SCUCSVPOutcomes.dat', 'w') as outfile:
         instance = model._model
         SlackVariablePower = {}
         for b in instance.Buses.value:
@@ -134,7 +138,7 @@ def sced(uc, data, output, solver):
     click.echo("Model is solved by "+solver)
     Interval = 1
 
-    with open('./ResultsSCED.dat', 'w') as outfile:
+    with open('./../DataFiles/SCEDSVPOutcomes.dat', 'w') as outfile:
         instance = model._model
         SlackVariablePower = {}
         for b in instance.Buses.value:
