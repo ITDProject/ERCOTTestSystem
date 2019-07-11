@@ -684,6 +684,15 @@ public class AMESFrame  extends JFrame{
         }
     }
    
+   public AMESMarket loadCase(String filename) {
+	   loadCaseItemActionPerformed(filename);
+	   
+	   if(bLoadCase) return amesMarket;
+	   
+	   return null;
+	   
+   }
+   
     private void loadCaseItemActionPerformed(String filename) {
         bLoadCase = false;
         bCaseResult = false;
@@ -4563,6 +4572,8 @@ private void saveOutputData( ) {
 
 		System.out.println("Save case output data file: " + outputFile.getPath());
 		
+		/* Commented out by Qiuhua
+		 * 
 		long time_granted = 0;
 		time_granted = JNIfncs.time_request(86400);
 		if(time_granted  >= 86400){
@@ -4570,6 +4581,7 @@ private void saveOutputData( ) {
 			JNIfncs.end();
 			assert !JNIfncs.is_initialized();
 		}
+		*/
 		//        System.out.println("Opening the output folder.");
 		//        Desktop dt = Desktop.getDesktop();
 		//        File dest = outputFile.getParentFile();
@@ -4584,6 +4596,9 @@ private void saveOutputData( ) {
 	}
      
     
+   public void exitAMES() {
+	   exitItemActionPerformed(null);
+   }
 
    private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {
       dispose();                    // Release resources
@@ -5296,6 +5311,12 @@ public void InitializeAMESMarket( ) {
             gencoAlertMarkers, this.testcaseConfig.getSCUCInputData(), this.testcaseConfig.getStorageInputData(), hasStorage, hasNDG);
 }
 
+public void startAMESMarket() {
+	amesMarket.Start();
+	//startItemActionPerformed(null);
+}
+
+
 private void startItemActionPerformed(java.awt.event.ActionEvent evt) {
     amesMarket.Start();
      
@@ -5627,8 +5648,8 @@ private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
 }
  
     public static void main(String[] args) {
-        fncs.JNIfncs.initialize();
-        assert JNIfncs.is_initialized();
+        //fncs.JNIfncs.initialize();
+        //assert JNIfncs.is_initialized();
         System.out.println("AMESFrame main");
         mainFrameWindow = new AMESFrame( );        
 
@@ -5702,6 +5723,10 @@ private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
       
       public void setbLoadCase(boolean bNew){
           bLoadCase=bNew;
+      }
+      
+      public boolean getbLoadCase() {
+    	  return bLoadCase;
       }
       
       public void setbCaseResult(boolean bNew){

@@ -11,7 +11,8 @@ import numpy as np
 
 np.seterr(all='raise')
 
-SOLVER = os.getenv('PSST_SOLVER', 'glpk')
+SOLVER = os.getenv('PSST_SOLVER', 'cbc')
+#SOLVER = os.getenv('PSST_SOLVER', 'glpk')
 #SOLVER = os.getenv('PSST_SOLVER', 'cplex')
 #click.echo("Printing PSST_SOLVER:"+SOLVER)
 print("Printing PSST_SOLVER:"+SOLVER)

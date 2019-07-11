@@ -51,9 +51,10 @@ public class RTMarket {
      */
     private int[] hasSolution;
     private double[][] rtDispatches;
+    private double[] intervalRtDispatches;
     private double[][] rtBranchFlow;
     private double[][] rtLMPs;
-    //private double[] rtLMPs;
+    private double[] intervalRTLMPs;
     private double[][] rtProductionCost;
     private double[][] rtStartupCost;
     private double[][] rtShutdownCost;
@@ -153,6 +154,8 @@ public class RTMarket {
         rtBranchFlow = sced.getDailyBranchFlow();
         //costs
         rtLMPs = sced.getDailyLMP();
+        intervalRTLMPs = sced.getIntervalLMP();
+        intervalRtDispatches = sced.getIntervalGenDispatches();
         //sced.getDailyPriceSensitiveDemand();
         rtProductionCost = sced.getProductionCost();
         rtStartupCost = sced.getStartupCost();
@@ -180,6 +183,10 @@ public class RTMarket {
     public double[][] getRtDispatches() {
         return rtDispatches;
     }
+    
+    public double[] getIntervalRtDispatches() {
+        return intervalRtDispatches;
+    }
 
     /**
      * @return the rtBranchFlow
@@ -191,12 +198,12 @@ public class RTMarket {
     /**
      * @return the rtLMPs
      */
-    public double[][] getRtLMPs() {
+    public double[][] getDailyRtLMPs() {
         return rtLMPs;
     }
-//    public double[] getRtLMPs() {
-//        return rtLMPs;
-//    }
+    public double[] getIntervalRtLMPs() {
+        return intervalRTLMPs;
+    }
 
     /**
      * @return the rtProductionCost
