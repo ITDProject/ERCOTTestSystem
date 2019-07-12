@@ -13,3 +13,4 @@
 # __pycached directory
 **/__pycache__
 
+/nbproject/private/

@@ -685,6 +685,56 @@ public class AMESFrame extends JFrame {
             InitializeAMESMarket();
         }
     }
+   
+   public AMESMarket loadCase(String filename) {
+	   loadCaseItemActionPerformed(filename);
+	   
+	   if(bLoadCase) return amesMarket;
+	   
+	   return null;
+	   
+   }
+   
+    private void loadCaseItemActionPerformed(String filename) {
+        bLoadCase = false;
+        bCaseResult = false;
+
+        caseFile = new File(filename);
+        caseFileDirectory = caseFile.getParentFile();
+        
+        if (caseFile.isFile()) {
+            bOpen = true;
+
+//            loadCaseFileData();
+            
+            CaseFileReader cfr = new CaseFileReader();
+            CaseFileData config = cfr.loadCaseFileData(this.caseFile);
+
+            this.setupSimFromConfigFile(config);            
+            System.out.println("Load user selected case data file:" + caseFile.getName());
+            this.SetDefaultSimulationParameters();
+            config1.SetInitParameters(iNodeData, iBranchData, 0, iGenData, iLSEData, baseV, baseS);
+            config2.loadData(branchData);
+            config4.loadData(genData);
+            config5.loadData(lseData, lsePriceSensitiveDemand, lseHybridDemand);
+
+            learnOption1.loadData(genData, genLearningData);
+            simulationControl.SetInitParameters(iMaxDay, bMaximumDay, dThresholdProbability, bThreshold, dDailyNetEarningThreshold, bDailyNetEarningThreshold, iDailyNetEarningStartDay, iDailyNetEarningDayLength, iStartDay, iCheckDayLength, dActionProbability, bActionProbabilityCheck, //
+                    iLearningCheckStartDay, iLearningCheckDayLength, dLearningCheckDifference, bLearningCheck, dGenPriceCap, dLSEPriceCap, RandomSeed, priceSensitiveLSE, hostName, databaseName, userName, password, iLSEData);
+
+            // Verify Data
+            String strError = checkCaseData();
+            if (!strError.isEmpty()) {
+                System.out.println("Case Data Verify Message:\n" + strError);
+                return;
+            }
+
+            setbLoadCase(true);
+            setbCaseResult(false);
+
+            InitializeAMESMarket();
+        }
+    }
 
     private void loadBatchModeFileData(File randomSeedsFile) {
         bMultiRandomSeeds = false;
@@ -2265,6 +2315,7 @@ public class AMESFrame extends JFrame {
                                     strlseDispatch = strlseDispatch.substring(0, iIndex);
                                 }
                             }
+
 
                             lseDispatch[i] = dispatch;
                         }
@@ -4146,6 +4197,49 @@ public class AMESFrame extends JFrame {
 
     }
 
+    
+    public void run() {
+        while(true){
+            if(amesMarket.IfCalculationEnd()){
+                if(BatchMode==0){
+                    startButton.setEnabled(false);
+                    stepButton.setEnabled(false);
+                    initializeButton.setEnabled(false);
+                    stopButton.setEnabled(false);
+                    pauseButton.setEnabled(false);
+                    setupButton.setEnabled(true);
+
+                    startItem.setEnabled(false);
+                    stepItem.setEnabled(false);
+                    initializeItem.setEnabled(false);
+                    stopItem.setEnabled(false);
+                    pauseItem.setEnabled(false);
+                    setupItem.setEnabled(true);
+
+                    bCaseResult=true;
+                    saveOutputData();
+                    if (noGUI) {
+                      exitItemActionPerformed(null);
+                    }
+                     
+                    enableViewMenu();
+                }
+                else if(BatchMode==1){
+                    saveOutputData( );
+                    System.gc();
+                    
+                    if(bMultiRandomSeeds&&(iCurrentRandomSeedsIndex<iRandomSeedsData-1)){
+                        iCurrentRandomSeedsIndex++;
+                        
+                        batchModeStart();
+                    }
+                    else if(bMultiCases&&(iCurrentMultiCasesIndex<iMultiCasesData-1)){
+                        iCurrentMultiCasesIndex++;
+                        
+                        if(bMultiRandomSeeds)
+                            iCurrentRandomSeedsIndex=0;
+
+
     public void SetLearningParameters(double[][] learningData) {
 
         genLearningData = learningData;
@@ -4228,8 +4322,194 @@ public class AMESFrame extends JFrame {
 
     }
 
+
     public void SetRandomSeed(long iSeed) {
         RandomSeed = iSeed;
+
+    public String checkCaseData( ){
+     String strMessage="";
+     
+     strMessage=config1.DataVerify();
+     if(!strMessage.isEmpty()){
+         if (!noGUI) activeConfig1();
+         return strMessage;
+     }
+
+     strMessage=config2.DataVerify();
+     if(!strMessage.isEmpty()){
+         if (!noGUI) activeConfig2();
+         return strMessage;
+     }
+     
+     strMessage=config4.DataVerify();
+     if(!strMessage.isEmpty()){
+         if (!noGUI) activeConfig4();
+         return strMessage;
+     }
+     
+     strMessage=config5.DataVerify();
+     if(!strMessage.isEmpty()){
+          if (!noGUI) activeConfig5();
+          return strMessage;
+     }
+     
+     strMessage=learnOption1.DataVerify();
+     if(!strMessage.isEmpty()){
+         if (!noGUI) activeLearnOption1();
+         return strMessage;
+     }
+     
+     strMessage=simulationControl.DataVerify();
+     if(!strMessage.isEmpty()){
+         if (!noGUI) activeSimulationControl();
+         return strMessage;
+     }
+     
+     strMessage=config5.PriceCapVerify(dLSEPriceCap);
+     if(!strMessage.isEmpty()){
+          if (!noGUI) activeConfig5();
+          return strMessage;
+     }
+     
+     config1.saveData();
+     config5.saveData();
+     branchData=config2.saveData();
+     genData=config4.saveData();
+    
+     double dMinGenCapacity=0.0;
+     double dMaxGenCapacity=0.0;
+     double dMaxGenCapacityWithPCap=0.0;
+     for(int i=0; i<genData.length; i++){
+         double CapU=Double.parseDouble(genData[i][7].toString());
+         double CapL=Double.parseDouble(genData[i][6].toString());
+         dMinGenCapacity+=CapL;
+         dMaxGenCapacity+=RI_MIN_C*(CapU-CapL)+CapL;
+         
+         double a=Double.parseDouble(genData[i][4].toString());
+         double b=Double.parseDouble(genData[i][5].toString());
+         if(a+2*b*(RI_MIN_C*(CapU-CapL)+CapL)<dGenPriceCap)
+             dMaxGenCapacityWithPCap+=RI_MIN_C*(CapU-CapL)+CapL;
+         else
+             dMaxGenCapacityWithPCap+=((dGenPriceCap-a)/(2*b)-CapL)/RI_MIN_C+CapL;
+     }
+     
+     double [] dLoad=new double[24];
+     
+     if(lseHybridDemand!=null){
+         for(int i=0; i<24; i++){
+             dLoad[i]=0.0;
+
+             for(int k=0; k<lseHybridDemand.length; k++){
+                 int Flag=Integer.parseInt(lseHybridDemand[k][i+3].toString());
+
+                 if((Flag&1)==1){
+                     dLoad[i]+=Double.parseDouble(lseData[k][i+3].toString());
+                 }
+             }
+         }
+     }     
+     
+     if(config1.iTotalBranchNumber!=branchData.length)
+         strMessage+="The total branch number in step1 is not equal to the number in step2\n";
+     
+     if(config1.iTotalGenNumber!=genData.length)
+         strMessage+="The total generator number in step1 is not equal to the number in step4\n";
+     
+     if(config1.iTotalLSENumber!=lseData.length)
+         strMessage+="The total branch number in step1 is not equal to the number in step5\n";
+     
+     
+     int iBranch=branchData.length;
+     int [] iNode=new int[2*iBranch];
+     for(int i=0; i<iBranch*2; i++){
+         iNode[i]=-1;
+     }
+     
+     int iNodeCount=0;
+     for(int i=0; i<iBranch; i++){
+         boolean bFound=false;
+         if(iNodeCount>0) {
+             for(int j=0; j<iNodeCount; j++){
+                 if(iNode[j]==Integer.parseInt(branchData[i][1].toString())){
+                     bFound=true;
+                     continue;
+                 }
+             }
+         }
+         
+         if(!bFound){
+             iNode[iNodeCount]=Integer.parseInt(branchData[i][1].toString());
+             iNodeCount++;
+         }
+         
+         bFound=false;
+         if(iNodeCount>0) {
+             for(int j=0; j<iNodeCount; j++){
+                 if(iNode[j]==Integer.parseInt(branchData[i][2].toString())){
+                     bFound=true;
+                     continue;
+                 }
+             }
+         }
+         
+         if(!bFound){
+             iNode[iNodeCount]=Integer.parseInt(branchData[i][2].toString());
+             iNodeCount++;
+         }
+     }
+     
+     if(iNodeCount!=config1.iTotalNodeNumber)
+         strMessage+="The total bus number in step1 is not equal to the number in step2\n";     
+     
+    if(RTM<=0 || RTM%1!=0)
+         strMessage+="The RTMDuration parameter should be a positive integer\n";
+    
+    if(RTM<=0 || 60%RTM!=0)
+         strMessage+="60/RTMDuration should be a positive integer\n";
+       
+    // The following is handles via slack variables in AMES V5.0. Commneting out in AMES V5.0. TODO: Check - Swathi
+//     for(int i=0; i<24; i++){
+//        if(dMinGenCapacity>dLoad[i]){
+//            strMessage+="GenCos min capacity sum greater than fixed load sum at "+i+" hour is not allowed!\n";
+//        }
+//        
+//        if(dMaxGenCapacity<dLoad[i]){
+//            strMessage+="GenCos max capacity sum less than fixed load sum at "+i+" hour is not allowed!\n";
+//        }
+//        
+//        if(dMaxGenCapacityWithPCap<dLoad[i]){
+//            strMessage+="GenCos max capacity sum with PriceCap less than fixed load sum at "+i+" hour is not allowed!\n";
+//        }
+//     }
+     
+		Map<String, CaseFileData.SCUCInputData> scucParameters =this.testcaseConfig.getSCUCInputData();
+		//Check for SCUC data
+		if (scucParameters == null) { //shouldn't happen, but we might as well check.
+			strMessage += "No SCUC parameters for any GenCos.\n";
+		} else {
+			for (Object[] element : this.genData) {
+				String genCoName = element[0].toString();
+				CaseFileData.SCUCInputData sid = scucParameters.get(genCoName);
+
+				if (sid != null) {
+					String msg2 = sid.verify();
+					if (msg2 != null) {
+						if (!msg2.endsWith("\n")) { //make sure there's a new line.
+							msg2 = msg2 + "\n";
+						}
+						strMessage += msg2;
+					}
+				} else {
+					strMessage += String.format("No SCUC parameters for %s\n",
+							genCoName);
+				}
+			}
+		}
+     
+     
+     
+     return strMessage;
+
     }
 
     public long GetRandomSeed() {
@@ -4266,6 +4546,7 @@ public class AMESFrame extends JFrame {
         about.setVisible(true);
     }
 
+
     public static void main(String[] args) {
         mainFrameWindow = new AMESFrame();
         //System.out.println("AMESFrame main: "+args[0]);
@@ -4285,6 +4566,7 @@ public class AMESFrame extends JFrame {
                 wndSize.width * 2 / 3, wndSize.height * 2 / 3);
 
         mainFrameWindow.setVisible(true);
+
     }
 
     public void addBranchNumber() {
@@ -4299,9 +4581,39 @@ public class AMESFrame extends JFrame {
         iBranchData = iNumber;
     }
 
+
     public void setVBase(double V) {
         baseV = V;
     }
+
+public void startAMESMarket() {
+	amesMarket.Start();
+	//startItemActionPerformed(null);
+}
+
+
+private void startItemActionPerformed(java.awt.event.ActionEvent evt) {
+    amesMarket.Start();
+     
+    startButton.setEnabled(false);
+    stepButton.setEnabled(false);
+    initializeButton.setEnabled(false);
+    stopButton.setEnabled(true);
+    pauseButton.setEnabled(true);
+    setupButton.setEnabled(false);
+
+    startItem.setEnabled(false);
+    stepItem.setEnabled(false);
+    initializeItem.setEnabled(false);
+    stopItem.setEnabled(true);
+    pauseItem.setEnabled(true);
+    setupItem.setEnabled(false);
+    
+    CheckCalculationEndRunnable checkRunable=new CheckCalculationEndRunnable();
+    checkRunable.setAMESMarket(amesMarket);
+    (new Thread(checkRunable)).start();
+}
+
 
     public void setPBase(double P) {
         baseS = P;
@@ -4400,6 +4712,7 @@ public class AMESFrame extends JFrame {
     public AMESMarket getAMESMarket() {
         return amesMarket;
     }
+
 
     public int getMaxDay() {
         return iMaxDay;
@@ -4605,5 +4918,381 @@ public class AMESFrame extends JFrame {
     private CaseFileData testcaseConfig;
 
     private AMESMarket amesMarket;
+
+    // Construct the file drop-down menu
+    aboutItem = helpMenu.add("About");                
+    aboutItem.addActionListener(new ActionListener() {
+           public void actionPerformed(java.awt.event.ActionEvent evt) {
+             aboutItemActionPerformed(evt);
+            }
+    });
+     
+    // Add Help menu accelerators
+    aboutItem.setAccelerator(KeyStroke.getKeyStroke('A', CTRL_DOWN_MASK));
+ 
+    menuBar.add(helpMenu);
+   }
+
+private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
+ 
+    About about=new About();
+    
+    Toolkit theKit = about.getToolkit(); 
+    Dimension wndSize = theKit.getScreenSize();       
+
+    Rectangle configBounds=about.getBounds();
+
+    about.setLocation( (wndSize.width-configBounds.width)/2, (wndSize.height-configBounds.height)/2);
+    about.setVisible(true);
+}
+ 
+    public static void main(String[] args) {
+        //fncs.JNIfncs.initialize();
+        //assert JNIfncs.is_initialized();
+        System.out.println("AMESFrame main");
+        mainFrameWindow = new AMESFrame( );        
+
+        if (args.length > 0) {
+            mainFrameWindow.noGUI = true;
+            for (String arg : args) {
+                System.out.println(arg);
+                mainFrameWindow.loadCaseItemActionPerformed(arg);
+                if (!mainFrameWindow.bLoadCase) {
+                    mainFrameWindow.exitItemActionPerformed(null);
+                }
+                mainFrameWindow.startItemActionPerformed(null);
+            }
+        } else {
+            Toolkit theKit = mainFrameWindow.getToolkit();       
+            Dimension wndSize = theKit.getScreenSize(); 
+
+            // Set the position to screen center & size to half screen size
+            mainFrameWindow.setBounds(wndSize.width/6, wndSize.height/6,       
+                          wndSize.width*2/3, wndSize.height*2/3);     
+            mainFrameWindow.setVisible(true);
+        }
+    }
+
+     public void addBranchNumber( ) {
+         iBranchData ++;
+     }
+   
+     public void deleteBranchNumber( ) {
+         iBranchData --;
+     }
+      
+     public void setdBranchNumber(int iNumber ) {
+         iBranchData = iNumber;
+     }
+  
+     public void setVBase(double V ) {
+         baseV = V;
+     }
+  
+     public void setPBase(double P ) {
+         baseS = P;
+     }
+  
+    public void addGenNumber( ) {
+         iGenData ++;
+     }
+   
+     public void deleteGenNumber( ) {
+         iGenData --;
+     }
+      public void setdGenNumber(int iNumber ) {
+         iGenData = iNumber;
+     }
+ 
+    public void addLSENumber( ) {
+         iLSEData ++;
+     }
+   
+     public void deleteLSENumber( ) {
+         iLSEData --;
+     }
+   
+      public void setLSENumber(int iNumber ) {
+         iLSEData = iNumber;
+     }
+   
+      public boolean isNewCase () {
+          return !bOpen;
+      }
+      
+      public void setbLoadCase(boolean bNew){
+          bLoadCase=bNew;
+      }
+      
+      public boolean getbLoadCase() {
+    	  return bLoadCase;
+      }
+      
+      public void setbCaseResult(boolean bNew){
+          bCaseResult=bNew;
+      }
+      
+      public PowerGridConfigure1 getConfig1( ) {
+          return config1;
+      }
+      
+      public PowerGridConfigure2 getConfig2( ) {
+          return config2;
+      }
+      
+      public PowerGridConfigure4 getConfig4( ) {
+          return config4;
+      }
+      
+      public PowerGridConfigure5 getConfig5( ) {
+          return config5;
+      }
+      
+      public Object [][] getBranchData( ) {
+          return branchData;
+      }
+      
+      public Object [][] getGeneratorData( ) {
+          return genData;
+      }
+      
+      public Object [][] getLSEData( ) {
+          return lseData;
+      }
+      
+      public Object [][][] getLSEPriceSensitiveDemandData( ) {
+          return lsePriceSensitiveDemand;
+      }
+      
+      public Object [][] getLSEHybridDemandData( ) {
+          return lseHybridDemand;
+      }
+      
+      public int [] getNodeData() {
+          int [] bus=new int[iNodeData];
+          for(int i=0; i<iNodeData; i++)
+              bus[i]=i+1;
+          
+          return bus;
+      }
+      
+      public String [] getNodeNameData() {
+          String [] bus=new String[iNodeData];
+          for(int i=0; i<iNodeData; i++)
+              bus[i]="Bus "+(i+1);
+          
+          return bus;
+      }
+      
+      public AMESMarket getAMESMarket( ) {
+          return amesMarket;
+      }
+
+      public int getMaxDay(){
+          return iMaxDay;
+      }
+      
+      public double getThresholdProbability(){
+          return dThresholdProbability;
+      }
+      
+      public double getPriceCap(){
+          return dGenPriceCap;
+      }
+      
+      public void setStopCode(int code){
+          stopCode=code;
+      }
+      
+  private static AMESFrame mainFrameWindow;             // The application window
+ 
+  private JMenuBar menuBar=new JMenuBar();     // Window menu bar
+  
+  private JMenu caseMenu=new JMenu("Case");           // Create Case menu
+  // Case menu items
+  private JMenuItem newCaseItem, selectCaseItem, caseParametersItem, saveCaseItem, saveCaseAsItem, exitItem;
+  private JMenu loadDefaultCaseMenu=new JMenu("Load Test Case");
+  private JMenuItem default5BusCaseItem, default30BusCaseItem;
+  private JMenu batchModeMenu=new JMenu("Batch Mode");
+  private JMenuItem batchMode1Item, batchMode2Item, loadBatchMode1Item;
+  
+  private JMenu viewMenu=new JMenu("View");           // Create View menu
+  // View menu items
+  private JMenuItem caseReportItem, caseCurveItem;
+ 
+  private JMenu commandMenu=new JMenu("Command");           // Create Command menu
+  // Command menu items
+  private JMenuItem startItem, stepItem, initializeItem, stopItem, 
+                                pauseItem, setupItem, viewSettingsItem;
+
+  private JMenu optionsMenu=new JMenu("Options");           // Create Options menu
+  // Options menu items
+  private JMenuItem option1Item, option2Item, option3Item;
+  private JRadioButtonMenuItem learningMethod1Item, learningMethod2Item, learningMethod3Item, 
+                                learningMethod4Item, learningMethod5Item;
+  private ButtonGroup learningMethodTypes;
+
+  private JMenu helpMenu=new JMenu("Help");           // Create Help menu
+  // Help menu items
+  private JMenuItem  aboutItem;
+  
+  private javax.swing.JToolBar caseToolBar=new javax.swing.JToolBar("CaseToolBar");
+  private javax.swing.JButton newCaseButton, selectCaseButton, caseParametersButton, saveCaseButton,  saveCaseAsButton, exitButton;
+
+  private javax.swing.JToolBar commandToolBar=new javax.swing.JToolBar("CommandToolBar");
+  private javax.swing.JButton startButton, stepButton, initializeButton, stopButton, 
+                                pauseButton, setupButton, viewSettingsButton;
+
+  private JFileChooser selectCasetDialog=new javax.swing.JFileChooser( );
+  
+  private  PowerGridConfigure1 config1;
+  private  PowerGridConfigure2 config2;
+  private  PowerGridConfigure4 config4;
+  private  PowerGridConfigure5 config5;
+  
+  public   LearnOption1 learnOption1;
+  public   SimulationControl simulationControl;
+  
+  public boolean noGUI = false;
+  private File outputFile;
+  private File batchFile;
+  
+  private File caseFile; 
+  private File caseFileDirectory;
+  //Judge if a new case or saved case
+  private boolean bOpen=false;
+  private boolean bLoadCase=false;
+  private boolean bCaseResult=false;
+  
+  private Object [][] nodeData;
+  private Object [][] branchData;
+  public  Object [][] genData;
+  private Object[][] lse3SecData;  // 3-sectional 8-hour LSE data
+  public  Object[][] lseData;      // Combine 3-sectional to 24-hour LSE data
+  private Object[][] lseSec1Data;  // First 8-hour LSE data
+  private Object[][] lseSec2Data;  // Second 8-hour LSE data
+  private Object[][] lseSec3Data;  // Third 8-hour LSE data
+  
+  private int iNDGData;
+  private Object[][] NDGSec1Data;
+  private Object[][] NDGSec2Data;
+  private Object[][] NDGSec3Data;
+  private Object[][] NDGData;
+  
+  public  Object[][][] lsePriceSensitiveDemand;
+  public  Object[][] lseHybridDemand;
+    
+  private int iNodeData;
+  private int iBranchData;
+  private int iGenData;
+  private int iLSEData;
+  private boolean bPriceSensitiveDemand;
+  private boolean bHybridDemand;
+
+  private boolean isPU;
+  private static double baseS;
+  private static double baseV;
+  
+  // Learning and action domain parameters
+  private double Default_Cooling;
+  private double Default_Experimentation;
+  private double Default_InitPropensity;
+  private int Default_M1;
+  private int Default_M2;
+  private int Default_M3;
+  private double Default_RI_MAX_Lower;
+  private double Default_RI_MAX_Upper;
+  private double Default_RI_MIN_C;
+  private double Default_Recency;
+  private double Default_SlopeStart;
+  private int Default_iRewardSelection;
+
+  private double Cooling;
+  private double Experimentation;
+  private double InitPropensity;
+  private int M1;
+  private int M2;
+  private int M3;
+  private double RI_MAX_Lower;
+  private double RI_MAX_Upper;
+  private double RI_MIN_C;
+  private double Recency;
+  private double SlopeStart;
+  private int iRewardSelection;
+  
+  private double[][] genLearningData;
+  private boolean bGenLearningDataSet=false;
+
+  private long Default_RandomSeed;
+  private int Default_iMaxDay;
+  private double Default_dThresholdProbability;
+  private double Default_dDailyNetEarningThreshold;
+  private double Default_dGenPriceCap;
+  private double Default_dLSEPriceCap;
+  private int Default_iStartDay;
+  private int Default_iCheckDayLength;
+  private double Default_dActionProbability;
+  private int Default_iLearningCheckStartDay;
+  private int Default_iLearningCheckDayLength;
+  private double Default_dLearningCheckDifference;
+  private int Default_iDailyNetEarningStartDay;
+  private int Default_iDailyNetEarningDayLength;
+  private boolean Default_bMaximumDay=true;
+  private boolean Default_bThreshold=true;
+  private boolean Default_bDailyNetEarningThreshold=false;
+  private boolean Default_bActionProbabilityCheck=false;
+  private boolean Default_bLearningCheck=false;
+  
+  private String hostName;
+  private String userName;
+  private String databaseName;
+  private String password;
+  private long RandomSeed;
+  private int RTM;
+  private int iMaxDay;
+  private int priceSensitiveLSE;
+  private double dThresholdProbability;
+  private double hasStorage;
+  private double hasNDG;
+  public double dDailyNetEarningThreshold;
+  private double dGenPriceCap;
+  private double dLSEPriceCap;
+  public int iStartDay;
+  public int iCheckDayLength;
+  public double dActionProbability;
+  public int iLearningCheckStartDay;
+  public int iLearningCheckDayLength;
+  public double dLearningCheckDifference;
+  public int iDailyNetEarningStartDay;
+  public int iDailyNetEarningDayLength;
+  public  boolean bMaximumDay=true;
+  public  boolean bThreshold=true;
+  public  boolean bDailyNetEarningThreshold=false;
+  public  boolean bActionProbabilityCheck=false;
+  public  boolean bLearningCheck=false;
+
+  private OutputPane output;
+  
+  private int BatchMode=0;  // For normal mode, 1-> multiple random seeds for one case input file
+  private int iRandomSeedsData=0;
+  private int iCurrentRandomSeedsIndex=0;
+  private long [] randomSeedsData;
+  private boolean bMultiRandomSeeds=false;
+  
+  private int iMultiCasesData=0;
+  private int iCurrentMultiCasesIndex=0;
+  private String [] MultiCasesData;
+  private boolean bMultiCases=false;
+  
+  private int stopCode;
+  
+  /**
+  * Represents the datafile the simulation was spun up from.
+  */
+  private CaseFileData testcaseConfig;
+
+
+  private AMESMarket amesMarket;
+
 
 }

@@ -556,7 +556,7 @@ public class CaseFileReader {
                 iBranchFields--;
 
                 if (iIndex > 0) {
-                    strBranch = strBranch.substring(0, iIndex);
+                    strBranch = strBranch.substring(0, iIndex).trim();
                 }
                 
             }
@@ -829,7 +829,7 @@ public class CaseFileReader {
                 iLSEFields--;
 
                 if (iIndex > 0) {
-                    strLSE = strLSE.substring(0, iIndex);
+                    strLSE = strLSE.substring(0, iIndex).trim();
                 }
             }
 
@@ -949,7 +949,7 @@ public class CaseFileReader {
                 iNDGFields--;
 
                 if (iIndex > 0) {
-                    strNDG = strNDG.substring(0, iIndex);
+                    strNDG = strNDG.substring(0, iIndex).trim();
                 }
             }
 
@@ -1013,7 +1013,7 @@ public class CaseFileReader {
                     iDemandFields--;
 
                     if (iIndex > 0) {
-                        strLSEDemand = strLSEDemand.substring(0, iIndex);
+                        strLSEDemand = strLSEDemand.substring(0, iIndex).trim();
                     }
                 }
 
@@ -1066,7 +1066,7 @@ public class CaseFileReader {
                 iLSEFields--;
 
                 if (iIndex > 0) {
-                    strLSE = strLSE.substring(0, iIndex);
+                    strLSE = strLSE.substring(0, iIndex).trim();
                 }
             }
 
@@ -1113,7 +1113,7 @@ public class CaseFileReader {
                 iGenLearningFields--;
 
                 if (iIndex >= 0) {
-                    strGenLearning = strGenLearning.substring(0, iIndex);
+                    strGenLearning = strGenLearning.substring(0, iIndex).trim();
                 }
             }
 

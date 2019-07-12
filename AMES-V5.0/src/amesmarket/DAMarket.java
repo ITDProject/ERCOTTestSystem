@@ -255,7 +255,9 @@ public class DAMarket {
             //Rohit - Addl comment - receive price sensitive demand bid into demandBid and then into demandBidbyLSE for each LSE
             demandBid = lse.submitTrueDemandBid();
             //Rohit - New method inside lse to submit demand bid
+
             demandBid = lse.submitDemandBid(d, j, ames.getPsLse(), IsFNCS);
+          
             demandBidByLSE[j] = demandBid;
 
             

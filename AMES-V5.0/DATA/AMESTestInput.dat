@@ -4,7 +4,9 @@ BASE_S	100
 BASE_V	345
 
 // Simulation Parameters
+
 FNCSActive True
+
 MaxDay	2
 RTMDuration 12
 RandomSeed	695672061
@@ -20,9 +22,11 @@ NumberOfReserveZones     3
 
 #ZoneDataStart
 //  ZoneName    Buses    ReserveDownZonalPercent    ReserveUpZonalPercent
+
 Zone1    4,3,7    0.1   0.15
 Zone2    1,5,6    0.2   0.25
 Zone3    2,8      0.3   0.35
+
 #ZoneDataEnd
 
 #LineDataStart

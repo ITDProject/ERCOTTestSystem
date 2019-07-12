@@ -137,6 +137,104 @@ public class ISO {
 //        dam.postTrueSupplyOfferAndDemandBids(dailycommitment, dailylmp, dailyPriceSensitiveDispatch);
     }
 
+    /**
+     * This is part of the original marketOperation method. Seperating it from the origal method to help integrate 
+     * the market solution process with TESP
+     * 
+     * This is to collect demand bids and generation offers for day ahead market
+     * @return
+     */
+    public boolean collectBidsOffersDAMarket(int d) {
+    	int hour = 2;
+    	
+    	dam.dayAheadOperation(hour, d);  
+    	
+        this.loadProfileByLSE = this.dam.getLoadProfileByLSE();
+
+        this.sanityCheck(d);
+        
+        return true;
+    }
+    /**
+     * This is part of the original marketOperation method. Separating it from the original method to help integrate 
+     * the market solution process with TESP
+     * 
+     * This function is to run Day-ahead market with SCUC 
+     * 
+     * @return
+     */
+     public boolean runDayAheadMarket(int day) {
+     	
+    	 System.out.println("SCUC for DAY " + day + " executing");
+
+         //Exception handling done through suggestion by Netbeans
+         try {
+             this.scuc.calcSchedule(day);
+         } catch (IOException ex) {
+             Logger.getLogger(ISO.class.getName()).log(Level.SEVERE, null, ex);
+             return false;
+         } catch (AMESMarketException ex) {
+             Logger.getLogger(ISO.class.getName()).log(Level.SEVERE, null, ex);
+             return false;
+         }
+
+         this.genSchedule = this.scuc.getSchedule();
+         this.dailylmp = this.scuc.getDAMLMP();
+         this.dailycommitment = this.scuc.getDailyCommitment();
+         ames.addGenAgentCommitmentByDay(dailycommitment);
+         ames.addLMPByDay(dailylmp);
+         
+         return true;
+     }
+     
+     /**
+      * This is part of the original marketOperation method. Seperating it from the origal method to help integrate 
+      * the market solution process with TESP
+      * 
+      * This function is to run one time step (usually 5 mins) real time SCED and get the real time LMP. 
+      * @return
+      */
+     public boolean runOneStepRealTimeMarket(int m, int interval, int h, int d) {
+    	 
+    	 if (h == 1 && m == 0) {
+             System.out.println("Entered iso.RTMOperation at h:" + h + " interval: " + interval + " m: " + m);
+             rtm.realTimeOperation(h, d);
+         }
+         System.out.println("\n iso.RTMOperation is called at h:" + h + " interval: " + interval + " m: " + m +"\n");
+         
+         double[][] realtimeload = this.getRealTimeLoad(h-1, d); // fncs.get_events() is called to receive RTM forecast
+     
+         this.rtm.evaluateRealTimeBidsOffers(this.genScheduleRT,
+                 realtimeload, m, interval, h, d); // fncs.get_events() is called to receive RTM forecast - inside getRealTimeLoad
+        
+         this.dailyrealtimelmp = this.rtm.getDailyRtLMPs(); // check and validate
+        
+    	 return true;
+    	 
+     }
+     
+     public void dayAheadPostProcess(int day) {
+    	
+             int tomorrow = day + 1;
+             ArrayList<GenAgent> genAgentList = this.ames.getGenAgentList();
+             int[] tempVector = new int[this.ames.NUM_HOURS_PER_DAY];
+             for (int j = 0; j < this.ames.getNumGenAgents(); j++) {
+                 GenAgent gc = genAgentList.get(j);
+                 
+                 for (int hour = 0; hour < this.ames.NUM_HOURS_PER_DAY; hour++) {
+                     tempVector[hour] = this.scuc.getGenDAMCommitmentStatusNextDay()[hour][j];
+                     
+                 }
+                
+                 gc.setCommitmentStatus(tempVector);  
+             }
+
+             this.endOfDayCleanup();
+
+             this.postScheduleToGenCos(tomorrow, this.genScheduleRT);
+     }
+    
+    
     //newversion
     public void marketOperation(int m, int interval, int h, int d, boolean IsFNCS) {
         final int tomorrow = d + 1;
@@ -183,7 +281,7 @@ public class ISO {
                     realtimeload, realtimeNDG, m, interval, h, d);
             //Temp: Fix it - Swathi
             //this.postRealTimeSolutions(d);
-            this.dailyrealtimelmp = this.rtm.getRtLMPs(); // check and validate
+            this.dailyrealtimelmp = this.rtm.getDailyRtLMPs(); // check and validate
         }
 
         if (h == 10 && m == 0) {  
@@ -270,13 +368,17 @@ public class ISO {
         }
     }
 
+
     private double[][] getRealTimeLoadForecast(int h, int d, boolean IsFNCS) {
+
 
         int ColSize = this.ames.M * this.ames.RTMFrequencyPerHour; // previous usage was this.ames.M * this.ames.NUM_INTERVALS_PER_HOUR //TODO:Swathi - check
 
         //System.out.println("printing size of RTL array: " + ColSize);
         double[][] hourlyLoadProfileByLSE = new double[J][ColSize];
 
+        
+        
         //receiving load forecast for realtimeLMP calculation
         if (IsFNCS) {
             String[] events = JNIfncs.get_events();
@@ -310,6 +412,7 @@ public class ISO {
         }
 
         // temparory assignment 
+
         for (int j = 0; j < J; j++) {
             for (int k = 0; k < (ColSize); k++) {
                 hourlyLoadProfileByLSE[j][k] = this.dam.getLoadProfileByLSE()[j][h]; //400; //temp[j];
@@ -486,7 +589,7 @@ public class ISO {
     public void postRealTimeSolutions(int day) {
         this.dailyRTcommitment = this.rtm.getRtDispatches(); //buc.getDailyRealTimeCommitment();
         this.postRTDispatchesToGenAgents(day, this.dailyRTcommitment);
-        this.dailyRTlmp = this.rtm.getRtLMPs(); //buc.getDailyRealTimeLMP();
+        this.dailyRTlmp = this.rtm.getDailyRtLMPs(); //buc.getDailyRealTimeLMP();
         this.dailyRTbranchflow = this.rtm.getRtBranchFlow(); //buc.getDailyRealTimeBranchFlow();
 
         this.ames.addRealTimeLMPByDay(this.dailyrealtimelmp);//(this.dailyRTlmp);
@@ -690,6 +793,13 @@ public class ISO {
 //    }  
     public double[][] getDailyRealTimeLMP() {
         return this.dailyrealtimelmp;
+    }
+    
+    public double[][] getDAMktUnitPower(){
+    	return this.dailycommitment;
+    }
+    public int[][] getDAMktUnitSchedule(){
+    	return this.scuc.getGenDAMCommitmentStatusNextDay();
     }
 
 }

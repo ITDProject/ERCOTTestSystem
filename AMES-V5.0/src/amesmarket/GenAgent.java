@@ -32,7 +32,6 @@ import edu.iastate.jrelm.rl.ReinforcementLearner;
 import edu.iastate.jrelm.rl.SimpleStatelessLearner;
 import edu.iastate.jrelm.rl.rotherev.variant.VREParameters;
 import edu.iastate.jrelm.rl.rotherev.REPolicy;
-;
 
 import java.util.Arrays;
 import java.util.HashMap;

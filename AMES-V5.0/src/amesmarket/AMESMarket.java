@@ -645,6 +645,8 @@ public class AMESMarket extends SimModelImpl {
 
         return output;
     }
+    
+
 
     public void buildSchedule() {
         //System.out.println("\n\n\t*******************************************************************************");
@@ -680,11 +682,13 @@ public class AMESMarket extends SimModelImpl {
                 }
 
                 // Waits for half the hour_len for day>1
+
                 if (IsFNCS) {
                     while (time_granted < time_next) {
                         time_granted = JNIfncs.time_request(time_next);
                     }
                 }
+
                 //}
                 //System.out.println("time_granted: " + time_granted);
                 //Performs market operation after receiving events from FNCS (JNIfncs.get_events() is added to methods called in ISO)
@@ -704,7 +708,9 @@ public class AMESMarket extends SimModelImpl {
 
                 //System.out.println("time_next: " + time_next);
                 //if (hour != 0 && day > 1 || hour == 23) {
+
                 if (IsFNCS) {
+
                     time_granted = JNIfncs.time_request(time_next);
                     while (time_granted < time_next) {
                         time_granted = JNIfncs.time_request(time_next);
@@ -734,6 +740,7 @@ public class AMESMarket extends SimModelImpl {
                     }
                     //}
                 }
+                */
                 stopCode = 0;
 
                 if (bMaximumDay) {
@@ -856,6 +863,27 @@ public class AMESMarket extends SimModelImpl {
         //isoRealTime=iso;
         System.out.println("Day Hour Interval Min: " + day + hour + interval + min);
         schedule.scheduleActionBeginning(0, new WPMarket());
+    }
+    
+    public void updateInternalTimer() {
+    	int day_len = 86400; //in sec
+        long hour_len = 3600; // in sec
+        int min_len = 60; // in sec; AMES 3.1
+     
+        int NIH = (int) hour_len/(min_len*this.M) ; // number of intervals in an hour
+        
+        min = min + this.M;
+        if (min % min_len == 0){    // change it to 60 or rename it to someother name
+            hour++;
+            min = 0;
+            if (hour == 25) {
+                min = 0;
+                hour = 1;
+                day++;
+            }
+        }
+        
+        interval = (hour-1)*NIH + (int) min/M;
     }
 
     public void buildDisplay() {

@@ -1,3 +1,4 @@
+
 /*
  * FIXME <LICENCE>
  */
@@ -43,6 +44,7 @@ public class PSSTSCED implements SCED {
 	 * Commitments by hour, for each genco.
 	 */
 	private double[][] dailyCommitment;
+	private double[] intervalGenDispatch;
 	private double[][] shutdownCost;
 	private double[][] startupCost;
 	private double[][] productionCost;
@@ -51,7 +53,7 @@ public class PSSTSCED implements SCED {
                 
         // previous initialization
 	private double[][] dailyLMP;
-	//private double[] dailyLMP;
+	private double[] intervalLMP;
 	private double[][] voltageAngles;
 	private double[][] branchFlow;
 	private double[][] dailyPriceSensitiveDemand;
@@ -122,6 +124,7 @@ public class PSSTSCED implements SCED {
 	private void createSpaceForSols() {
 		this.dailyCommitment = new double[ames.M][this.I]; // earlier it is initialized to - new double[ames.M][this.I]; Changed to NID 
                 // earlier all of them are initialized to - new double[ames.M][this.I]; Now H is changed to NID - TODO:check - Swathi
+		this.intervalGenDispatch = new double[this.I];
 		this.shutdownCost = new double[ames.M][this.I];
 		this.startupCost = new double[ames.M][this.I];
 		this.productionCost = new double[ames.M][this.I];
@@ -129,6 +132,7 @@ public class PSSTSCED implements SCED {
 		// this.dailyLMP        = new double[this.H][this.K];
                 //this.dailyLMP = new double[this.K];
                 this.dailyLMP = new double[this.NID][this.K];
+                this.intervalLMP = new double[this.K];
 		this.voltageAngles   = new double[ames.M][this.N];
 		this.branchFlow      = new double[ames.M][this.N];
 		this.dailyPriceSensitiveDemand = new double [ames.M][this.J];
@@ -183,6 +187,15 @@ public class PSSTSCED implements SCED {
 			final void convertM(double[][] vs, double baseS){
 				this.convert(vs, baseS, true);
 			}
+			
+			/**
+			 * Like {@link #convert}, but with default of multiplication set to true.
+			 * @param vs
+			 * @param baseS
+			 */
+			final void convertM(double[] vs, double baseS){
+				this.convert(vs, baseS, true);
+			}
 
 			/**
 			 * Like {@link #convert}, but with default of multiplication set to false.
@@ -193,17 +206,19 @@ public class PSSTSCED implements SCED {
 				this.convert(vs, baseS, false);
 			}
                         
-                        final void convertD(double[] vs, double baseS){
-                            this.convert(vs, baseS, false);
+            final void convertD(double[] vs, double baseS){
+                 this.convert(vs, baseS, false);
                             
-                        }
+            }
 		}
 
 		Converter c = new Converter();
 
 		c.convertM(this.dailyCommitment, this.baseS);
+		c.convertM(this.intervalGenDispatch, this.baseS);
 		c.convertM(this.branchFlow, this.baseS);
 		c.convertD(this.dailyLMP, this.baseS);
+		c.convertD(this.intervalLMP, this.baseS);
 		c.convertM(this.dailyPriceSensitiveDemand, this.baseS);
 	}
 
@@ -355,6 +370,11 @@ public class PSSTSCED implements SCED {
 	public double[][] getDailyCommitment() {
 		return this.dailyCommitment;
 	}
+	
+	public double[] getIntervalGenDispatches() {
+		return this.intervalGenDispatch;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see amesmarket.SCED#getDailyLMP()
@@ -363,10 +383,10 @@ public class PSSTSCED implements SCED {
 	public double[][] getDailyLMP() {
 		return this.dailyLMP;
 	}
-//        @Override
-//	public double[] getDailyLMP() {
-//		return this.dailyLMP;
-//	}
+//    
+	public double[] getIntervalLMP() {
+		return this.intervalLMP;
+	}
 
 	/* (non-Javadoc)
 	 * @see amesmarket.SCED#getDailyBranchFlow()
@@ -448,6 +468,7 @@ public class PSSTSCED implements SCED {
                                 //System.out.println("interval p[2]: "+ interval + p[2]);
                                 //lmp[b] = this.stod(p[2]);
 				//sced.lmp[branch][hour] ?or the other way around = value
+				PSSTSCED.this.intervalLMP[b] =this.stod(p[2]);
 			}while(true);
 		}
 
@@ -504,6 +525,7 @@ public class PSSTSCED implements SCED {
 							}
 						} else if (POWER_GEN.equals(keyAndValue[KIDX])) {  //PowerGenerated
 							dispatch[curHour][curGenCoIdx] = Support.parseDouble(keyAndValue[VIDX]);
+							PSSTSCED.this.intervalGenDispatch[curGenCoIdx]  = dispatch[curHour][curGenCoIdx];
                                                         //System.out.println("aaaaaaaaaaaaaaaaaa: " + Support.parseDouble(keyAndValue[VIDX]));
                                                         ga.setPowerPrevInterval(dispatch[curHour][curGenCoIdx] * baseS); 
 						} else if (PRODUCTION_COST.equals(keyAndValue[KIDX])) { //ProductionCost

@@ -129,6 +129,7 @@ public class LSEAgent implements Drawable {
         // Receives load forecast from fncs_player
         //System.out.println("In submitDAMLoadForecast:");
         if (day > 1 && lse == (psLse - 1)) { // previously day > 2
+
             if (IsFNCS) {
                 String[] events = JNIfncs.get_events();
                 //System.out.println("DAM events.len: " + events.length);
@@ -155,6 +156,7 @@ public class LSEAgent implements Drawable {
             } else {
                 loadForecast = loadProfile;
             }
+           
             return loadProfile; // loadForecast; // temp fixed to loadProfile
         } else {
             return loadProfile;
