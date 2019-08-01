@@ -1,0 +1,97 @@
+
+// UNIT	SI
+BASE_S	100
+BASE_V	10
+
+// Simulation Parameters
+FNCSActive true
+MaxDay	2
+RTOPDur 15
+
+NumberofBuses       3
+
+ReserveDownSystemPercent 0.0
+ReserveUpSystemPercent 0.0
+
+#LineDataStart
+//    Name	      From	        To	         MaxCap	      Reactance
+   Line1	         1	         2	     10000.0000	         0.1000
+   Line2	         2	         3	     10000.0000	         0.1000
+   Line3	         2	         4	     10000.0000	         0.1000
+   Line4	         2	         5	     10000.0000	         0.1000
+   Line5	         4	         5	     10000.0000	         0.1000
+   Line6	         5	         6	     10000.0000	         0.1000
+   Line7	         5	         7	     10000.0000	         0.1000
+   Line8	         4	         6	     10000.0000	         0.1000
+   Line9	         6	         8	     10000.0000	         0.1000
+  Line10	         6	         7	     10000.0000	         0.1000
+  Line11	         4	         8	     10000.0000	         0.1000
+  Line12	         3	         4	     10000.0000	         0.1000
+#LineDataEnd
+
+#GenDataStart
+//    Name	        ID	     atBus	          SCost	              b	              c	           PMin	           PMax	      NS	      InitMoney
+    GenCo1	         1	         1	         0.0000	        10.0000	         0.0050	         0.0000	      1000.0000	   4	      1000000.0000
+    GenCo2	         2	         2	         0.0000	        11.0000	         0.0050	         0.0000	      1000.0000	   4	      1000000.0000
+    GenCo3	         3	         3	         0.0000	        12.0000	         0.0050	         0.0000	      1000.0000	   4	      1000000.0000
+    GenCo4	         4	         4	         0.0000	        13.0000	         0.0050	         400.0000	      1000.0000	   4	      1000000.0000
+    GenCo5	         5	         5	         0.0000	        14.0000	         0.0050	         0.0000	      1000.0000	   4	      1000000.0000
+    GenCo6	         6	         6	         0.0000	        20.0000	         0.0050	         0.0000	      1000.0000	   4	      1000000.0000
+    GenCo7	         7	         7	         0.0000	        25.0000	         0.0092	         0.0000	      1000.0000	   4	      1000000.0000
+    GenCo8	         8	         8	         0.0000	        30.0000	         0.0093	         0.0000	      1000.0000	   4	      1000000.0000
+#GenDataEnd
+
+#GenCostStart
+//  Name    a    ColdStartUpCost    HotStartUpCost    ShutDownCostCoefficient
+    GenCo1  0.0000    0           0           0
+    GenCo2  0.0000    0           0           0
+    GenCo3  0.0000    0           0           0
+    GenCo4  0.0000    0           0           0
+    GenCo5  1000.0000    0           0           0
+    GenCo6  1000.0000    0           0           0
+    GenCo7  1000.0000    0           0           0
+    GenCo8  1000.0000    0           0           0
+#GenCostEnd
+
+#ScucInputDataStart
+//  Name    PowerT0 UnitOnT0    MinUpTime   MinDownTime NominalRampUp   NominalRampDown StartupRampLim ShutdownRampLim
+    GenCo1  0.0000    -1           0           0           0             0             0             0
+    GenCo2  1000.0    1           0           0           0             0             0             0
+    GenCo3  0.0000    -1           0           0           0             0             0             0
+    GenCo4  1000.0    1           0           0           0             0             0             0
+    GenCo5  0.0000    -1           0           0           0             0             0             0
+    GenCo6  1000.0    1           0           0           0             0             0             0
+    GenCo7  0.0000    -1           0           0           0             0             0             0
+    GenCo8  1000.0    1           0           0           0             0             0             0
+#ScucInputDataEnd
+
+#LSEDataFixedDemandStart
+//    Name	        ID	     atBus	           H-00	           H-01	           H-02	           H-03	           H-04	           H-05	           H-06	           H-07
+      LSE1	         1	         1	     400	      400	      400	      400	      400	      400	      600	     400
+      LSE2	         2	         2	     400	      400	      400	      400	      400	      400	      600	     400
+      LSE3	         3	         3	     400	      400	      400	      400	      400	      400	      600	     400
+      LSE4	         4	         4	     400	      400	      400	      400	      400	      400	      600	     400
+      LSE5	         5	         5	     400	      400	      400	      400	      400	      400	      600	     400
+      LSE6	         6	         6	     400	      400	      400	      400	      400	      400	      600	     400
+      LSE7	         7	         7	     400	      400	      400	      400	      400	      400	      600	     400
+      LSE8	         8	         8	     400	      400	      400	      400	      400	      400	      600	     400
+//    Name	        ID	     atBus	           H-08	           H-09	           H-10	           H-11	           H-12	           H-13	           H-14	           H-15
+      LSE1	         1	         1	     400	      400	      600	      400	      400	      400	      400	     400
+      LSE2	         2	         2	     400	      400	      600	      400	      400	      400	      400	     400
+      LSE3	         3	         3	     400	      400	      600	      400	      400	      400	      400	     400
+      LSE4	         4	         4	     400	      400	      600	      400	      400	      400	      400	     400
+      LSE5	         5	         5	     400	      400	      600	      400	      400	      400	      400	     400
+      LSE6	         6	         6	     400	      400	      600	      400	      400	      400	      400	     400
+      LSE7	         7	         7	     400	      400	      600	      400	      400	      400	      400	     400
+      LSE8	         8	         8	     400	      400	      600	      400	      400	      400	      400	     400
+//    Name	        ID	     atBus	           H-16	           H-17	           H-18	           H-19	           H-20	           H-21	           H-22	           H-23
+      LSE1	         1	         1	     400	      400	      400	      400	      400	      400	      400	     600
+      LSE2	         2	         2	     400	      400	      400	      400	      400	      400	      400	     600
+      LSE3	         3	         3	     400	      400	      400	      400	      400	      400	      400	     600
+      LSE4	         4	         4	     400	      400	      400	      400	      400	      400	      400	     600
+      LSE5	         5	         5	     400	      400	      400	      400	      400	      400	      400	     600
+      LSE6	         6	         6	     400	      400	      400	      400	      400	      400	      400	     600
+      LSE7	         7	         7	     400	      400	      400	      400	      400	      400	      400	     600
+      LSE8	         8	         8	     400	      400	      400	      400	      400	      400	      400	     600
+#LSEDataFixedDemandEnd
+

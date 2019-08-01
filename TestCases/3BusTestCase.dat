@@ -1,0 +1,79 @@
+// FILENAME 3BusTestCase.dat
+
+// UNIT	SI
+BASE_S	100
+BASE_V	10
+
+// Simulation Parameters
+FNCSActive true
+MaxDay	2
+
+RTOPDur 15
+BalPenPos 1000000
+BalPenNeg 1000000
+
+ReserveDownSystemPercent 0.2
+ReserveUpSystemPercent 0.3
+
+// Bus Data
+NumberofBuses       3
+
+NumberOfReserveZones     2
+
+#ZoneDataStart
+//  ZoneName    Buses    ReserveDownZonalPercent    ReserveUpZonalPercent
+Zone1    1,3    0.1   0.1
+Zone2    2    0.1   0.1
+#ZoneDataEnd
+
+#LineDataStart
+//    Name	      From	        To	         MaxCap	      Reactance
+   Branch1	         1	         2	     500.0000	         0.1000
+   Branch2	         2	         3	     1000.0000	         0.1000
+   Branch3	         1	         3	     1000.0000	         0.1000
+#LineDataEnd
+
+#GenDataStart
+//    Name	        ID	     atBus	          SCost	              b	              c	           PMin	           PMax	      NS	           InitMoney
+    GenCo1	         1	         1	         0.0000	        11.0000	         0.0010	         0.0000	      1000.0000	   3	         1000000.0000
+    GenCo2	         2	         2	         0.0000	        16.0000	         0.0010	         0.0000	      1000.0000	   4	         1000000.0000
+    GenCo3	         3	         3	         0.0000	        20.0000	         0.0010	         0.0000	      1000.0000	   4	         1000000.0000
+#GenDataEnd
+
+#GenCostStart
+//  Name    a    COldStartHours ColdStartUpCost    HotStartUpCost    ShutDownCostCoefficient
+    GenCo1  0.0000    2           10           5           0
+    GenCo2  200.0000    3           20           15           0
+    GenCo3  100.0000    4           30           20           0
+#GenCostEnd
+
+#ScucInputDataStart
+//  Name    PowerT0 UnitOnT0State    MinUpTime   MinDownTime NominalRampUp   NominalRampDown StartupRampLim ShutdownRampLim
+    GenCo1  0.0000    -4           0           0           0             0             0             0
+    GenCo2  0.0000    -1           0           0           0             0             0             0
+    GenCo3  0.0000    -1           0           0           0             0             0             0
+#ScucInputDataEnd
+
+#LSEDataFixedDemandStart
+//    Name	        ID	     atBus	           H-00	           H-01	           H-02	           H-03	           H-04	           H-05	           H-06	           H-07
+      LSE1	         1	         1	     700	      400	      600	      200	      600	      600	      600	     600
+      LSE2	         2	         2	     1200	      400	      600	      200	      600	      600	      600	     600
+//    Name	        ID	     atBus	           H-08	           H-09	           H-10	           H-11	           H-12	           H-13	           H-14	           H-15
+      LSE1	         1	         1	     1000	      600	      600	      600	      600	      600	      600	     600
+      LSE2	         2	         2	     1000	      600	      600	      600	      600	      600	      600	     600
+//    Name	        ID	     atBus	           H-16	           H-17	           H-18	           H-19	           H-20	           H-21	           H-22	           H-23
+      LSE1	         1	         1	     600	      600	      600	      600	      600	      600	      600	     600
+      LSE2	         2	         2	     900	      600	      600	      600	      600	      600	      600	     600
+#LSEDataFixedDemandEnd
+
+#NDGDataStart
+//    Name	        ID	     atBus	           H-00	           H-01	           H-02	           H-03	           H-04	           H-05	           H-06	           H-07
+      NDG1	         1	         1	         100	         100	         100	         100	         100	         100	         100	         100
+      NDG2	         2	         2	         100	         100	         100	         100	         100	         100	         100	         100
+//    Name	        ID	     atBus	           H-08	           H-09	           H-10	           H-11	           H-12	           H-13	           H-14	           H-15
+      NDG1	         1	         1	         100	         100	         100	         100	         100	         100	         100	         100
+      NDG2	         2	         2	         100	         100	         100	         100	         100	         100	         100	         100
+//    Name	        ID	     atBus	           H-16	           H-17	           H-18	           H-19	           H-20	           H-21	           H-22	           H-23
+      NDG1	         1	         1	         100	         100	         100	         100	         100	         100	         100	         100
+      NDG2	         2	         2	         100	         100	         100	         100	         100	         100	         100	         100
+#NDGDataEnd
