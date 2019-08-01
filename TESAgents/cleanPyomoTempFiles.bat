@@ -1,0 +1,12 @@
+set PyomoDir=C:\Users\swathi\Dropbox\AMESLatestVersion\TESAgents\PyomoTempFiles
+cd %PyomoDir%
+del *.lp
+del *.log
+del *.script
+del *.sol
+set TempFiles=C:\Users\swathi\Dropbox\AMESLatestVersion\TESAgents\DataFiles\TempFiles
+cd %TempFiles%
+del *.lp
+del *.log
+del *.script
+del *.sol
