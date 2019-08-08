@@ -133,6 +133,7 @@ def sced(uc, data, output, solver):
     c, ZonalDataComplete= read_model(data.strip("'"))
     click.echo("Data is read")
     c.gen_status = uc_df.astype(int)
+    #click.echo("Gen status is read")
 
     model = build_model(c, ZonalDataComplete=ZonalDataComplete)
     click.echo("Model is built")
@@ -173,15 +174,15 @@ def sced(uc, data, output, solver):
             for t in instance.TimePeriods:
                 f.write("Minute: {}\n".format(str(t + 1)))
                 f.write("\tPowerGenerated: {}\n".format(round(instance.PowerGenerated[g, t].value,3)))
-                f.write("\tProductionCost: {}\n".format(instance.ProductionCost[g, t].value))
-                f.write("\tStartupCost: {}\n".format(instance.StartupCost[g, t].value))
-                f.write("\tShutdownCost: {}\n".format(instance.ShutdownCost[g, t].value))
+                f.write("\tProductionCost: {}\n".format(round(instance.ProductionCost[g, t].value,3)))
+                f.write("\tStartupCost: {}\n".format(round(instance.StartupCost[g, t].value,3)))
+                f.write("\tShutdownCost: {}\n".format(round(instance.ShutdownCost[g, t].value,3)))
         f.write("END_GenCoResults\n")
 
         f.write("VOLTAGE_ANGLES\n")
         for bus in sorted(instance.Buses):
             for t in instance.TimePeriods:
-                f.write('{} {} : {}\n'.format(str(bus), str(t + 1), str(instance.Angle[bus, t].value)))
+                f.write('{} {} : {}\n'.format(str(bus), str(t + 1), str(round(instance.Angle[bus, t].value,3))))
         f.write("END_VOLTAGE_ANGLES\n")
 
         # Write out the Daily LMP
