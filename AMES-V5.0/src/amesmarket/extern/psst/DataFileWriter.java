@@ -505,9 +505,10 @@ public class DataFileWriter {
                 refBufferWriter.write(" ;\n");
             }
             
+            int TimePeriodLength = ames.getTestCaseConfig().RTDeltaT;
             
-            int BalPenPos = ames.getTestCaseConfig().BalPenPos ;
-            int BalPenNeg = ames.getTestCaseConfig().BalPenNeg ;
+            int BalPenPos = ames.getTestCaseConfig().BalPenPos * TimePeriodLength / 60;
+            int BalPenNeg = ames.getTestCaseConfig().BalPenNeg * TimePeriodLength / 60;
             
             refBufferWriter.write("\nparam BalPenPos := " + BalPenPos
                     + " ;\n\n");
@@ -515,7 +516,6 @@ public class DataFileWriter {
             refBufferWriter.write("\nparam BalPenNeg := " + BalPenNeg
                     + " ;\n\n");
             
-            int TimePeriodLength = ames.getTestCaseConfig().RTDeltaT;
             refBufferWriter.write("\nparam TimePeriodLength := " + TimePeriodLength
                     + " ;\n\n");
             
