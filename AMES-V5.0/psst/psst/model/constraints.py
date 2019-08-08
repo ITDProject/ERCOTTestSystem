@@ -382,8 +382,8 @@ def commitment_in_stage_st_cost_rule(m, st):
     return m.CommitmentStageCost[st] == (sum(m.StartupCost[g,t] + m.ShutdownCost[g,t] for g in m.Generators for t in m.CommitmentTimeInStage[st]) + sum(sum(m.UnitOn[g,t] for t in m.CommitmentTimeInStage[st]) * m.MinimumProductionCost[g] * m.TimePeriodLength for g in m.Generators))
 
 def generation_in_stage_st_cost_rule(m, st):
-    return m.GenerationStageCost[st] == sum(m.ProductionCost[g, t] for g in m.Generators for t in m.GenerationTimeInStage[st]) + m.LoadPositiveMismatchPenalty * \
-    (sum(m.posLoadGenerateMismatch[b, t] for b in m.Buses for t in m.GenerationTimeInStage[st])) + m.LoadNegativeMismatchPenalty * \
+    return m.GenerationStageCost[st] == sum(m.ProductionCost[g, t] for g in m.Generators for t in m.GenerationTimeInStage[st]) + m.LoadPositiveMismatchPenalty * m.TimePeriodLength *\
+    (sum(m.posLoadGenerateMismatch[b, t] for b in m.Buses for t in m.GenerationTimeInStage[st])) + m.LoadNegativeMismatchPenalty * m.TimePeriodLength *\
     (sum(m.negLoadGenerateMismatch[b, t] for b in m.Buses for t in m.GenerationTimeInStage[st]))
 
 def StageCost_rule(m, st):
