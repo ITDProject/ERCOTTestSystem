@@ -91,7 +91,8 @@ public class CaseFileData {
 
     public long RandomSeed;
     public boolean FNCSActive;
-    public int RTM;
+    public int RTOPDur;
+    public int RTDeltaT;
     public int BalPenPos;
     public int BalPenNeg;
     public int iMaxDay;
@@ -155,7 +156,8 @@ public class CaseFileData {
         baseS = 100;
         baseV = 10;
         RandomSeed = 695672061;
-        RTM = 15;
+        RTOPDur = 15;
+        RTDeltaT = 1;
         BalPenPos = 100000;
         BalPenNeg = 100000;
         iMaxDay = 5;

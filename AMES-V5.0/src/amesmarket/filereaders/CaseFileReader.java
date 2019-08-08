@@ -52,7 +52,8 @@ public class CaseFileReader {
     private static final String BASE_S = "BASE_S";
     private static final String BASE_V = "BASE_V";
     private static final String FNCS_ACTIVE = "FNCSActive";
-    private static final String RTM = "RTOPDur";
+    private static final String RTOPDur = "RTOPDur";
+    private static final String RTDeltaT = "RTDeltaT";
     private static final String BAL_PEN_POS = "BalPenPos";
     private static final String BAL_PEN_NEG = "BalPenNeg";
     private static final String MAX_DAY = "MaxDay";
@@ -192,8 +193,10 @@ public class CaseFileReader {
         while (inputReader.hasNext() && move()) {
             if(currentLine.startsWith(BASE_S)) {
                 parseBASE_S(testConf);
-            } else if(currentLine.startsWith(RTM)) {
+            } else if(currentLine.startsWith(RTOPDur)) {
                 parseRTM(testConf);
+            } else if(currentLine.startsWith(RTDeltaT)) {
+                parseRTDeltaT(testConf);
             } else if(currentLine.startsWith(MAX_DAY)) {
                 parseMaxDay(testConf);
             } else if(currentLine.startsWith(BAL_PEN_POS)) {
@@ -389,10 +392,15 @@ public class CaseFileReader {
                                splitValueFromKey(currentLine, BAL_PEN_NEG));
     }
     
-        // RTM
+        // RTOPDur
     private void parseRTM(CaseFileData testConf) throws BadDataFileFormatException {
-        testConf.RTM = Integer.parseInt(
-                               splitValueFromKey(currentLine, RTM));
+        testConf.RTOPDur = Integer.parseInt(
+                               splitValueFromKey(currentLine, RTOPDur));
+    }    
+        // RTDeltaT
+    private void parseRTDeltaT(CaseFileData testConf) throws BadDataFileFormatException {
+        testConf.RTDeltaT = Integer.parseInt(
+                               splitValueFromKey(currentLine, RTDeltaT));
     }
 
     /**

@@ -19,6 +19,7 @@ import amesmarket.Support;
 import amesmarket.TransGrid;
 import amesmarket.filereaders.AbstractConfigFileReader;
 import amesmarket.filereaders.BadDataFileFormatException;
+import java.text.DecimalFormat;
 
 /**
  * Setup and run the SCED using the PSST program
@@ -72,8 +73,10 @@ public class PSSTRTMOpt implements RTMOptimization {
 	private final int J;
 	private final int H;
         private final int NID; // Number of intervals in a day
+        private final int NIRTM; // Number of intervals in RTOPDur
 	private final boolean deleteFiles;
         //private final int interval;
+        DecimalFormat Format = new DecimalFormat("###.####");
 
 	/**
 	 * @param ames market instance begin used.
@@ -111,7 +114,7 @@ public class PSSTRTMOpt implements RTMOptimization {
 		this.J = ames.getNumLSEAgents();
 		this.H = this.hoursPerDay; //shorter name for local refs.
                 this.NID = ames.RTMFrequencyPerDay;
-
+                this.NIRTM = ames.M/ames.getTestCaseConfig().RTDeltaT;
 		this.deleteFiles = ames.isDeleteIntermediateFiles();
 	}
 
@@ -121,19 +124,19 @@ public class PSSTRTMOpt implements RTMOptimization {
 	 * to prevent aliasing problems.
 	 */
 	private void createSpaceForSols() {
-		this.RTMDispatch = new double[ames.M][this.I]; 
+		this.RTMDispatch = new double[NIRTM][this.I]; 
 		this.intervalGenDispatch = new double[this.I];
-		this.shutdownCost = new double[ames.M][this.I];
-		this.startupCost = new double[ames.M][this.I];
-		this.productionCost = new double[ames.M][this.I];
+		this.shutdownCost = new double[NIRTM][this.I];
+		this.startupCost = new double[NIRTM][this.I];
+		this.productionCost = new double[NIRTM][this.I];
                 // previously used
 		// this.dailyLMP        = new double[this.H][this.K];
                 //this.dailyLMP = new double[this.K];
-                this.RTMLMP = new double[ames.M][this.K];
+                this.RTMLMP = new double[NIRTM][this.K];
                 this.intervalLMP = new double[this.K];
-		this.voltageAngles   = new double[ames.M][this.N];
-		this.branchFlow      = new double[ames.M][this.N];
-		this.dailyPriceSensitiveDemand = new double [ames.M][this.J];
+		this.voltageAngles   = new double[NIRTM][this.N];
+		this.branchFlow      = new double[NIRTM][this.N];
+		this.dailyPriceSensitiveDemand = new double [NIRTM][this.J];
 
 
 		this.hasSolution = new int[this.H];
@@ -320,7 +323,7 @@ public class PSSTRTMOpt implements RTMOptimization {
 		//TODO-XXX if this is the correct adaptation of DCOPFJ version, get rid of the 'full' name.
 		double[][] fullVoltAngle = this.voltageAngles;
 
-		for (int h = 0; h < ames.M; h++) {
+		for (int h = 0; h < NIRTM; h++) {
 			for (int n = 0; n < this.numBranches; n++) {
 				this.branchFlow[h][n] = (1 / this.grid.getReactance()[n])
 						* (fullVoltAngle[h][(int) bi[n][0] - 1] - fullVoltAngle[h][(int) bi[n][1] - 1]);
@@ -444,7 +447,7 @@ public class PSSTRTMOpt implements RTMOptimization {
 		 * Read the LMPs for each zone. Will need to divide by the baseS parameter to get these values to sensible $/MWh.
 		 */
 		private void readLMP() throws BadDataFileFormatException {
-                        double[][] temp = new double[ames.M][K];
+                        double[][] temp = new double[NIRTM][K];
 			do {
 				this.move(true);
 				if(this.endOfSection(LMP)) {
@@ -457,18 +460,19 @@ public class PSSTRTMOpt implements RTMOptimization {
 				int h = this.stoi(p[1]) - 1; 
 				int b = this.stoi(p[0]) - 1;
                                 temp[h][b] = this.stod(p[2]);
+                                //System.out.println("temp: "+temp[h][b]);
                                 
 			}while(true);
                         
                         for(int b=0; b<K; b++){
                             double Temp = 0;
-                            for(int i=0; i<ames.M; i++){
-                                PSSTRTMOpt.this.RTMLMP[i][b] = temp[i][b];
+                            for(int i=0; i<NIRTM; i++){
+                                PSSTRTMOpt.this.RTMLMP[i][b] = temp[i][b] * 60 / ames.getTestCaseConfig().RTDeltaT;
                                 Temp = Temp + temp[i][b];
                             }
                             
-                            PSSTRTMOpt.this.intervalLMP[b] = Temp/ames.M;
-                            //System.out.println("b:" + b + "LMP:" +(Temp/ames.M) );
+                            PSSTRTMOpt.this.intervalLMP[b] = Temp/NIRTM * 60 /ames.getTestCaseConfig().RTDeltaT;
+                            //System.out.println("b:" + b + "LMP:" +(Temp/NIRTM)* 60 /ames.getTestCaseConfig().RTDeltaT );
                         }    
 		}
 

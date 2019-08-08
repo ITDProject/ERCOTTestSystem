@@ -126,7 +126,7 @@ public class RTMarket {
         File unitCommitmentFileMod = new File(unitCommitmentFile + "_hour" + h);
         try {
             //write the correct data files.
-            dfw.writeGenCommitments(ames.M, m, h, genCoCommitments, unitCommitmentFile);
+            dfw.writeGenCommitments(ames, ames.M, m, h, genCoCommitments, unitCommitmentFile);
             //dfw.writeGenCommitments(10, m, h, genCoCommitments, unitCommitmentFile); //ames.M is changed to 10
         } catch (AMESMarketException ex) {
             Logger.getLogger(RTMarket.class.getName()).log(Level.SEVERE, null, ex);

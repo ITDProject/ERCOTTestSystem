@@ -48,15 +48,14 @@ public class ISO {
     private double[][][] demandBidByLSERealTime;
     private int[][] demandHybridByLSERealTime;
     private double[][] dailyPriceSensitiveDispatch, dailyPriceSensitiveDispatchRT;
-    private double[][] GenDAMDispatch, dailyrealtimecommitment, dailyrealtimebranchflow, supplyOfferRT;
+    private double[][] GenDAMDispatch, supplyOfferRT;
     private double[][] DAMLMP;
     private double[][] RTMLMP;
     private double[][] dailyBranchFlow;
     private ArrayList commitmentListByDay; // hourly commitments list for each agent by day (d)
     private ArrayList lmpListByDay;        // hourly LMPs list for each bus by day (d)
 
-    private double[][] RTMDispatch, dailyRTbranchflow, dailyRTlmp;
-    //private double[] dailyRTlmp;
+    private double[][] RTMDispatch, RTbranchflow;
     private double[][] dailyRTProductionCost;
     private double[][] dailyRTStartupCost;
     private double[][] dailyRTShutdownCost;
@@ -244,7 +243,7 @@ public class ISO {
                 this.nextDayLoadProfileByLSE = this.dam.getNextDayLoadProfileByLSE();  //commented to ignore rolling horizon for now
             } */
             
-            this.sanityCheck(d); 
+            //this.sanityCheck(d); 
         }
         
         if (h == 10 && m == 0) {
@@ -296,7 +295,7 @@ public class ISO {
 
     private double[][] getRealTimeLoadForecast(int h, int d, boolean FNCSActive) {
 
-        int ColSize = this.ames.M * this.ames.RTMFrequencyPerHour; 
+        int ColSize = this.ames.NIRTM * this.ames.RTMFrequencyPerHour; 
 
         //System.out.println(""+Arrays.deepToString(loadProfileRT));
         //System.out.println("printing size of RTL array: " + ColSize);
@@ -336,18 +335,18 @@ public class ISO {
         }
 
         // temparory assignment
-        for (int j = 0; j < J; j++) {
-            for (int k = 0; k < (ColSize); k++) {
-                hourlyLoadProfileByLSE[j][k] = this.RTloadProfileforLSEs[j][h]; //400; //temp[j];
-            }
-        }
+//        for (int j = 0; j < J; j++) {
+//            for (int k = 0; k < (ColSize); k++) {
+//                hourlyLoadProfileByLSE[j][k] = this.RTloadProfileforLSEs[j][h]; //400; //temp[j];
+//            }
+//        }
 
         return hourlyLoadProfileByLSE;
     }
 
     private double[][] getRealTimeNDGForecast(int h, int d, boolean FNCSActive) {
 
-        int ColSize = this.ames.M * this.ames.RTMFrequencyPerHour; 
+        int ColSize = this.ames.NIRTM * this.ames.RTMFrequencyPerHour; 
 
         double[][] hourlyNDGProfileByBus = new double[L][ColSize];
 
@@ -383,11 +382,11 @@ public class ISO {
         }
 
         // temparory assignment
-        for (int j = 0; j < L; j++) {
-            for (int k = 0; k < (ColSize); k++) {
-                hourlyNDGProfileByBus[j][k] = this.dam.getGenProfileByNDG()[j][h]; //400; //temp[j];
-            }
-        }
+//        for (int j = 0; j < L; j++) {
+//            for (int k = 0; k < (ColSize); k++) {
+//                hourlyNDGProfileByBus[j][k] = this.dam.getGenProfileByNDG()[j][h]; //400; //temp[j];
+//            }
+//        }
 
         return hourlyNDGProfileByBus;
     }
@@ -584,8 +583,8 @@ public class ISO {
     private void postRTDispatchesToGenAgents(int day, double[][] dispatches) {
         final ArrayList<GenAgent> genCos = this.ames.getGenAgentList();
         for (int gc = 0; gc < this.I; gc++) {
-            final double[] genDispatches = new double[this.H];
-            for (int h = 0; h < this.ames.M; h++) {
+            final double[] genDispatches = new double[this.ames.NIRTM];
+            for (int h = 0; h < this.ames.NIRTM; h++) {
                 genDispatches[h] = dispatches[h][gc];
             }
             genCos.get(gc).addActualDispatch(day, genDispatches);

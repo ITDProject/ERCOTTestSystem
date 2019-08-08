@@ -232,6 +232,7 @@ public class INIT {
       
       for(int i=0;i<iNumberRow;i++)
           for(int j=0; j<NUM_GEN_PARAMS; j++){
+              //System.out.println("i= "+i+" j= "+j+" object[i][j]="+object[i][j]);
               genData[i][j]=object[i][j];
               //System.out.println("i= "+i+" j= "+j+" genData[i][j]="+genData[i][j]);
           }

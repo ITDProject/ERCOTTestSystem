@@ -63,6 +63,7 @@ public class AMESMarket extends SimModelImpl {
     public boolean FNCSActive;
     public String solver;
     public int M;
+    public int NIRTM; // No of intervals in RTOPDur
     public int RTMFrequencyPerHour; //NUM_INTERVALS_PER_HOUR;
     public int RTMFrequencyPerDay; //NUM_INTERVALS_PER_DAY;
 
@@ -183,7 +184,7 @@ public class AMESMarket extends SimModelImpl {
     private ArrayList genAgentProfitAndNetGainByDay;
     private ArrayList genAgentActionPropensityAndProbilityByDay;
     private ArrayList genAgentProfitAndNetGainWithTrueCost;
-    private ArrayList genAgentCommitmentWithTrueCost;
+    private ArrayList genAgentDispatchWithTrueCost;
     private ArrayList genAgentDispatchByDay, genAgentRealTimeDispatchByInterval;
 
     private ArrayList branchFlowByDay;
@@ -201,6 +202,7 @@ public class AMESMarket extends SimModelImpl {
     private final boolean deleteIntermediateFiles;
 
     private long time_granted = 0;
+    private long time_next = 0;
 
 // RePast required methods
     public String getName() {
@@ -309,10 +311,17 @@ public class AMESMarket extends SimModelImpl {
         isConverged = false;
         dayMax = DAY_MAX;
 
+        NIRTM = M/getTestCaseConfig().RTDeltaT;
         RTMFrequencyPerHour = 60 / M;
         RTMFrequencyPerDay = NUM_HOURS_PER_DAY * RTMFrequencyPerHour; // = 1440/M
-
+        
         transGrid = new TransGrid(nodeData, branchData, gridXSize, gridYSize);
+        
+        DecimalFormat Format = new DecimalFormat("###.####");
+        int XPosition = 3;
+        for (int i=0; i<branchData.length; i++) {
+            branchData[i][XPosition] = Double.parseDouble(Format.format(branchData[i][XPosition]));
+        }
 
         java.util.Random randomSeed = new java.util.Random((int) this.getRngSeed());
         addGenAgents(randomSeed);
@@ -665,7 +674,6 @@ public class AMESMarket extends SimModelImpl {
                 long hour_len = 3600; // in sec
                 int min_len = 60; // in sec
 
-                long time_next = 0;
                 
                 long t = (min_len * M) / 2;
                 int NIH = (int) hour_len / (min_len * M); // number of intervals in an hour
@@ -678,10 +686,10 @@ public class AMESMarket extends SimModelImpl {
                 
                 if (day > 1) {
                     if (min % M == 0) {
-                        time_next = (day - 1) * (day_len) + (hour - 1) * (hour_len) + min * (min_len) - M;
+                        time_next = (day - 1) * (day_len) + (hour - 1) * (hour_len) + min * (min_len) - M*min_len;
                     }
                 }
-               // System.out.print("time_next: " + time_next);
+                //System.out.print("time_next: " + time_next);
 
                 if (FNCSActive) {
                     while (time_granted < time_next) {
@@ -697,7 +705,7 @@ public class AMESMarket extends SimModelImpl {
                 //requests time_request for every hour in order to publish LMPs hourly
                 if (day > 1) {
                     if (min % M == 0) {
-                        time_next = (day - 1) * (day_len) + (hour - 1) * (hour_len) + min * (min_len) - M + 1 * min_len;
+                        time_next = (day - 1) * (day_len) + (hour - 1) * (hour_len) + min * (min_len) - M*min_len + 1 * min_len;
                     }
                 } else {
                     if (min % M == 0) {
@@ -706,7 +714,7 @@ public class AMESMarket extends SimModelImpl {
                 }
 //                time_next = (day - 1) * (day_len) + (hour+1) * (hour_len) + min * min_len;
 
-                //System.out.print("time_next: " + time_next);
+                //System.out.print(" time_next: " + time_next);
                 if (FNCSActive) {
                     time_granted = JNIfncs.time_request(time_next);
                     while (time_granted < time_next) {
@@ -733,16 +741,15 @@ public class AMESMarket extends SimModelImpl {
                     if (FNCSActive) {
                         JNIfncs.publish("RTLMP", String.valueOf(iso.getDailyRealTimeLMP()));
                     }
-                
                 for (int i = 0; i < getNumNodes(); i++) {
                     System.out.print("RTM LMP published values for Node " + (i+1) + " :");
-                    double AvgLMP = 0;
-                    for(int m=0; m<M; m++){
-                        AvgLMP = AvgLMP + iso.getDailyRealTimeLMP()[m][i];
+                    double AvgLMP = 0, sum=0;
+                    for(int m=0; m<NIRTM; m++){
+                        sum = sum + iso.getDailyRealTimeLMP()[m][i];
                         //System.out.print(" " +String.valueOf(RTMLMPFormat.format(iso.getDailyRealTimeLMP()[m][i])) +" ");
                     }
-                    AvgLMP = AvgLMP/M;
-                    System.out.println(": " +AvgLMP);
+                    AvgLMP = sum/NIRTM;
+                    System.out.println(": " +RTMLMPFormat.format(AvgLMP));
                     }
                 }
                 
@@ -1158,6 +1165,7 @@ public class AMESMarket extends SimModelImpl {
 
     public void AMESMarketSetupFromGUI(double baseS, double baseV, double[][] nodeData, double[][] branchDataData, double[][] genData, double[][] lseData, double[][] NDGData, double[][][] lsePriceData, int[][] lseHybridData, boolean[] gencoAlertMarkers,
             Map<String, SCUCInputData> extraGenCoParams, Map<String, StorageInputData> StorageParams, double hasStorage, double hasNDG) {
+        
         InitDataFromGUI(baseS, baseV, nodeData, branchDataData, genData, lseData, NDGData, lsePriceData, lseHybridData, gencoAlertMarkers,
                 extraGenCoParams, StorageParams, hasStorage, hasNDG);
 
@@ -1248,10 +1256,10 @@ public class AMESMarket extends SimModelImpl {
         }
     }
 
-    public void InitSimulationParameters(boolean FNCSActiveVal, int RTM, int iMax, double RDS, double RUS, boolean bMax, double dThreshold, boolean bThresh, double dEarningThreshold, boolean bEarningThresh, int iEarningStart, int iEarningLength, int iStart, int iLength, double dCheck, boolean bCheck, int iLearnStart, int iLearnLength, double dLearnCheck, boolean bLearnCheck, double dGCap, double dLseCap, long lRandom, int iPriceSensitiveLSE, CaseFileData cfd) {
+    public void InitSimulationParameters(boolean FNCSActiveVal, int RTOPDur, int iMax, double RDS, double RUS, boolean bMax, double dThreshold, boolean bThresh, double dEarningThreshold, boolean bEarningThresh, int iEarningStart, int iEarningLength, int iStart, int iLength, double dCheck, boolean bCheck, int iLearnStart, int iLearnLength, double dLearnCheck, boolean bLearnCheck, double dGCap, double dLseCap, long lRandom, int iPriceSensitiveLSE, CaseFileData cfd) {
         FNCSActive = FNCSActiveVal;
         DAY_MAX = iMax;
-        M = RTM;
+        M = RTOPDur;
         bMaximumDay = bMax;
         dThresholdProbability = dThreshold;
         bThreshold = bThresh;
@@ -1403,7 +1411,7 @@ public class AMESMarket extends SimModelImpl {
         return lseAgentPriceSensitiveDemandWithTrueCost;
     }
 
-    public void addGenAgentCommitmentWithTrueCost(double[][] object) {
+    public void addGenAgentDispatchWithTrueCost(double[][] object) {
         int iRow = object.length;
         int iCol = object[0].length;
         double[][] newObject = new double[iRow][iCol];
@@ -1413,11 +1421,11 @@ public class AMESMarket extends SimModelImpl {
             }
         }
 
-        genAgentCommitmentWithTrueCost.add(newObject);
+        genAgentDispatchWithTrueCost.add(newObject);
     }
 
-    public ArrayList getGenAgentCommitmentWithTrueCost() {
-        return genAgentCommitmentWithTrueCost;
+    public ArrayList getGenAgentDispatchWithTrueCost() {
+        return genAgentDispatchWithTrueCost;
     }
 
     public void addGenAgentProfitAndNetGainWithTrueCost(double[][] object) {
@@ -1684,7 +1692,7 @@ public class AMESMarket extends SimModelImpl {
         genAgentProfitAndNetGainByDay = new ArrayList();
         genAgentActionPropensityAndProbilityByDay = new ArrayList();
         genAgentProfitAndNetGainWithTrueCost = new ArrayList();
-        genAgentCommitmentWithTrueCost = new ArrayList();
+        genAgentDispatchWithTrueCost = new ArrayList();
         genAgentDispatchByDay = new ArrayList();
         genAgentRealTimeDispatchByInterval = new ArrayList();
         branchFlowByDay = new ArrayList();

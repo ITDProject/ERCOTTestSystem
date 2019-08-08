@@ -64,6 +64,7 @@ import java.text.DecimalFormat;
      * stochastic scuc is written.
      */
     private final PSSTConfig PSSTExt;
+    DecimalFormat Format = new DecimalFormat("###.####");
 
     public PSSTDAMOpt(ISO independentSystemOperator, AMESMarket model) {
         this.ames = model;
@@ -267,7 +268,7 @@ import java.text.DecimalFormat;
 //                    schedule[i][k] = Integer.parseInt(strTemp.substring(iIndex + 1, iIndex + 2));
 //                }
 
-                double value = Double.parseDouble(values[2]) * ames.getBaseS();
+                double value =Double.parseDouble(Format.format(Double.parseDouble(values[2]) * ames.getBaseS()));
                 System.out.print(" : "+ value);
                 GenDAMDispatch[i][gc.getGenID()-1] = value;
                 GenDAMCommitmentStatusNextDay[i][gc.getGenID()-1] = Integer.parseInt(values[1]);

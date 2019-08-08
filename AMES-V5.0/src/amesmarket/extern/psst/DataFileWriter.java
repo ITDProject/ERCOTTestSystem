@@ -23,6 +23,7 @@ import amesmarket.LSEAgent;
 import amesmarket.NDGenAgent;
 import amesmarket.StorageAgent;
 import amesmarket.extern.common.CommitmentDecision;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 /**
@@ -78,6 +79,8 @@ public class DataFileWriter {
         hasStorage = ames.gethasStorage();
         hasNDG = 0; //ames.gethasNDG();
 
+        DecimalFormat Format = new DecimalFormat("###.####");
+        
         //Now that we have all the parameters. Write it out.
         try {
 
@@ -299,7 +302,7 @@ public class DataFileWriter {
 
                 for (int h = 0; h < numIntervalsInSim; h++) {
                     refBufferWriter.write("Bus" + (n+1) + " " + (h + 1) + " "
-                            + NetDemand[n][h] / baseS + "\n");
+                            + Format.format(NetDemand[n][h] / baseS) + "\n");
                 }
                 refBufferWriter.write("\n");
             }
@@ -346,7 +349,7 @@ public class DataFileWriter {
                     .write("param: ProductionCostA0 ProductionCostA1 ProductionCostA2 NS :=\n");
 
             double[][] supplyOfferByGen = iso.getSupplyOfferByGen();
-
+                
             final ArrayList<GenAgent> genagents = ames.getGenAgentList();
             for (int i = 0; i < numGenAgents; i++) {
                 GenAgent ga = genagents.get(i);
@@ -355,9 +358,8 @@ public class DataFileWriter {
                         + //ga.getSupplyOffer()[0] + " "
                         +ga.getNoLoadCost() + " "
                         + //FIXME: Is this supposed be part of the getSupplyOffer?
-                        +supplyOfferByGen[i][0] * baseS + " "
-                        + supplyOfferByGen[i][1] * baseS
-                        * baseS + " " 
+                        + (supplyOfferByGen[i][0] * baseS) + " "
+                        + Format.format(supplyOfferByGen[i][1] * baseS * baseS) + " " 
                         + ga.getNS() + " " + "\n");
             }
 
@@ -411,6 +413,8 @@ public class DataFileWriter {
         hasStorage = ames.gethasStorage();
         hasNDG = 0; //ames.gethasNDG();
 
+        DecimalFormat Format = new DecimalFormat("###.####");
+        
         //Now that we have all the parameters. Write it out.
         try {
 
@@ -463,7 +467,6 @@ public class DataFileWriter {
                         + (int) numBranchData[i][1] + " " + numBranchData[i][2]
                         + " " + numBranchData[i][3] + "\n");
             }
-
             refBufferWriter.write(";\n\n");
 
             refBufferWriter.write("set ThermalGenerators := ");
@@ -512,7 +515,7 @@ public class DataFileWriter {
             refBufferWriter.write("\nparam BalPenNeg := " + BalPenNeg
                     + " ;\n\n");
             
-            int TimePeriodLength = 1;
+            int TimePeriodLength = ames.getTestCaseConfig().RTDeltaT;
             refBufferWriter.write("\nparam TimePeriodLength := " + TimePeriodLength
                     + " ;\n\n");
             
@@ -530,7 +533,7 @@ public class DataFileWriter {
                     .write("param: PowerGeneratedT0 UnitOnT0State MinimumPowerOutput MaximumPowerOutput MinimumUpTime MinimumDownTime NominalRampUpLimit NominalRampDownLimit StartupRampLimit ShutdownRampLimit ColdStartHours ColdStartCost HotStartCost ShutdownCostCoefficient :=\n");
 
             for (GenAgent ga : ames.getGenAgentList()) {
-                refBufferWriter.write(genAgentToSCEDDesc(ga, hour, baseS, false));
+                refBufferWriter.write(genAgentToSCEDDesc(ames.getTestCaseConfig().RTDeltaT, ga, hour, baseS, false));
                 refBufferWriter.write("\n");
             }
 
@@ -636,7 +639,7 @@ public class DataFileWriter {
 
                 for (int h = 0; h < numIntervalsInSim; h++) {
                     refBufferWriter.write("Bus" + (n+1) + " " + (min+h + 1) + " "
-                            + NetDemand[n][h] / baseS + "\n");
+                            + Format.format(NetDemand[n][h] / baseS) + "\n");
                 }
                 refBufferWriter.write("\n");
             }
@@ -687,13 +690,12 @@ public class DataFileWriter {
             for (int i = 0; i < numGenAgents; i++) {
                 GenAgent ga = genagents.get(i);
                 refBufferWriter.write(
-                        ga.getID() + " "
+                          ga.getID() + " "
                         + //ga.getSupplyOffer()[0] + " "
-                        +ga.getNoLoadCost() + " "
+                        + ga.getNoLoadCost() + " "
                         + //FIXME: Is this supposed be part of the getSupplyOffer?
-                        +supplyOfferByGen[i][0] * baseS + " "
-                        + supplyOfferByGen[i][1] * baseS
-                        * baseS + " " 
+                        + (supplyOfferByGen[i][0] * baseS * 1/60) + " "
+                        + Format.format(supplyOfferByGen[i][1] * baseS * baseS * 1/60) + " " 
                         + ga.getNS() + " " + "\n");
             }
 
@@ -717,9 +719,11 @@ public class DataFileWriter {
         if (ga == null) {
             return "";
         }
-
+        
+        DecimalFormat Format = new DecimalFormat("###.####");
+        
         //do all the conversions
-        double powerT0 = ga.getPowerT0NextDay() / baseS; 
+        double powerT0 = Math.round(ga.getPowerT0NextDay() / baseS); 
         double capMin = ga.getCapacityMin() / baseS;
         double capMax = ga.getCapacityMax() / baseS;
         double nominalUp;
@@ -798,11 +802,13 @@ public class DataFileWriter {
         );
     }
 
-    private String genAgentToSCEDDesc(GenAgent ga, int hour, double baseS, boolean scuctype) {
+    private String genAgentToSCEDDesc(int RTDeltaT, GenAgent ga, int hour, double baseS, boolean scuctype) {
         if (ga == null) {
             return "";
         }
-
+        
+        DecimalFormat Format = new DecimalFormat("###.####");
+        
         //do all the conversions
         double powerT0 = ga.getPowerPrevInterval() / baseS; 
         double capMin = ga.getCapacityMin() / baseS;
@@ -812,19 +818,12 @@ public class DataFileWriter {
         double startupramplimit;
         double shutdownramplimit;
 
-        if (scuctype == true) {
-            // DAM SCUC : Units MW/hour
-            nominalUp = ga.getNominalRampUpLim() / baseS;
-            nominalDown = ga.getNominalRampDownLim() / baseS;
-            startupramplimit = ga.getStartupRampLim() / baseS;
-            shutdownramplimit = ga.getShutdownRampLim() / baseS;
-        } else {
-            // RTM SCED : Converting into MW/min
-            nominalUp = ga.getNominalRampUpLim() / (baseS * 60);
-            nominalDown = ga.getNominalRampDownLim() / (baseS * 60);
-            startupramplimit = ga.getStartupRampLim() / (baseS * 60);
-            shutdownramplimit = ga.getShutdownRampLim() / (baseS * 60);
-        }
+        
+        // RTM SCED : scaled ramp up and down limits (MW)
+        nominalUp = (ga.getNominalRampUpLim() * RTDeltaT) / (baseS * 60);
+        nominalDown = (ga.getNominalRampDownLim()* RTDeltaT) / (baseS * 60);
+        startupramplimit = (ga.getStartupRampLim()* RTDeltaT) / (baseS * 60);
+        shutdownramplimit = (ga.getShutdownRampLim()* RTDeltaT) / (baseS * 60);
         
         int coldstarthours = ga.getColdStartUpHours();
         double coldstartupcost = ga.getColdStartUpCost();
@@ -955,6 +954,7 @@ public class DataFileWriter {
     /**
      * Write out the generator commitments for the sced.
      *
+     * @param ames
      * @param TAU length of interval to write the commitments
      * @param m beginning of the minute interval
      * @param h corresponding hour of the interval
@@ -963,7 +963,9 @@ public class DataFileWriter {
      * @throws AMESMarketException
      * @throws IllegalArgumentException if gencoCommitments is null.
      */
-    public void writeGenCommitments(int TAU, int m, int h, List<CommitmentDecision> gencoCommitments, File ucVectorFile) throws AMESMarketException {
+    public void writeGenCommitments(AMESMarket ames, int TAU, int m, int h, List<CommitmentDecision> gencoCommitments, File ucVectorFile) throws AMESMarketException {
+        
+        TAU = (int) (TAU/ames.getTestCaseConfig().RTDeltaT);
         if (gencoCommitments == null) {
             throw new IllegalArgumentException();
         }
@@ -986,7 +988,7 @@ public class DataFileWriter {
                 out.println(cd.generatorName); //FIXME: ?BUG?
                 StringBuilder sb = new StringBuilder();
 
-                int[] commitmentVector = new int[TAU];
+                int[] commitmentVector = new int[TAU]; 
                 for (int k = 0; k < TAU; k++) {
                     commitmentVector[k] = cd.commitmentDecisions[h - 1];
                 }
