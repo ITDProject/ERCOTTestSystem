@@ -6,9 +6,11 @@ BASE_V	345
 
 // Simulation Parameters
 FNCSActive true
-MaxDay	6
+MaxDay	2
 
-RTOPDur 15
+RTOPDur 60
+RTDeltaT 5
+
 BalPenPos 1000000
 BalPenNeg 1000000
 
@@ -20,13 +22,13 @@ NumberofBuses       8
 
 NumberOfReserveZones     4
 
-#ZoneDataStart
+//#ZoneDataStart
 // ZoneName   Buses   ReserveDownZonalPercent    ReserveUpZonalPercent
-Zone1 2  0.1  0.1
-Zone2 1  0.1  0.1
-Zone3 5,6,7  0.1  0.1
-Zone4 3,4,8  0.1  0.1
-#ZoneDataEnd
+//Zone1 2  0.1  0.1
+//Zone2 1  0.1  0.1
+//Zone3 5,6,7  0.1  0.1
+//Zone4 3,4,8  0.1  0.1
+//#ZoneDataEnd
 
 #LineDataStart
 //    Name	      From	        To	         MaxCap	      Reactance
@@ -49,10 +51,10 @@ Zone4 3,4,8  0.1  0.1
 //    Name	        ID	     atBus	          SCost	              b	              c	           PMin	           PMax	      NS	           InitMoney
 GenCo1	         1	         1	         0.0	         40.0	         0.00025	         0	         19978.8	         10	               10000.0
 GenCo2	         2	         1	         0.0	         19.0	         0.0005	         0	         11664.8	         10	               10000.0
-GenCo3	         3	         1	         0.0	         8.0	        0.00001	         2215	          2430.0	         10	               10000.0
+GenCo3	         3	         1	         0.0	         8.0	        0.00001	         0	          2430.0	         10	               10000.0
 GenCo4	         4	         2	         0.0	         40.0	         0.00025	         0	         20761.7	         10	               10000.0
 GenCo5	         5	         2	         0.0	         19.0	         0.00167	         0	          3190.3	         10	               10000.0
-GenCo6	         6	         2	         0.0	         8.0	        0.00001	         2560	          2708.6	         10	               10000.0
+GenCo6	         6	         2	         0.0	         8.0	        0.00001	         0	          2708.6	         10	               10000.0
 GenCo7	         7	         3	         0.0	         40.0	         0.005	         0	            80.0	         10	               10000.0
 GenCo8	         8	         3	         0.0	         19.0	         0.005	         0	           720.0	         10	               10000.0
 GenCo9	         9	         4	         0.0	         40.0	         0.00167	         0	          3438.2	         10	               10000.0
