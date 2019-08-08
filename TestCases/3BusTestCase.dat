@@ -9,6 +9,8 @@ FNCSActive true
 MaxDay	2
 
 RTOPDur 15
+RTDeltaT 5
+
 BalPenPos 1000000
 BalPenNeg 1000000
 
