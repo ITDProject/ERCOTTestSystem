@@ -96,8 +96,8 @@ public class AMESFrame extends JFrame {
         Default_InitPropensity = 6000.0;
         Default_Recency = 0.04;
 
-        Default_M1 = 10;
-        Default_M2 = 10;
+        Default_M1 = 1;
+        Default_M2 = 1;
         Default_M3 = 1;
         Default_RI_MAX_Lower = 0.75;
         Default_RI_MAX_Upper = 0.75;
@@ -106,7 +106,7 @@ public class AMESFrame extends JFrame {
         Default_iSCostExcludedFlag = 1;
 
         Default_RandomSeed = 695672061;
-        Default_iMaxDay = 50;
+        Default_iMaxDay = 5;
         Default_dThresholdProbability = 0.999;
         Default_dDailyNetEarningThreshold = 10.0;
         Default_dGenPriceCap = 1000.0;
@@ -125,8 +125,8 @@ public class AMESFrame extends JFrame {
         InitPropensity = 6000.0;
         Recency = 0.04;
 
-        M1 = 10;
-        M2 = 10;
+        M1 = 1;
+        M2 = 1;
         M3 = 1;
         RI_MAX_Lower = 0.75;
         RI_MAX_Upper = 0.75;
@@ -135,8 +135,8 @@ public class AMESFrame extends JFrame {
         iSCostExcludedFlag = 1;
 
         RandomSeed = 695672061;
-        RTM = 15;
-        iMaxDay = 50;
+        RTOPDur = 15;
+        iMaxDay = 5;
         dThresholdProbability = 0.999;
         dDailyNetEarningThreshold = 10.0;
         dGenPriceCap = 1000.0;
@@ -652,7 +652,7 @@ public class AMESFrame extends JFrame {
             bOpen = true;
 
             loadCaseFileData();
-            //System.out.println("AMESFrame.java read input data file: " + caseFile.getName() + "\n");
+            System.out.println("AMESFrame.java read input data file: " + caseFile.getName() + "\n");
 
             config1.SetInitParameters(iNodeData, iBranchData, 0, iGenData, iLSEData, baseV, baseS);
             config2.loadData(branchData);
@@ -665,7 +665,7 @@ public class AMESFrame extends JFrame {
 
             // Verify Data
             String strError = checkCaseData();
-            //System.out.println("Verified Input Data" + "\n");
+            System.out.println("Verified Input Data" + "\n");
             if (!strError.isEmpty()) {
                 JOptionPane.showMessageDialog(this, strError, "Case Data Verify Message", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -894,9 +894,9 @@ public class AMESFrame extends JFrame {
         // BASE_V
         this.baseV = config.baseV;
 
-        // RTM
-        this.RTM = config.RTM;
-        //System.out.println("setupSimFromConfigFile RTM: " + RTM);
+        // RTOPDur
+        this.RTOPDur = config.RTOPDur;
+        //System.out.println("setupSimFromConfigFile RTOPDur: " + RTOPDur);
 
         //Max Day
         this.iMaxDay = config.iMaxDay;
@@ -958,11 +958,9 @@ public class AMESFrame extends JFrame {
         // genco learning parameters
         this.genLearningData = config.genLearningData;
         this.iGenData = config.iGenData;
-        FNCSActive = config.FNCSActive;
-        if (FNCSActive) {
-            fncs.JNIfncs.initialize();
-            assert JNIfncs.is_initialized();
-        }
+        
+        this.FNCSActive = config.FNCSActive;
+
         //AMES rt-market
         //keep a reference to the config object.
         //It is a much easier handle to move data around with.
@@ -1338,13 +1336,13 @@ public class AMESFrame extends JFrame {
 
             String strTemp;
             boolean bLMPWithTrueCostData = false;
-            boolean bgenAgentCommitmentWithTrueCostData = false;
+            boolean bgenAgentDispatchWithTrueCostData = false;
             boolean bgenAgentProfitWithTrueCostData = false;
             boolean blseAgentPriceSensitiveDemandWithTrueCostData = false;
             boolean bLSEAgentSurplusWithTrueCostData = false;
             boolean bhasSolutionByDayData = false;
             boolean bgenAgentSupplyOfferByDayData = false;
-            boolean bgenAgentCommitmentByDayData = false;
+            boolean bgenAgentDispatchByDayData = false;
             boolean bgenAgentProfitAndNetGainByDayData = false;
             boolean bgenAgentActionPropensityAndProbilityByDay = false;
             boolean blseAgentSurplusByDayData = false;
@@ -1353,11 +1351,11 @@ public class AMESFrame extends JFrame {
             boolean bLMPByDayData = false;
 
             int iLMPWithTrueCost = 0;
-            int igenAgentCommitmentWithTrueCost = 0;
+            int igenAgentDispatchWithTrueCost = 0;
             int ilseAgentPriceSensitiveDemandWithTrueCost = 0;
             int ibhasSolutionByDayData = 0;
             int igenAgentSupplyOfferByDay = 0;
-            int igenAgentCommitmentByDay = 0;
+            int igenAgentDispatchByDay = 0;
             int igenAgentProfitAndNetGainByDay = 0;
             int igenAgentActionPropensityAndProbilityByDay = 0;
             int ilseAgentSurplusByDay = 0;
@@ -1366,13 +1364,13 @@ public class AMESFrame extends JFrame {
             int iLMPByDay = 0;
 
             ArrayList LMPWithTrueCostList = new ArrayList();
-            ArrayList genAgentCommitmentWithTrueCostList = new ArrayList();
+            ArrayList genAgentDispatchWithTrueCostList = new ArrayList();
             ArrayList genAgentProfitWithTrueCostList = new ArrayList();
             ArrayList lseAgentPriceSensitiveDemandWithTrueCostList = new ArrayList();
             ArrayList lseAgentSurplusWithTrueCostList = new ArrayList();
             ArrayList hasSolutionByDayList = new ArrayList();
             ArrayList genAgentSupplyOfferByDayList = new ArrayList();
-            ArrayList genAgentCommitmentByDayList = new ArrayList();
+            ArrayList genAgentDispatchByDayList = new ArrayList();
             ArrayList genAgentProfitAndNetGainByDayList = new ArrayList();
             ArrayList genAgentActionPropensityAndProbilityByDayList = new ArrayList();
             ArrayList lseAgentSurplusByDayList = new ArrayList();
@@ -1383,7 +1381,7 @@ public class AMESFrame extends JFrame {
             Object[][] lseHybridData = getLSEHybridDemandData();
 
             getAMESMarket().getLMPWithTrueCost().clear();
-            getAMESMarket().getGenAgentCommitmentWithTrueCost().clear();
+            getAMESMarket().getGenAgentDispatchWithTrueCost().clear();
             getAMESMarket().getGenAgentProfitAndNetGainWithTrueCost().clear();
             getAMESMarket().getLSEAgentPriceSensitiveDemandWithTrueCost().clear();
             getAMESMarket().getLSEAgentSurplusWithTrueCost().clear();
@@ -1457,7 +1455,7 @@ public class AMESFrame extends JFrame {
 
                 }
 
-                // Load iLMPWithTrueCost, igenAgentCommitmentWithTrueCost ...
+                // Load iLMPWithTrueCost, igenAgentDispatchWithTrueCost ...
                 if (iVerifyIndex == 2) {
                     int iIndex = strTemp.lastIndexOf("\t");
                     String strInt = strTemp.substring(iIndex + 1);
@@ -1492,7 +1490,7 @@ public class AMESFrame extends JFrame {
                     iIndex = strTemp.lastIndexOf("\t");
                     strInt = strTemp.substring(iIndex + 1);
                     strInt = strInt.trim();
-                    igenAgentCommitmentByDay = Integer.parseInt(strInt);
+                    igenAgentDispatchByDay = Integer.parseInt(strInt);
                     strTemp = strTemp.substring(0, iIndex);
 
                     iIndex = strTemp.lastIndexOf("\t");
@@ -1510,7 +1508,7 @@ public class AMESFrame extends JFrame {
                     iIndex = strTemp.lastIndexOf("\t");
                     strInt = strTemp.substring(iIndex + 1);
                     strInt = strInt.trim();
-                    igenAgentCommitmentWithTrueCost = Integer.parseInt(strInt);
+                    igenAgentDispatchWithTrueCost = Integer.parseInt(strInt);
                     strTemp = strTemp.substring(0, iIndex);
 
                     strInt = strTemp.trim();
@@ -1788,46 +1786,46 @@ public class AMESFrame extends JFrame {
                     continue;
                 }
 
-                int iGeneratorCommitmentWithTrueCostDataStart = strTemp.indexOf("#GeneratorCommitmentWithTrueCostDataStart");
-                if (iGeneratorCommitmentWithTrueCostDataStart == 0) {
-                    bgenAgentCommitmentWithTrueCostData = true;
+                int iGeneratorDispatchWithTrueCostDataStart = strTemp.indexOf("#GeneratorDispatchWithTrueCostDataStart");
+                if (iGeneratorDispatchWithTrueCostDataStart == 0) {
+                    bgenAgentDispatchWithTrueCostData = true;
                     continue;
                 }
 
-                int iGeneratorCommitmentWithTrueCostDataEnd = strTemp.indexOf("#GeneratorCommitmentWithTrueCostDataEnd");
-                if (iGeneratorCommitmentWithTrueCostDataEnd == 0) {
-                    bgenAgentCommitmentWithTrueCostData = false;
+                int iGeneratorDispatchWithTrueCostDataEnd = strTemp.indexOf("#GeneratorDispatchWithTrueCostDataEnd");
+                if (iGeneratorDispatchWithTrueCostDataEnd == 0) {
+                    bgenAgentDispatchWithTrueCostData = false;
 
-                    double[][] genCommit = new double[24][iGenData];
+                    double[][] genDispatch = new double[24][iGenData];
 
                     for (int i = 0; i < 24; i++) {
-                        String strGenCommit = (String) genAgentCommitmentWithTrueCostList.get(i);
+                        String strGenDispatch = (String) genAgentDispatchWithTrueCostList.get(i);
                         int iFields = iGenData;
 
                         while (iFields > 0) {
-                            int iIndex = strGenCommit.lastIndexOf("\t");
+                            int iIndex = strGenDispatch.lastIndexOf("\t");
                             if (iIndex < 0) {
-                                iIndex = strGenCommit.lastIndexOf(" ");
+                                iIndex = strGenDispatch.lastIndexOf(" ");
                             }
 
-                            String strData = strGenCommit.substring(iIndex + 1);
+                            String strData = strGenDispatch.substring(iIndex + 1);
                             strData = strData.trim();
 
-                            genCommit[i][iFields - 1] = Double.parseDouble(strData);
+                            genDispatch[i][iFields - 1] = Double.parseDouble(strData);
 
                             iFields--;
 
                             if (iIndex > 0) {
-                                strGenCommit = strGenCommit.substring(0, iIndex);
+                                strGenDispatch = strGenDispatch.substring(0, iIndex);
                             }
                         }
                     }
 
-                    getAMESMarket().addGenAgentCommitmentWithTrueCost(genCommit);
+                    getAMESMarket().addGenAgentDispatchWithTrueCost(genDispatch);
                 }
 
-                if (bgenAgentCommitmentWithTrueCostData) {
-                    genAgentCommitmentWithTrueCostList.add(strTemp);
+                if (bgenAgentDispatchWithTrueCostData) {
+                    genAgentDispatchWithTrueCostList.add(strTemp);
                     continue;
                 }
 
@@ -2073,48 +2071,48 @@ public class AMESFrame extends JFrame {
                     genAgentSupplyOfferByDayList.add(strTemp);
                     continue;
                 }
-                int iGeneratorCommitmentDataStart = strTemp.indexOf("#GeneratorCommitmentDataStart");
-                if (iGeneratorCommitmentDataStart == 0) {
-                    bgenAgentCommitmentByDayData = true;
+                int iGeneratorDispatchDataStart = strTemp.indexOf("#GeneratorDispatchDataStart");
+                if (iGeneratorDispatchDataStart == 0) {
+                    bgenAgentDispatchByDayData = true;
                     continue;
                 }
 
-                int iGeneratorCommitmentDataEnd = strTemp.indexOf("#GeneratorCommitmentDataEnd");
-                if (iGeneratorCommitmentDataEnd == 0) {
-                    bgenAgentCommitmentByDayData = false;
+                int iGeneratorDispatchDataEnd = strTemp.indexOf("#GeneratorDispatchDataEnd");
+                if (iGeneratorDispatchDataEnd == 0) {
+                    bgenAgentDispatchByDayData = false;
 
-                    for (int d = 0; d < igenAgentCommitmentByDay; d++) {
-                        double[][] genCommit = new double[24][iGenData];
+                    for (int d = 0; d < igenAgentDispatchByDay; d++) {
+                        double[][] genDispatch = new double[24][iGenData];
 
                         for (int i = 0; i < 24; i++) {
-                            String strGenCommit = (String) genAgentCommitmentByDayList.get(i + d * 24);
+                            String strGenDispatch = (String) genAgentDispatchByDayList.get(i + d * 24);
                             int iFields = iGenData;
 
                             while (iFields > 0) {
-                                int iIndex = strGenCommit.lastIndexOf("\t");
+                                int iIndex = strGenDispatch.lastIndexOf("\t");
                                 if (iIndex < 0) {
-                                    iIndex = strGenCommit.lastIndexOf(" ");
+                                    iIndex = strGenDispatch.lastIndexOf(" ");
                                 }
 
-                                String strData = strGenCommit.substring(iIndex + 1);
+                                String strData = strGenDispatch.substring(iIndex + 1);
                                 strData = strData.trim();
 
-                                genCommit[i][iFields - 1] = Double.parseDouble(strData);
+                                genDispatch[i][iFields - 1] = Double.parseDouble(strData);
 
                                 iFields--;
 
                                 if (iIndex > 0) {
-                                    strGenCommit = strGenCommit.substring(0, iIndex);
+                                    strGenDispatch = strGenDispatch.substring(0, iIndex);
                                 }
                             }
                         }
 
-                        getAMESMarket().addGenAgentDispatchByDay(genCommit);
+                        getAMESMarket().addGenAgentDispatchByDay(genDispatch);
                     }
                 }
 
-                if (bgenAgentCommitmentByDayData) {
-                    genAgentCommitmentByDayList.add(strTemp);
+                if (bgenAgentDispatchByDayData) {
+                    genAgentDispatchByDayList.add(strTemp);
                     continue;
                 }
 
@@ -2469,8 +2467,8 @@ public class AMESFrame extends JFrame {
             ArrayList genAgentProfitWithTrueCost = this.getAMESMarket().getGenAgentProfitAndNetGainWithTrueCost();
             int igenAgentProfitWithTrueCost = genAgentProfitWithTrueCost.size();
 
-            ArrayList genAgentCommitmentWithTrueCost = this.getAMESMarket().getGenAgentCommitmentWithTrueCost();
-            int igenAgentCommitmentWithTrueCost = genAgentCommitmentWithTrueCost.size();
+            ArrayList genAgentDispatchWithTrueCost = this.getAMESMarket().getGenAgentDispatchWithTrueCost();
+            int igenAgentDispatchWithTrueCost = genAgentDispatchWithTrueCost.size();
 
             ArrayList lseAgentPriceSensitiveDemandWithTrueCost = this.getAMESMarket().getLSEAgentPriceSensitiveDemandWithTrueCost();
             int ilseAgentPriceSensitiveDemandWithTrueCost = lseAgentPriceSensitiveDemandWithTrueCost.size();
@@ -2484,11 +2482,11 @@ public class AMESFrame extends JFrame {
             ArrayList genAgentSupplyOfferByDay = this.getAMESMarket().getGenAgentSupplyOfferByDay();
             int igenAgentSupplyOfferByDay = genAgentSupplyOfferByDay.size();
 
-            ArrayList genAgentCommitmentByDay = this.getAMESMarket().getGenAgentDispatchByDay();
-            int igenAgentCommitmentByDay = genAgentCommitmentByDay.size();
+            ArrayList genAgentDAMDispatchByDay = this.getAMESMarket().getGenAgentDispatchByDay();
+            int igenAgentDispatchByDay = genAgentDAMDispatchByDay.size();
 
-            ArrayList genAgentRealTimeCommitmentByDay = this.getAMESMarket().getGenAgentRealTimeDispatchByInterval();
-            int igenAgentRealTimeCommitmentByDay = genAgentRealTimeCommitmentByDay.size();
+            ArrayList genAgentRealTimeDispatchByDay = this.getAMESMarket().getGenAgentRealTimeDispatchByInterval();
+            int igenAgentRealTimeDispatchByDay = genAgentRealTimeDispatchByDay.size();
 
             ArrayList realTimeBranchFlowByDay = this.getAMESMarket().getRealTimeBranchFlowByDay();
             int irealTimeBranchFlowByDay = realTimeBranchFlowByDay.size();
@@ -2675,7 +2673,7 @@ public class AMESFrame extends JFrame {
             outputBufferWriter.write("#LMPWithTrueCostDataEnd\n");
             outputBufferWriter.write("\n");
 
-            outputBufferWriter.write("#GeneratorCommitmentWithTrueCostDataStart\n");
+            outputBufferWriter.write("#GeneratorDispatchWithTrueCostDataStart\n");
             strTemp = String.format("//%1$5s", "Hour");
             for (int i = 0; i < iGenNumber; i++) {
                 String GenID = genData[i][0].toString();
@@ -2684,14 +2682,14 @@ public class AMESFrame extends JFrame {
             strTemp += "\n";
             outputBufferWriter.write(strTemp);
 
-            for (int i = 0; i < igenAgentCommitmentWithTrueCost; i++) {
-                double[][] genCommitmentWithTrueCost = (double[][]) genAgentCommitmentWithTrueCost.get(i);
+            for (int i = 0; i < igenAgentDispatchWithTrueCost; i++) {
+                double[][] genDispatchWithTrueCost = (double[][]) genAgentDispatchWithTrueCost.get(i);
 
                 for (int h = 0; h < 24; h++) {
                     strTemp = String.format("%1$5d", h);
 
                     for (int j = 0; j < iGenNumber; j++) {
-                        strTemp += String.format("\t%1$15f", genCommitmentWithTrueCost[h][j]);
+                        strTemp += String.format("\t%1$15f", genDispatchWithTrueCost[h][j]);
                     }
 
                     strTemp += "\n";
@@ -2699,7 +2697,7 @@ public class AMESFrame extends JFrame {
                 }
             }
 
-            outputBufferWriter.write("#GeneratorCommitmentWithTrueCostDataEnd\n");
+            outputBufferWriter.write("#GeneratorDispatchWithTrueCostDataEnd\n");
             outputBufferWriter.write("\n");
 
             outputBufferWriter.write("#GeneratorProfitWithTrueCostDataStart\n");
@@ -2708,7 +2706,7 @@ public class AMESFrame extends JFrame {
             outputBufferWriter.write(strTemp);
 
             if (igenAgentProfitWithTrueCost > 0) {
-                double[][] genCommitmentWithTrueCost = (double[][]) genAgentProfitWithTrueCost.get(0);
+                double[][] genDispatchWithTrueCost = (double[][]) genAgentProfitWithTrueCost.get(0);
 
                 for (int h = 0; h < 25; h++) {
                     for (int i = 0; i < iGenNumber; i++) {
@@ -2721,9 +2719,9 @@ public class AMESFrame extends JFrame {
                         String GenID = genData[i][0].toString();
                         strTemp += String.format("\t%1$8s", GenID);
 
-                        strTemp += String.format("\t%1$15f", genCommitmentWithTrueCost[i][h * 3]);
-                        strTemp += String.format("\t%1$15f", genCommitmentWithTrueCost[i][(h * 3) + 1]);
-                        strTemp += String.format("\t%1$15f", genCommitmentWithTrueCost[i][(h * 3) + 2]);
+                        strTemp += String.format("\t%1$15f", genDispatchWithTrueCost[i][h * 3]);
+                        strTemp += String.format("\t%1$15f", genDispatchWithTrueCost[i][(h * 3) + 1]);
+                        strTemp += String.format("\t%1$15f", genDispatchWithTrueCost[i][(h * 3) + 2]);
 
                         strTemp += "\n";
                         outputBufferWriter.write(strTemp);
@@ -2735,7 +2733,7 @@ public class AMESFrame extends JFrame {
             }
             outputBufferWriter.write("#GeneratorProfitWithTrueCostDataEnd\n");
             outputBufferWriter.write("\n");
-//
+
 //            outputBufferWriter.write("#LSEPriceSensitiveDemandWithTrueCostDataStart\n");
 //            strTemp = String.format("//%1$5s", "Hour");
 //            for (int i = 0; i < iLSENumber; i++) {
@@ -2844,7 +2842,7 @@ public class AMESFrame extends JFrame {
             outputBufferWriter.write("#GeneratorSupplyOfferDataEnd\n");
             outputBufferWriter.write("\n");
 
-            outputBufferWriter.write("#GeneratorCommitmentDataStart\n");
+            outputBufferWriter.write("#GeneratorDAMDispatchDataStart\n");
             strTemp = String.format("//%1$5s\t%2$5s", "Day", "Hour");
             for (int i = 0; i < iGenNumber; i++) {
                 String GenID = genData[i][0].toString();
@@ -2853,14 +2851,14 @@ public class AMESFrame extends JFrame {
             strTemp += "\n";
             outputBufferWriter.write(strTemp);
 
-            for (int i = 0; i < igenAgentCommitmentByDay; i++) {
-                double[][] genCommitment = (double[][]) genAgentCommitmentByDay.get(i);
+            for (int i = 0; i < igenAgentDispatchByDay; i++) {
+                double[][] genDispatch = (double[][]) genAgentDAMDispatchByDay.get(i);
 
                 for (int h = 0; h < 24; h++) {
                     strTemp = String.format("%1$5d\t%2$5d", i + 1, h);
 
                     for (int j = 0; j < iGenNumber; j++) {
-                        strTemp += String.format("\t%1$15f", genCommitment[h][j]);
+                        strTemp += String.format("\t%1$15f", genDispatch[h][j]);
                     }
 
                     strTemp += "\n";
@@ -2868,10 +2866,10 @@ public class AMESFrame extends JFrame {
                 }
             }
 
-            outputBufferWriter.write("#GeneratorCommitmentDataEnd\n");
+            outputBufferWriter.write("#GeneratorDAMDispatchDataEnd\n");
             outputBufferWriter.write("\n");
 
-            outputBufferWriter.write("#GeneratorRealTimeCommitmentDataStart\n");
+            outputBufferWriter.write("#GeneratorRealTimeDispatchDataStart\n");
             strTemp = String.format("//%1$5s\t%2$5s", "Day", "Hour");
             for (int i = 0; i < iGenNumber; i++) {
                 String GenID = genData[i][0].toString();
@@ -2880,14 +2878,14 @@ public class AMESFrame extends JFrame {
             strTemp += "\n";
             outputBufferWriter.write(strTemp);
 
-            for (int i = 0; i < igenAgentRealTimeCommitmentByDay; i++) {
-                double[][] genRealTimeCommitment = (double[][]) genAgentRealTimeCommitmentByDay.get(i);
+            for (int i = 0; i < igenAgentRealTimeDispatchByDay; i++) {
+                double[][] genRealTimeDispatch = (double[][]) genAgentRealTimeDispatchByDay.get(i);
 
-                for (int h = 0; h < RTM; h++) {
+                for (int h = 0; h < RTOPDur; h++) {
                     strTemp = String.format("%1$5d\t%2$5d", i + 2, h);
 
                     for (int j = 0; j < iGenNumber; j++) {
-                        strTemp += String.format("\t%1$15f", genRealTimeCommitment[h][j]);
+                        strTemp += String.format("\t%1$15f", genRealTimeDispatch[h][j]);
                     }
 
                     strTemp += "\n";
@@ -2895,7 +2893,7 @@ public class AMESFrame extends JFrame {
                 }
             }
 
-            outputBufferWriter.write("#GeneratorRealTimeCommitmentDataEnd\n");
+            outputBufferWriter.write("#GeneratorRealTimeDispatchDataEnd\n");
             outputBufferWriter.write("\n");
 
 //            outputBufferWriter.write("#GeneratorProfitDataStart\n");
@@ -3743,7 +3741,6 @@ public class AMESFrame extends JFrame {
             }
         }
 
-        
         int iNDGRow = NDGData.length;
         int iNDGCol = NDGData[0].length - 1;
         double[][] NDG = new double[iNDGRow][iNDGCol];
@@ -3761,7 +3758,7 @@ public class AMESFrame extends JFrame {
             }
         }
 
-        amesMarket.InitSimulationParameters(FNCSActive, RTM, iMaxDay, this.testcaseConfig.ReserveDownSystemPercent, this.testcaseConfig.ReserveUpSystemPercent, bMaximumDay,
+        amesMarket.InitSimulationParameters(FNCSActive, RTOPDur, iMaxDay, this.testcaseConfig.ReserveDownSystemPercent, this.testcaseConfig.ReserveUpSystemPercent, bMaximumDay,
                 dThresholdProbability, bThreshold, dDailyNetEarningThreshold,
                 bDailyNetEarningThreshold, iDailyNetEarningStartDay, iDailyNetEarningDayLength,
                 iStartDay, iCheckDayLength, dActionProbability,
@@ -3779,6 +3776,12 @@ public class AMESFrame extends JFrame {
 
     private void startItemActionPerformed(java.awt.event.ActionEvent evt) {
         //System.out.println("AMESFrame startItemActionPerformed calls amesMarket.Start();");
+        
+        if (FNCSActive) {
+            fncs.JNIfncs.initialize();
+            assert JNIfncs.is_initialized();
+        }
+        
         amesMarket.Start();
 
         startButton.setEnabled(false);
@@ -4213,12 +4216,16 @@ public class AMESFrame extends JFrame {
             strMessage += "The total bus number in step1 is not equal to the number in step2\n";
         }
 
-        if (RTM <= 0 || RTM % 1 != 0) {
-            strMessage += "The RTMDuration parameter should be a positive integer\n";
+        if (RTOPDur <= 0 || RTOPDur % 1 != 0) {
+            strMessage += "The RTOPDur parameter should be a positive integer\n";
         }
 
-        if (RTM <= 0 || 60 % RTM != 0) {
-            strMessage += "60/RTMDuration should be a positive integer\n";
+        if (RTOPDur <= 0 || 1440 % RTOPDur != 0) {
+            strMessage += "RTOPDur should be a divisor of 1440 (no. of minutes in a day)\n";
+        }
+        
+        if (testcaseConfig.RTDeltaT <=0 || testcaseConfig.RTDeltaT % 1 != 0 || testcaseConfig.RTDeltaT > RTOPDur) {
+            strMessage += "RTDeltaT should be a positive integer that lies between 0 and RTOPDur\n";
         }
 
         Map<String, CaseFileData.ZonalData> ReadZoneData = this.testcaseConfig.getZonalData();
@@ -4237,25 +4244,24 @@ public class AMESFrame extends JFrame {
                 TotalBuses.remove(i);
             }
         }
-//    if (BusNoRepeated)
-//            strMessage+="One bus can't be in more than one Zone\n";
+
         if(testcaseConfig.hasReserveZoneData()){
         if (TotalBuses.size() < config1.iTotalNodeNumber || BusNoRepeated) {
             strMessage += "Each bus must be included in one (and only one) reserve zone.\n";
         }
         }
-        
+
         
         // The following is handled via slack variables in AMES V5.0. Commnenting out in AMES V5.0. 
 //     for(int i=0; i<24; i++){
 //        if(dMinGenCapacity>dLoad[i]){
 //            strMessage+="GenCos min capacity sum greater than fixed load sum at "+i+" hour is not allowed!\n";
 //        }
-//
+//        
 //        if(dMaxGenCapacity<dLoad[i]){
 //            strMessage+="GenCos max capacity sum less than fixed load sum at "+i+" hour is not allowed!\n";
 //        }
-//
+//        
 //        if(dMaxGenCapacityWithPCap<dLoad[i]){
 //            strMessage+="GenCos max capacity sum with PriceCap less than fixed load sum at "+i+" hour is not allowed!\n";
 //        }
@@ -4286,7 +4292,7 @@ public class AMESFrame extends JFrame {
 
         return strMessage;
     }
-
+    
     public void SetRandomSeed(long iSeed) {
         RandomSeed = iSeed;
     }
@@ -4626,7 +4632,7 @@ public class AMESFrame extends JFrame {
     private boolean Default_bLearningCheck = false;
 
     private long RandomSeed;
-    private int RTM;
+    private int RTOPDur;
     private int iMaxDay;
     private int priceSensitiveLSE;
     private double dThresholdProbability;
@@ -4648,7 +4654,7 @@ public class AMESFrame extends JFrame {
     public boolean bDailyNetEarningThreshold = false;
     public boolean bActionProbabilityCheck = false;
     public boolean bLearningCheck = false;
-    public static boolean FNCSActive;
+    public boolean FNCSActive = false;
 
     private OutputPane output;
 
