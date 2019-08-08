@@ -182,7 +182,7 @@ public TableView(AMESFrame frame) {
   
   public void displayGeneratorData(int [] selectIndex) {
       String [] names =  {
-                "GenCo Name", "ID", "atBus", "SCost ($/H)", "a ($/MWh)", "b ($/MW2h)", "CapL (MW)", "CapU (MW)", "NS (integer)", "InitMoney ($)"
+                "GenCo Name", "ID", "atBus", "SCost ($/H)", "a ($/MWh)", "b ($/MW2h)", "CapL (MW)", "CapU (MW)", "NS", "InitMoney ($)"
            };
         
       Object [][] genData=amesFrame.getGeneratorData( );
@@ -551,7 +551,7 @@ public TableView(AMESFrame frame) {
            };
       int [] iColumnWidth={90, 90, 90, 90, 90};
       
-      ArrayList genAgentCommitmentWithTrueCost=amesFrame.getAMESMarket().getGenAgentCommitmentWithTrueCost();
+      ArrayList genAgentCommitmentWithTrueCost=amesFrame.getAMESMarket().getGenAgentDispatchWithTrueCost();
       
       Object [][] genData=amesFrame.getGeneratorData( );
       int iGenNumber=genData.length;

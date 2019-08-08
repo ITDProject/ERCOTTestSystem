@@ -356,7 +356,7 @@ public void drawGeneratorCommitmentWithTrueCostData(String outputTimeTypeSelect,
            };
       chartTitle="GenCo Commitments (Benchmark)";
       
-      ArrayList genAgentCommitmentWithTrueCost=amesFrame.getAMESMarket().getGenAgentCommitmentWithTrueCost();
+      ArrayList genAgentCommitmentWithTrueCost=amesFrame.getAMESMarket().getGenAgentDispatchWithTrueCost();
       
       boolean draw3DChart=false;
       dataset=new XYSeriesCollection();

@@ -897,6 +897,7 @@ public class AMESFrame extends JFrame {
         // RTOPDur
         this.RTOPDur = config.RTOPDur;
         //System.out.println("setupSimFromConfigFile RTOPDur: " + RTOPDur);
+    
 
         //Max Day
         this.iMaxDay = config.iMaxDay;
@@ -964,7 +965,8 @@ public class AMESFrame extends JFrame {
         //AMES rt-market
         //keep a reference to the config object.
         //It is a much easier handle to move data around with.
-        this.testcaseConfig = config;
+        this.testcaseConfig = config;    
+        this.NIRTM = this.RTOPDur/this.testcaseConfig.RTDeltaT ; 
     }
 
     private void saveCaseItemActionPerformed(java.awt.event.ActionEvent evt) {
@@ -2881,7 +2883,7 @@ public class AMESFrame extends JFrame {
             for (int i = 0; i < igenAgentRealTimeDispatchByDay; i++) {
                 double[][] genRealTimeDispatch = (double[][]) genAgentRealTimeDispatchByDay.get(i);
 
-                for (int h = 0; h < RTOPDur; h++) {
+                for (int h = 0; h < NIRTM; h++) {
                     strTemp = String.format("%1$5d\t%2$5d", i + 2, h);
 
                     for (int j = 0; j < iGenNumber; j++) {
@@ -4633,6 +4635,7 @@ public class AMESFrame extends JFrame {
 
     private long RandomSeed;
     private int RTOPDur;
+    private int NIRTM;
     private int iMaxDay;
     private int priceSensitiveLSE;
     private double dThresholdProbability;
