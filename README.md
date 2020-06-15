@@ -4,7 +4,7 @@ This repository contains all the relevant codes, data files, scripts, and docume
 
 This repository is organized in the following way:
 
-1. The Documentation folder contains the relevant documentation made for the project tasks and for the software implementation. AMES V5.0 SCUC/SCED Optimization Documentation can be accessed at http://www2.econ.iastate.edu/tesfatsi/AnalyticalSCUCSCEDOptForm.AMESPlatform.pdf.
+1. The Documentation folder contains the relevant documentation made for the project tasks and for the software implementation. AMES V5.0 SCUC/SCED Optimization Documentation can be accessed at https://lib.dr.iastate.edu/econ_workingpapers/109/.
 
 2. The ERCOT_Test_Systems folder contains all relevant data, scripts, and code pertaining to the development of ERCOT Test Systems.
 
