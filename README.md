@@ -8,10 +8,8 @@ This repository is organized in the following way:
 
 2. The ERCOT_Test_Systems folder contains all relevant data, scripts, and code pertaining to the development of ERCOT Test Systems.
 
-3. The TESAgents folder contains scripts to compile AMES, and to run AMES along with other TES Agents (with FNCS as the network co-simulator). As of now, loadforecast.py is a TES Agent meant to provide load forecasts for the AMES Day-Ahead Market (DAM).
+3. The TESAgents folder contains scripts to compile AMES, and to run AMES along with other TES Agents (with FNCS as the network co-simulator). NetLoadForecastDAM.py and NetLoadForecastRTM.py are TES Agents meant to provide load forecasts for the AMES Day-Ahead Market (DAM) and Real-Time Markets (RTM) respectively.
 
-4. The next two folders contain zipped versions of AMES (V3.2) and AMES (V5.0), respectively.
-
-5. The License folder describes the BSD 3-Clause ("New" or "Revised") License under which the materials at this repository are being released as Open Source Software.
+4. The License folder describes the BSD 3-Clause ("New" or "Revised") License under which the materials at this repository are being released as Open Source Software.
 
 
