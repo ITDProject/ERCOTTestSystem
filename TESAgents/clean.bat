@@ -1,2 +1,0 @@
-del *.txt
-del *.out
