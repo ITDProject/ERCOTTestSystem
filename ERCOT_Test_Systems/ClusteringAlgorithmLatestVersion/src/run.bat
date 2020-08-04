@@ -1,1 +1,0 @@
-start /b cmd /c python postprocessing.py 352800 1 ^>loadforecast.log 2^>^&1
