@@ -10,7 +10,7 @@ This repository contains all the relevant codes, data files, scripts, and docume
 
 This repository is organized in the following way:
 
-1. The ERCOT_Test_Systems folder contains relevant data, scripts, and code pertaining to the development of ERCOT Test Systems.
+1. The ERCOT_Test_Cases folder contains relevant data, scripts, and code pertaining to sample test cases developed and conducted using the ERCOT Test System.
 
 2. The ERCOT Test System requires AMES V5.0 to be installed.  The `AMES V5.0’ directory provides instructions and necessary files for this installation.  In addition, the `AMES V5.0’ directory includes a `TESAgents’ subdirectory that provides scripts to compile AMES V5.0, and to run AMES V5.0 along with other TES Agents, using the Framework for Network Co-Simulation (FNCS).   NetLoadForecastDAM.py and NetLoadForecastRTM.py are Python implementations for TES Agents that can provide load forecasts for the AMES V5.0 Day-Ahead Market (DAM) and Real-Time Market (RTM), respectively.
 
