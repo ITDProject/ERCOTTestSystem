@@ -3,14 +3,13 @@ import json
 
 if __name__ == "__main__":
 
-	WindIncrementFactor = 1.05
 	NDay = 6
 	NNode = 8
 	M = 1 # Method
 	Year = 2019
 	Month = 7
 	Day = 23
-	MarketType = 'DAM' # indicate 'DAM' or 'RTM'
+	MarketType = 'RTM' # indicate 'DAM' or 'RTM'
 
 	NetLoadData = [[0 for i in range(24)] for j in range(NDay)]
 	
@@ -42,7 +41,7 @@ if __name__ == "__main__":
 					#print('i,j, ', i , j)
 					#print('data: ', data[j][i])
 					#print('NetLoadScenarioDatabyCluster: ',NetLoadScenarioDatabyCluster[int(node)][j][i])
-					NetLoadScenarioDatabyCluster[int(node)][j][i] = NetLoadScenarioDatabyCluster[int(node)][j][i] + data[j][i]
+					NetLoadScenarioDatabyCluster[int(node)][j][i] = 0 #NetLoadScenarioDatabyCluster[int(node)][j][i] + data[j][i]
 
 	for item in dataWind:
 		#print('item:', item)
@@ -55,7 +54,7 @@ if __name__ == "__main__":
 					#print('i,j, ', i , j)
 					#print('data: ', data[j][i])
 					#print('NetLoadScenarioDatabyCluster: ',NetLoadScenarioDatabyCluster[int(node)][j][i])
-					NetLoadScenarioDatabyCluster[int(node)][j][i] = round(NetLoadScenarioDatabyCluster[int(node)][j][i] - WindIncrementFactor * data[j][i],2)
+					NetLoadScenarioDatabyCluster[int(node)][j][i] = round(NetLoadScenarioDatabyCluster[int(node)][j][i] - data[j][i],2)
 
 	for item in dataSolar:
 		#print('item:', item)
@@ -88,6 +87,6 @@ if __name__ == "__main__":
 		NetLoadScenarioDatabyClusterUpdated.append({int(k):temp})
 
 	#print('NetLoadScenarioDatabyCluster:' , NetLoadScenarioDatabyCluster)
-	f = open('NetLoadScData.M' + str(M) +'.C' + str(NNode) + '.'+ 'WIF' + str(WindIncrementFactor)+ '.' + MarketType +'.json','w')
+	f = open('NetNDGScData.M' + 'test' +'.C' + str(NNode) + '.'+ MarketType +'.json','w')
 	json.dump(NetLoadScenarioDatabyClusterUpdated, f)
 	f.close()

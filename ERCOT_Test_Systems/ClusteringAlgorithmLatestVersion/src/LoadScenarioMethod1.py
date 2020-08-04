@@ -2,13 +2,20 @@ import json
 
 if __name__ == "__main__":
 
-	NDay = 3
+	NDay = 6
 	NNode = 8
+	Year = 2019
+	Month = 7
+	Day = 23
+	MarketType = 'DAM' # indicate 'DAM' or 'RTM'
+	Name = 'LoadDataFormat1.' + MarketType + '.' + str(Year)
+	sheetName = 'Hourly' # 'Hourly' or '15Min' # To indicate if hourly or 15 min average load (in case of RTM) is available in case of RTM
+
 	import xlrd
-	wb = xlrd.open_workbook('../Data/Load/LoadDataFormat1.08.2018.xlsx', on_demand = True)
+	wb = xlrd.open_workbook('../Data/Load/'+ Name +'.xlsx', on_demand = True)
 	# Loads only current sheets to memory
-	ws = wb.sheet_by_name('LoadData.08.2018')
-	LoadData = [[ws.cell(24*j + i + 1, 2).value for i in range(24)] for j in range(NDay)]
+	ws = wb.sheet_by_name(sheetName)
+	LoadData = [[ws.cell(24*j + i + 1, 3).value for i in range(24)] for j in range(NDay)]  #Col 3 for scaled demand
 	
 	f = open(str(NNode)+'NodeData.json','r')
 	data = json.load(f)
@@ -31,12 +38,12 @@ if __name__ == "__main__":
 		for key,val in enumerate(NodeData['weightdict']):
 			for k,v in val.items():
 				if k == 'Load':
-					#print('checking:', k, v)
+					print('checking:', k, v)
 					LoadDataSharebyBus = [[round(LoadData[j][i]*(v/TotalLoad),2) for i in range(24)] for j in range(NDay)]
 					#print('WindSharebyBus: ', WindSharebyBus)
 					LoadScenarioDatabyCluster.append({NodeData['bus']:LoadDataSharebyBus})
 	
 	#print('LoadScenarioDatabyCluster:' , LoadScenarioDatabyCluster)
-	f = open('LoadScenarioDatabyClusterMethod1Size' + str(NNode) + '.json','w')
+	f = open('LoadScData.M1.C' + str(NNode) + '.'+ MarketType +'.json','w')
 	json.dump(LoadScenarioDatabyCluster, f)
 	f.close()

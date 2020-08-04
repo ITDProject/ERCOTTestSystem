@@ -1,0 +1,32 @@
+			for (var gen in genmap) {
+			// Add the circle for this city to the map.
+				var genCircle = new google.maps.Circle({
+				strokeColor: colormap[genmap[gen].type],
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: colormap[genmap[gen].type],
+				fillOpacity: 0.35,
+				map: map,
+				center: genmap[gen].location,
+				radius: Math.sqrt(genmap[gen].capacity) * 500 //Math.sqrt(genmap[gen].capacity) * 1000
+			});
+			}
+		
+
+        var ercotBoundaryLayer = new google.maps.KmlLayer({
+          /*url: 'http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml',*/
+          url: 'http://ercot.com/content/cdr/static/texas_counties.kml',
+          /*url: 'https://raw.githubusercontent.com/rohithreddy95/kmlfiles/master/ercot_boundary.kml',*/
+          map: map
+        });
+		
+		var texasCountiesLayer = new google.maps.KmlLayer({
+          /*url: 'http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml',*/
+          url: 'http://ercot.com/content/cdr/static/texas_counties.kml',
+          /*url: 'https://raw.githubusercontent.com/rohithreddy95/kmlfiles/master/texas_counties.kml',*/
+          map: map
+        });
+        
+        map.mapTypes.set('styled_map', styledMapType);
+        map.setMapTypeId('styled_map');
+      }

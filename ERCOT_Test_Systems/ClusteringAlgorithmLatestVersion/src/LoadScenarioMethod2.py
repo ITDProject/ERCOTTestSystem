@@ -32,7 +32,7 @@ if __name__ == "__main__":
 	# LoadPerCapitaByZones = {k:[[0.0 for i in range(24)] for j in range(3)] for k in zones if k!= 'Others'}
 	# LoadPerCapitaByZones['Coastal'][0] = [1.765227732,1.685250197,1.634039235,1.608641595,1.592267514,1.607746948,1.650264613,1.687572455,1.775358331,1.874455527,1.982637569,2.078473854,2.166881964,2.264832487,2.358474865,2.43545409,2.473951267,2.46819204,2.403100559,2.294920273,2.249058505,2.180250318,2.06517713,1.929974412]
 	import xlrd
-	wb = xlrd.open_workbook('../Data/Load/LoadDataFormat2.08.2018.xlsx', on_demand = True)
+	wb = xlrd.open_workbook('../Data/Load/LoadDataFormat2.06.2019.xlsx', on_demand = True)
 	# Loads only current sheets to memory
 	ws = wb.sheet_by_name('Sheet2')
 	LoadPerCapitaByZones = {k:[[ws.cell(24*j + i + 1, n+1).value for i in range(24)] for j in range(NDay)] for n,k in enumerate(zoneslist)}
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 			LoadDataSharebyBus = [[round(LoadScenarioDatabyCluster[int(k)][j][i],2) for i in range(24)] for j in range(NDay)]
 			LoadScenarioDatabyClusterUpdated.append({int(k):LoadDataSharebyBus})
 	
-	f = open('LoadScenarioDatabyClusterMethod2Size' + str(NNode) + '.json','w')
+	f = open('LoadScenarioDatabyClusterMethod2LatestSize' + str(NNode) + '.json','w')
 	json.dump(LoadScenarioDatabyClusterUpdated, f)
 	f.close()
 
