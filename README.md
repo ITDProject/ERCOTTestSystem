@@ -10,4 +10,7 @@ This repository is organized in the following way:
 
 3. The License folder describes the BSD 3-Clause ("New" or "Revised") License under which the materials at this repository are being released as Open Source Software.
 
+Appendices of the below published paper provides necessary details of ERCOT Test System implementation.
+
+Swathi Battula, Leigh Tesfatsion, and Thomas E. McDermott (2020), "An ERCOT Test System for Market Design Studies" (WP Preprint, pdf, 3.5MB), Applied Energy, to appear.
 
