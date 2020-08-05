@@ -35,7 +35,7 @@ python WindScenarioMethod.py NB FileName Month NDays
 To produce a solar profile, the user needs to execute the following command: 
 python SolarScenarioMethod.py NB FileName Month NDays
 
-The above commands depend on the following user-specified parameters:   NB - The desired number of buses for the synthetic grid;  FileName – The name of the Excel file that contains system-wide ERCOT data;  Month – The name of the Excel sheet ???? that represents the month of the year in numeric value; and NDays – The number of days for which load and generation profiles are required.
+The above commands depend on the following user-specified parameters:   NB - The desired number of buses for the synthetic grid;  FileName – The name of the Excel file that contains system-wide ERCOT data;  Month – The name of the Excel sheet that represents the month of the year in numeric value; and NDays – The number of days for which load and generation profiles are required.
 
 Note: The user needs to make sure that the input Excel files that contain system-wide ERCOT data (i) have their sheets named in accordance with the numerical value of the month of the year, and (ii) have data for a number of days that is at least as large as NDays. Sample input Excel sheets are provided in the 'Data' subdirectory.
 The output files generated in Steps 1 and 2, above, are used to construct input test case files for AMES V5.0, the market component of the ERCOT Test System described in Steps 3 and 4, below.  Sample input test case files are provided in the 'InputTestCaseFiles' subdirectory.
