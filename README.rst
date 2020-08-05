@@ -26,13 +26,13 @@ As explained in the above published paper, Delaunay Triangulation is used to con
 
 User needs to navigate to 'src' subdirectory and execute the following commands to generate load and non-dispatchable generation profiles. 
 
-To generate load profile, user needs to execute the below command, 
+To generate load profile, user needs to execute the following command, 
 python LoadScenarioMethod.py NB FileName Month NDays
 
-To generate wind profile, user needs to execute the below command, 
+To generate wind profile, user needs to execute the following command, 
 python WindScenarioMethod.py NB FileName Month NDays
 
-To generate solar profile, user needs to execute the below command, 
+To generate solar profile, user needs to execute the following command, 
 python SolarScenarioMethod.py NB FileName Month NDays
 
 Definitions of the input arguments: NB - The desired number of buses for the grid, FileName - Name of the excel file that contains system-wide ERCOT data, Month - Name of the sheet that represents the month of the year in numeric value, NDays - Number of days the load/generation profiles are required for
