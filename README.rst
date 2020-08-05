@@ -17,16 +17,18 @@ The user needs to navigate to the 'ClusteringAlgorithm' folder located in the 'S
 
 python postprocessing.py NB
 
-The above command outputs a 'NBBusData.json' file that contains bus attribute data, such as the bus location of load, dispatchable generators, and non-dispatchable generators. 
+'postprocessing.py' takes ERCOT data such as, type, location and MW capacity of generators, load and Zip Code data and produces sythetic outputs a 'NBBusData.json' file that contains bus attribute data, such as the bus location of load, dispatchable generators, and non-dispatchable generators. 
+
+The ERCOT data in placed in 'Data' folder and the input data for 'postprocessing.py' in required format is written using dataprocessing.py and utils.py, both of which take input data from 'Data' folder. 
 
 As explained in the above published paper, Delaunay Triangulation is used to construct synthetic lines for the synthetic grid. 
 
 2. TThe `ERCOTTestCases’ directory contains relevant data, scripts, and code pertaining to sample test cases developed and conducted using the ERCOT Test System.
 The user needs to navigate to the 'src' subdirectory and execute the following commands to produce profiles for load and non-dispatchable generation.
 
-TTo produce a load profile, the user needs to execute the following command:  python LoadScenarioMethod.py NB FileName Month NDays
+To produce a load profile, the user needs to execute the following command:  python LoadScenarioMethod.py NB FileName Month NDays
 To produce a wind profile, the user needs to execute the following command:  python WindScenarioMethod.py NB FileName Month NDays
-To produce a solar profile, the user needs to execute the following command:  python SolarScenarioMethod.py NB FileName Month NDays
+To produce a solar profile, the user needs to execute the following command: python SolarScenarioMethod.py NB FileName Month NDays
 
 The above commands depend on the following user-specified parameters:   NB - The desired number of buses for the synthetic grid;  FileName – The name of the Excel file that contains system-wide ERCOT data;  Month – The name of the Excel sheet ???? that represents the month of the year in numeric value; and NDays – The number of days for which load and generation profiles are required.
 
