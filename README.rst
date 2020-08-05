@@ -17,9 +17,9 @@ The user needs to navigate to the 'ClusteringAlgorithm' folder located in the 'S
 
 python postprocessing.py NB
 
-'postprocessing.py' takes ERCOT data such as, type, location and MW capacity of generators, load and Zip Code data and produces sythetic outputs a 'NBBusData.json' file that contains bus attribute data, such as the bus location of load, dispatchable generators, and non-dispatchable generators. 
+'postprocessing.py' takes ERCOT data such as, type, location and MW capacity of generators, load, and Zip Code data and produces synthetic outputs an 'NBBusData.json' file that contains bus attribute data, such as the bus location of load, dispatchable generators, and non-dispatchable generators.
 
-The ERCOT data in placed in 'Data' folder and the input data for 'postprocessing.py' in required format is written using dataprocessing.py and utils.py, both of which take input data from 'Data' folder. 
+The ERCOT data is placed in the 'Data' folder and the input data for 'postprocessing.py' in the required format is written using dataprocessing.py and utils.py, both of which take input data from 'Data' folder.
 
 As explained in the above published paper, Delaunay Triangulation is used to construct synthetic lines for the synthetic grid. 
 
