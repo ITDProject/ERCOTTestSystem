@@ -23,23 +23,6 @@ The ERCOT input data in the ‘Data’ folder include Zip code data as well as t
 
 As explained in the above published paper, Delaunay Triangulation is used to construct synthetic lines for the synthetic grid. 
 
-1. The `ERCOTTestCases’ directory contains relevant data, scripts, and code pertaining to sample test cases developed and conducted using the ERCOT Test System.
-The user needs to navigate to the 'src' subdirectory and execute the following commands to produce profiles for load and non-dispatchable generation.
-
-To produce a load profile, the user needs to execute the following command:  
-python LoadScenarioMethod.py NB FileName Month NDays
-
-To produce a wind profile, the user needs to execute the following command:  
-python WindScenarioMethod.py NB FileName Month NDays
-
-To produce a solar profile, the user needs to execute the following command: 
-python SolarScenarioMethod.py NB FileName Month NDays
-
-The above commands depend on the following user-specified parameters:   NB - The desired number of buses for the synthetic grid;  FileName – The name of the Excel file that contains system-wide ERCOT data;  Month – The name of the Excel sheet that represents the month of the year in numeric value; and NDays – The number of days for which load and generation profiles are required.
-
-Note: The user needs to make sure that the input Excel files that contain system-wide ERCOT data (i) have their sheets named in accordance with the numerical value of the month of the year, and (ii) have data for a number of days that is at least as large as NDays. Sample input Excel sheets are provided in the 'Data' subdirectory.
-The output files generated in Steps 1 and 2, above, are used to construct input test case files for AMES V5.0, the market component of the ERCOT Test System described in Steps 3 and 4, below.  Sample input test case files are provided in the 'InputTestCaseFiles' subdirectory.
-
 3. The ERCOT Test System requires AMES V5.0 to be installed.  The `AMES V5.0’ directory provides instructions and necessary files for this installation.  In addition, the `AMES V5.0’ directory includes a `TESAgents’ subdirectory that provides scripts to compile and run AMES V5.0.  Moreover, if additional user-specified components have been provided for a larger software system that includes AMES V5.0, this subdirectory provides scripts to compile and run all of these components using the Framework for Network Co-Simulation (FNCS).  NetLoadForecastDAM.py and NetLoadForecastRTM.py are Python implementations for TES Agents that can provide load forecasts for the AMES V5.0 Day-Ahead Market (DAM) and Real-Time Market (RTM), respectively.
 
 4. The License folder describes the BSD 3-Clause ("New" or "Revised") License under which the materials at this repository are being released as Open Source Software.
