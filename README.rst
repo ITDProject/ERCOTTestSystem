@@ -23,6 +23,8 @@ The ERCOT input data in the ‘Data’ folder include Zip code data as well as t
 
 As explained in the above published paper, Delaunay Triangulation is used to construct synthetic lines for the synthetic grid. 
 
+2. The
+
 3. The ERCOT Test System requires AMES V5.0 to be installed.  The `AMES V5.0’ directory provides instructions and necessary files for this installation.  In addition, the `AMES V5.0’ directory includes a `TESAgents’ subdirectory that provides scripts to compile and run AMES V5.0.  Moreover, if additional user-specified components have been provided for a larger software system that includes AMES V5.0, this subdirectory provides scripts to compile and run all of these components using the Framework for Network Co-Simulation (FNCS).  NetLoadForecastDAM.py and NetLoadForecastRTM.py are Python implementations for TES Agents that can provide load forecasts for the AMES V5.0 Day-Ahead Market (DAM) and Real-Time Market (RTM), respectively.
 
 4. The License folder describes the BSD 3-Clause ("New" or "Revised") License under which the materials at this repository are being released as Open Source Software.
