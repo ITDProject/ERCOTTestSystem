@@ -5,7 +5,10 @@ set fncslibdir=%amesdir%\fncsDependencies
 set apidir=%amesdir%\TESAgents
 set logfilesdir=%apidir%\logfiles
 
-set "MaxDay=4"
+set Param=MaxDay
+
+for /f "tokens=1,2" %%a in (%amesdir%/DATA/%1.dat) do ( if %%a==%Param% set MaxDay=%%b )
+
 set /a "tmax=%MaxDay%*86400"
 
 md %logfilesdir% 2> nul
