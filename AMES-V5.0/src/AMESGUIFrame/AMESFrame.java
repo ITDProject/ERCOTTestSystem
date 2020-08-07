@@ -2794,12 +2794,12 @@ public class AMESFrame extends JFrame {
 //            outputBufferWriter.write("#NodeDifferenceBetweenLMPsDataEnd\n");
 //            outputBufferWriter.write("\n");
 //
-                outputBufferWriter.write("\n\n\n");
-                strTemp = "StopCode=";
-                strTemp += String.format("\t%1$15d", this.amesMarket.getStopCode());
-                strTemp += "\n";
-                outputBufferWriter.write(strTemp);
-                outputBufferWriter.write("\n");
+//                outputBufferWriter.write("\n\n\n");
+//                strTemp = "StopCode=";
+//                strTemp += String.format("\t%1$15d", this.amesMarket.getStopCode());
+//                strTemp += "\n";
+//                outputBufferWriter.write(strTemp);
+//                outputBufferWriter.write("\n");
 
                 outputBufferWriter.close();
 
@@ -3365,7 +3365,7 @@ public class AMESFrame extends JFrame {
 
     private void startItemActionPerformed(java.awt.event.ActionEvent evt) {
 
-        if (false) {
+        if (FNCSActive) {
             fncs.JNIfncs.initialize();
             assert JNIfncs.is_initialized();
         }
@@ -3877,13 +3877,7 @@ public class AMESFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        if (true) {
-            fncs.JNIfncs.initialize();
-            assert JNIfncs.is_initialized();
-        }
-        //fncs.JNIfncs.initialize();
-        //assert JNIfncs.is_initialized();
-        System.out.println("AMESFrame main");
+
         mainFrameWindow = new AMESFrame();
 
         if (args.length > 0) {
