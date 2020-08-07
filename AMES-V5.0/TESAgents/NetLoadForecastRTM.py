@@ -6,7 +6,7 @@ import fncs
 import re
 import cmath
 
-FileName = 'NetLoadScData.M1.C8.RTM.json'
+FileName = 'NetLoadScData.C8.RTM.json'
 
 def NetLoadScenarioDataJsonFormat(filename):
 	NLSE = 0

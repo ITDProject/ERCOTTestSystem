@@ -1,0 +1,433 @@
+ <!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>KML Layers</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+      function initMap() {
+        var styledMapType = new google.maps.StyledMapType
+		(
+				[
+				  {
+					"elementType": "labels",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "administrative.neighborhood",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "poi",
+					"elementType": "labels.text",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "poi.business",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "road",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "road",
+					"elementType": "labels.icon",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  },
+				  {
+					"featureType": "transit",
+					"stylers": [
+					  {
+						"visibility": "off"
+					  }
+					]
+				  }
+				],
+			{name: 'Styled Map'}
+		);
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          /*zoom: 11,
+          center: {lat: 41.876, lng: -87.624}*/
+          zoom: 11,
+          center: {lat: 31.599632, lng: -99.067722},
+          mapTypeControlOptions: {
+            mapTypeIds: ['roadmap', 'satellite', 'hybrid', 'terrain', 'styled_map']
+          }
+        });
+
+var genmap = {
+
+			'0_Load': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 19829.500176,
+			type: 'Load',
+			county: 'None'
+			},
+
+			'0_Natural Gas Internal Combustion Engine': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 40.900000000000006,
+			type: 'Natural Gas Internal Combustion Engine',
+			county: 'None'
+			},
+
+			'0_Natural Gas Steam Turbine': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 5594.1,
+			type: 'Natural Gas Steam Turbine',
+			county: 'None'
+			},
+
+			'0_Natural Gas Fired Combustion Turbine': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 677.9000000000001,
+			type: 'Natural Gas Fired Combustion Turbine',
+			county: 'None'
+			},
+
+			'0_Natural Gas Fired Combined Cycle': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 13665.9,
+			type: 'Natural Gas Fired Combined Cycle',
+			county: 'None'
+			},
+
+			'0_Onshore Wind Turbine': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 1674.7999999999997,
+			type: 'Onshore Wind Turbine',
+			county: 'None'
+			},
+
+			'0_Nuclear': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 2430.0,
+			type: 'Nuclear',
+			county: 'None'
+			},
+
+			'0_Conventional Steam Coal': {
+			location: {lat: 32.485011423147554, lng: -96.70963818212297 },
+			capacity: 11664.8,
+			type: 'Conventional Steam Coal',
+			county: 'None'
+			},
+
+			'276_Load': {
+			location: {lat: 29.65967776090361, lng: -95.42729030608442 },
+			capacity: 14270.053190000002,
+			type: 'Load',
+			county: 'None'
+			},
+
+			'276_Natural Gas Fired Combustion Turbine': {
+			location: {lat: 29.65967776090361, lng: -95.42729030608442 },
+			capacity: 3469.7999999999997,
+			type: 'Natural Gas Fired Combustion Turbine',
+			county: 'None'
+			},
+
+			'276_Natural Gas Fired Combined Cycle': {
+			location: {lat: 29.65967776090361, lng: -95.42729030608442 },
+			capacity: 12551.2,
+			type: 'Natural Gas Fired Combined Cycle',
+			county: 'None'
+			},
+
+			'276_Natural Gas Steam Turbine': {
+			location: {lat: 29.65967776090361, lng: -95.42729030608442 },
+			capacity: 4740.7,
+			type: 'Natural Gas Steam Turbine',
+			county: 'None'
+			},
+
+			'276_Conventional Steam Coal': {
+			location: {lat: 29.65967776090361, lng: -95.42729030608442 },
+			capacity: 3190.3,
+			type: 'Conventional Steam Coal',
+			county: 'None'
+			},
+
+			'276_Nuclear': {
+			location: {lat: 29.65967776090361, lng: -95.42729030608442 },
+			capacity: 2708.6,
+			type: 'Nuclear',
+			county: 'None'
+			},
+
+			'447_Load': {
+			location: {lat: 32.4692810173714, lng: -100.99550248626932 },
+			capacity: 2047.797228,
+			type: 'Load',
+			county: 'None'
+			},
+
+			'447_Natural Gas Fired Combined Cycle': {
+			location: {lat: 32.4692810173714, lng: -100.99550248626932 },
+			capacity: 2167.1,
+			type: 'Natural Gas Fired Combined Cycle',
+			county: 'None'
+			},
+
+			'447_Onshore Wind Turbine': {
+			location: {lat: 32.4692810173714, lng: -100.99550248626932 },
+			capacity: 10972.5,
+			type: 'Onshore Wind Turbine',
+			county: 'None'
+			},
+
+			'447_Conventional Steam Coal': {
+			location: {lat: 32.4692810173714, lng: -100.99550248626932 },
+			capacity: 720.0,
+			type: 'Conventional Steam Coal',
+			county: 'None'
+			},
+
+			'447_Natural Gas Internal Combustion Engine': {
+			location: {lat: 32.4692810173714, lng: -100.99550248626932 },
+			capacity: 3.3,
+			type: 'Natural Gas Internal Combustion Engine',
+			county: 'None'
+			},
+
+			'447_Natural Gas Fired Combustion Turbine': {
+			location: {lat: 32.4692810173714, lng: -100.99550248626932 },
+			capacity: 1347.8,
+			type: 'Natural Gas Fired Combustion Turbine',
+			county: 'None'
+			},
+
+			'525_Load': {
+			location: {lat: 29.801535848812957, lng: -97.92561411735126 },
+			capacity: 8761.308631,
+			type: 'Load',
+			county: 'None'
+			},
+
+			'525_Conventional Steam Coal': {
+			location: {lat: 29.801535848812957, lng: -97.92561411735126 },
+			capacity: 5728.1,
+			type: 'Conventional Steam Coal',
+			county: 'None'
+			},
+
+			'525_Natural Gas Fired Combined Cycle': {
+			location: {lat: 29.801535848812957, lng: -97.92561411735126 },
+			capacity: 5901.5,
+			type: 'Natural Gas Fired Combined Cycle',
+			county: 'None'
+			},
+
+			'525_Natural Gas Steam Turbine': {
+			location: {lat: 29.801535848812957, lng: -97.92561411735126 },
+			capacity: 3201.0,
+			type: 'Natural Gas Steam Turbine',
+			county: 'None'
+			},
+
+			'525_Natural Gas Fired Combustion Turbine': {
+			location: {lat: 29.801535848812957, lng: -97.92561411735126 },
+			capacity: 1234.6,
+			type: 'Natural Gas Fired Combustion Turbine',
+			county: 'None'
+			},
+
+			'525_Natural Gas Internal Combustion Engine': {
+			location: {lat: 29.801535848812957, lng: -97.92561411735126 },
+			capacity: 252.60000000000008,
+			type: 'Natural Gas Internal Combustion Engine',
+			county: 'None'
+			},
+
+			'694_Load': {
+			location: {lat: 29.27606278171163, lng: -100.36967479322895 },
+			capacity: 341.028662,
+			type: 'Load',
+			county: 'None'
+			},
+
+			'694_Onshore Wind Turbine': {
+			location: {lat: 29.27606278171163, lng: -100.36967479322895 },
+			capacity: 99.8,
+			type: 'Onshore Wind Turbine',
+			county: 'None'
+			},
+
+			'933_Natural Gas Fired Combined Cycle': {
+			location: {lat: 27.361603784152422, lng: -97.7250449632622 },
+			capacity: 5853.900000000001,
+			type: 'Natural Gas Fired Combined Cycle',
+			county: 'None'
+			},
+
+			'933_Load': {
+			location: {lat: 27.361603784152422, lng: -97.7250449632622 },
+			capacity: 4209.7054419999995,
+			type: 'Load',
+			county: 'None'
+			},
+
+			'933_Natural Gas Fired Combustion Turbine': {
+			location: {lat: 27.361603784152422, lng: -97.7250449632622 },
+			capacity: 581.6,
+			type: 'Natural Gas Fired Combustion Turbine',
+			county: 'None'
+			},
+
+			'933_Conventional Steam Coal': {
+			location: {lat: 27.361603784152422, lng: -97.7250449632622 },
+			capacity: 622.4,
+			type: 'Conventional Steam Coal',
+			county: 'None'
+			},
+
+			'933_Natural Gas Steam Turbine': {
+			location: {lat: 27.361603784152422, lng: -97.7250449632622 },
+			capacity: 725.1,
+			type: 'Natural Gas Steam Turbine',
+			county: 'None'
+			},
+
+			'933_Onshore Wind Turbine': {
+			location: {lat: 27.361603784152422, lng: -97.7250449632622 },
+			capacity: 3562.2000000000003,
+			type: 'Onshore Wind Turbine',
+			county: 'None'
+			},
+
+			'933_Natural Gas Internal Combustion Engine': {
+			location: {lat: 27.361603784152422, lng: -97.7250449632622 },
+			capacity: 224.39999999999995,
+			type: 'Natural Gas Internal Combustion Engine',
+			county: 'None'
+			},
+
+			'1440_Load': {
+			location: {lat: 30.135886063717674, lng: -103.86922481571024 },
+			capacity: 41.870736,
+			type: 'Load',
+			county: 'None'
+			},
+
+			'1605_Load': {
+			location: {lat: 32.23357, lng: -105.286539 },
+			capacity: 1.367598,
+			type: 'Load',
+			county: 'None'
+			}
+ };
+
+var colormap = {
+'Natural Gas Fired Combined Cycle' : '#e88120',
+'Conventional Steam Coal' : '#8c4a03',
+'Onshore Wind Turbine' : '#87a847',
+'Natural Gas Steam Turbine' : '#e88120',
+'Natural Gas Fired Combustion Turbine' : '#e88120',
+'Nuclear' : '#e8b620',
+'Solar Photovoltaic' : '#916711',
+'All Other' : '#415221',
+'Petroleum Coke' : '#415221',
+'Landfill Gas' : '#415221',
+'Wood/Wood Waste Biomass' : '#415221',
+'Batteries' : '#415221',
+'Other Waste Biomass' : '#415221',
+'Natural Gas Internal Combustion Engine' : '#e88120',
+'Conventional Hydroelectric' : '#415221',
+'Other Gases' : '#415221',
+'Petroleum Liquids' : '#415221',
+'aggr' : '#FF13CB',
+'Load' : '#FF0F00'
+/*
+'North' : '#FF13CB',
+'East' : '#0D090A',
+'SouthCentral' : '#13C6FF',
+'FarWest' : '#5E373E',
+'NorthCentral' : '#FFF333',
+'West' : '#D9850E',
+'South' : '#890301',
+'Coastal' : '#EA00E6'*/
+};
+
+
+			for (var gen in genmap) {
+			// Add the circle for this city to the map.
+				var genCircle = new google.maps.Circle({
+				strokeColor: colormap[genmap[gen].type],
+				strokeOpacity: 0.8,
+				strokeWeight: 2,
+				fillColor: colormap[genmap[gen].type],
+				fillOpacity: 0.35, //1
+				map: map,
+				center: genmap[gen].location,
+				radius: Math.sqrt(genmap[gen].capacity) * 600 //Math.sqrt(genmap[gen].capacity) * 1000
+			});
+			}
+		
+
+        var ercotBoundaryLayer = new google.maps.KmlLayer({
+          /*url: 'http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml',*/
+          /*url: 'http://ercot.com/content/cdr/static/texas_counties.kml',*/
+          url: 'https://raw.githubusercontent.com/rohithreddy95/kmlfiles/master/ercot_boundary2.kml',
+          map: map
+        });
+
+		var texasCountiesLayer = new google.maps.KmlLayer({
+          /*url: 'http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml',*/
+          /*url: 'http://ercot.com/content/cdr/static/texas_counties.kml',*/
+          url: 'https://raw.githubusercontent.com/rohithreddy95/kmlfiles/master/texas_county11.kml',
+          map: map
+        });
+
+        map.mapTypes.set('styled_map', styledMapType);
+        map.setMapTypeId('styled_map');
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB610aVb6R_ck6S5RFQsG63b8P2tcxm-CA&callback=initMap">
+    </script>
+  </body>
+</html>
+

@@ -6,7 +6,7 @@ import fncs
 import re
 import cmath
 
-FileName = 'NetLoadScData.M1.C8.DAM.json'
+FileName = 'NetLoadScData.C8.DAM.json'
 
 def NetLoadScenarioDataJsonFormat(filename):
 	NLSE = 0
