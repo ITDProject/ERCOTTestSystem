@@ -11,15 +11,15 @@ This repository contains all the relevant codes, data files, scripts, and docume
 As described in the above published paper, the ERCOT Test System has grid and market components.
 This repository provides code and data for these components, organized in the following way:
 
-1. The 'ERCOTGridComponent' directory provides relevant data, scripts, and code pertaining to constructing a user-specified number of synthetic buses for the synthetic grid.
+1. The 'SyntheticBusConstructionMethod' subdirectory provides relevant data, scripts, and code pertaining to constructing a user-specified number of synthetic buses for the synthetic grid.
 
 The user needs to navigate to the 'ClusteringAlgorithm' folder located in the 'SyntheticBusConstructionMethod' subdirectory and specify NB, the desired number of synthetic buses, by executing the following command: 
 
 python postprocessing.py NB
 
-ERCOT input data are stored in the ‘Data’ folder.  These raw data are put into required formatting by means of ‘dataprocessing.py’ and ‘utils.py’.  The file 'postprocessing.py' produces synthetic bus attributes from the processed ERCOT input data and stores these synthetic bus attributes in a file ‘NBBusData.json’.  
+ERCOT input data are stored in the ‘Data’ folder under this subdirectory.  These raw data are put into required formatting by means of ‘dataprocessing.py’ and ‘utils.py’.  The file 'postprocessing.py' produces synthetic bus attributes from the processed ERCOT input data and stores these synthetic bus attributes in a file ‘NBBusData.json’.  
 
-The ERCOT input data in the ‘Data’ folder include Zip code data as well as the type, location, and MW capacity of generators and loads.  The synthetic bus attributes produced by ‘postprocessing.py’ include the bus locations of loads, dispatchable generators, and non-dispatchable generators.
+The ERCOT input data in the ‘Data’ folder under this subdirectory include Zip code data as well as the type, location, and MW capacity of generators and loads.  The synthetic bus attributes produced by ‘postprocessing.py’ include the bus locations of loads, dispatchable generators, and non-dispatchable generators.
 
 As explained in the above published paper, Delaunay Triangulation is used to construct synthetic lines for the synthetic grid. 
 
