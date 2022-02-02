@@ -1,15 +1,14 @@
 ## README
 
-The below published paper is the main documentation for the ERCOT Test System.  The appendices of this paper provide detailed implementation instructions for the ERCOT Test System.
+The Applied Energy article cited below, together with the accompanying linked working paper version of this article, constitute the main documentation for the ERCOT Test System.  The article and working paper appendices provide detailed implementation instructions for the ERCOT Test System.
  
 Swathi Battula, Leigh Tesfatsion, and Thomas E. McDermott (2020), "An ERCOT Test System for Market Design Studies,” Applied Energy, Vol. 275, October.  DOI:10.1016/j.apenergy.2020.115182. Working Paper Preprint:  https://lib.dr.iastate.edu/econ_workingpapers/79/
  
 Abstract: An open source test system is developed that permits the dynamic modeling of centrally-managed wholesale power markets operating over high-voltage transmission grids. In default mode, the test system models basic operations in the Electric Reliability Council of Texas (ERCOT): namely, centrally-managed day-ahead and real-time markets operating over successive days, with congestion handled by locational marginal pricing. These basic operational features characterize all seven U.S. energy regions organized as centrally-managed wholesale power markets. Modeled participants include dispatchable generators, load-serving entities, and non-dispatchable generation such as unfirmed wind and solar power. Users can configure a broad variety of parameters to study basic market and grid features under alternative system conditions. Users can also easily extend the test system's Java/Python software classes to study modified or newly envisioned market and grid features. Finally, the test system is integrated with a high-level simulation framework that permits it to function as a software component within larger systems, such as multi-country systems or integrated transmission and distribution systems. Detailed test cases with 8-bus and 200-bus transmission grids are reported to illustrate these test system capabilities.
  
-This repository contains all the relevant codes, data files, scripts, and documentation for the ERCOT Project tasks carried out under Iowa State University's "ERCOT Contract" with the Pacific Northwest National Laboratory (PNNL).
+This repository contains all relevant code, data files, scripts, and documentation for the ERCOT Project tasks carried out under Iowa State University's "ERCOT Contract" with the Pacific Northwest National Laboratory (PNNL).
 
-As described in the above published paper, the ERCOT Test System has grid and market components.
-This repository provides code and data for these components, organized in the following way:
+As described at greater length in the above cited and linked documentation, the ERCOT Test System has grid and market components.  This repository provides code and data for these components, organized in the following way:
 
 1. The 'ERCOTGridComponent' directory provides relevant data, scripts, and code pertaining to constructing a user-specified number of synthetic buses for the synthetic grid.
 
