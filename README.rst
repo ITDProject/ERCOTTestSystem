@@ -10,36 +10,36 @@ This repository contains all relevant code, data files, scripts, and documentati
 
 As described at greater length in the above cited and linked documentation, the ERCOT Test System has grid and market components.  This repository provides code and data for these components, organized in the following way:
 
-1. The 'ERCOTGridComponent' directory provides relevant data, scripts, and code pertaining to constructing a user-specified number of synthetic buses for the synthetic grid.
+* The 'ERCOTGridComponent' directory provides relevant data, scripts, and code pertaining to constructing a user-specified number of synthetic buses for the synthetic grid.
 
-The user needs to navigate to the 'ClusteringAlgorithm' folder located in the 'SyntheticBusConstructionMethod' subdirectory and specify NB, the desired number of synthetic buses, by executing the following command: 
+  The user needs to navigate to the 'ClusteringAlgorithm' folder located in the 'SyntheticBusConstructionMethod' subdirectory and specify NB, the desired number of synthetic buses, by executing the following command: 
 
-python postprocessing.py NB
+  python postprocessing.py NB
 
-ERCOT input data are stored in the ‘Data’ folder.  These raw data are put into required formatting by means of ‘dataprocessing.py’ and ‘utils.py’.  The file 'postprocessing.py' produces synthetic bus attributes from the processed ERCOT input data and stores these synthetic bus attributes in a file ‘NBBusData.json’.  
+  ERCOT input data are stored in the ‘Data’ folder.  These raw data are put into required formatting by means of ‘dataprocessing.py’ and ‘utils.py’.  The file 'postprocessing.py' produces synthetic bus attributes from the processed ERCOT input data and stores these synthetic bus attributes in a file ‘NBBusData.json’.  
 
-The ERCOT input data in the ‘Data’ folder include Zip code data as well as the type, location, and MW capacity of generators and loads.  The synthetic bus attributes produced by ‘postprocessing.py’ include the bus locations of loads, dispatchable generators, and non-dispatchable generators.
+  The ERCOT input data in the ‘Data’ folder include Zip code data as well as the type, location, and MW capacity of generators and loads.  The synthetic bus attributes produced by ‘postprocessing.py’ include the bus locations of loads, dispatchable generators, and non-dispatchable generators.
 
-As explained in the above published paper, Delaunay Triangulation is used to construct synthetic lines for the synthetic grid. 
+  As explained in the above published paper, Delaunay Triangulation is used to construct synthetic lines for the synthetic grid. 
 
-2. The `ERCOTTestCases’ directory contains relevant data, scripts, and code pertaining to sample test cases developed and conducted using the ERCOT Test System.
+* The `ERCOTTestCases’ directory contains relevant data, scripts, and code pertaining to sample test cases developed and conducted using the ERCOT Test System.
 
-The user needs to navigate to the 'src' subdirectory and execute the following commands to produce profiles for load and non-dispatchable generation.
+  The user needs to navigate to the 'src' subdirectory and execute the following commands to produce profiles for load and non-dispatchable generation.
 
-To produce a load profile, the user needs to execute the following command:  
-python LoadScenarioMethod.py NB FileName Month NDays
+  To produce a load profile, the user needs to execute the following command:  
+  python LoadScenarioMethod.py NB FileName Month NDays
 
-To produce a wind profile, the user needs to execute the following command:  
-python WindScenarioMethod.py NB FileName Month NDays
+  To produce a wind profile, the user needs to execute the following command:  
+  python WindScenarioMethod.py NB FileName Month NDays
 
-To produce a solar profile, the user needs to execute the following command: 
-python SolarScenarioMethod.py NB FileName Month NDays
+  To produce a solar profile, the user needs to execute the following command: 
+  python SolarScenarioMethod.py NB FileName Month NDays
 
-The above commands depend on the following user-specified parameters:   NB - The desired number of buses for the synthetic grid;  FileName – The name of the Excel file that contains system-wide ERCOT data;  Month – The name of the Excel sheet that represents the month of the year in numeric value; and NDays – The number of days for which load and generation profiles are required.
+  The above commands depend on the following user-specified parameters:   NB - The desired number of buses for the synthetic grid;  FileName – The name of the Excel file that contains system-wide ERCOT data;  Month – The name of the Excel sheet that represents the month of the year in numeric value; and NDays – The number of days for which load and generation profiles are required.
 
-Note: The user needs to make sure that the input Excel files that contain system-wide ERCOT data (i) have their sheets named in accordance with the numerical value of the month of the year, and (ii) have data for a number of days that is at least as large as NDays. Sample input Excel sheets are provided in the 'Data' subdirectory.
-The output files generated in Steps 1 and 2, above, are used to construct input test case files for AMES V5.0, the market component of the ERCOT Test System described in Steps 3 and 4, below.  Sample input test case files are provided in the 'InputTestCaseFiles' subdirectory.
+  Note: The user needs to make sure that the input Excel files that contain system-wide ERCOT data (i) have their sheets named in accordance with the numerical value of the month of the year, and (ii) have data for a number of days that is at least as large as NDays. Sample input Excel sheets are provided in the 'Data' subdirectory.
+  The output files generated in Steps 1 and 2, above, are used to construct input test case files for AMES V5.0, the market component of the ERCOT Test System described in Steps 3 and 4, below.  Sample input test case files are provided in the 'InputTestCaseFiles' subdirectory.
 
-3. The ERCOT Test System requires AMES V5.0 to be installed.  The `AMES V5.0’ directory provides instructions and necessary files for this installation.  In addition, the `AMES V5.0’ directory includes a `TESAgents’ subdirectory that provides scripts to compile and run AMES V5.0.  Moreover, if additional user-specified components have been provided for a larger software system that includes AMES V5.0, this subdirectory provides scripts to compile and run all of these components using the Framework for Network Co-Simulation (FNCS).  NetLoadForecastDAM.py and NetLoadForecastRTM.py are Python implementations for TES Agents that can provide load forecasts for the AMES V5.0 Day-Ahead Market (DAM) and Real-Time Market (RTM), respectively.
+* The ERCOT Test System requires AMES V5.0 to be installed.  The `AMES V5.0’ directory provides instructions and necessary files for this installation.  In addition, the `AMES V5.0’ directory includes a `TESAgents’ subdirectory that provides scripts to compile and run AMES V5.0.  Moreover, if additional user-specified components have been provided for a larger software system that includes AMES V5.0, this subdirectory provides scripts to compile and run all of these components using the Framework for Network Co-Simulation (FNCS).  NetLoadForecastDAM.py and NetLoadForecastRTM.py are Python implementations for TES Agents that can provide load forecasts for the AMES V5.0 Day-Ahead Market (DAM) and Real-Time Market (RTM), respectively.
 
-4. The License folder describes the BSD 3-Clause ("New" or "Revised") License under which the materials at this repository are being released as Open Source Software.
+* The License folder describes the BSD 3-Clause ("New" or "Revised") License under which the materials at this repository are being released as Open Source Software.
