@@ -26,13 +26,16 @@ As described at greater length in the above cited and linked documentation, the 
 
   The user needs to navigate to the 'src' subdirectory and execute the following commands to produce profiles for load and non-dispatchable generation.
 
-  To produce a load profile, the user needs to execute the following command:  
+  To produce a load profile, the user needs to execute the following command: 
+  
   python LoadScenarioMethod.py NB FileName Month NDays
 
   To produce a wind profile, the user needs to execute the following command:  
+  
   python WindScenarioMethod.py NB FileName Month NDays
 
   To produce a solar profile, the user needs to execute the following command: 
+  
   python SolarScenarioMethod.py NB FileName Month NDays
 
   The above commands depend on the following user-specified parameters:   NB - The desired number of buses for the synthetic grid;  FileName – The name of the Excel file that contains system-wide ERCOT data;  Month – The name of the Excel sheet that represents the month of the year in numeric value; and NDays – The number of days for which load and generation profiles are required.
